@@ -1,0 +1,9 @@
+.delete-icon {
+    float: right;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.delete-icon:hover {
+    color: var(--secundary-color);
+}

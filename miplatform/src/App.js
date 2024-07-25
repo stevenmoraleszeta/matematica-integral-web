@@ -4,6 +4,8 @@ import Login from './pages/auth/Login.jsx'
 import UserProfile from './pages/userProfile/UserProfile.jsx';
 import NavBar from './components/navBar/NavBar.jsx';
 import PlatformMenu from './pages/platform/platformMenu/PlatformMenu.jsx';
+import Students from './pages/platform/students/Students.jsx';
+import Teachers from './pages/platform/teachers/Teachers.jsx';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/platform" element={<PlatformMenu />} />
+          <Route path="/platform/students" element={<Students />} />
+          <Route path="/platform/teachers" element={<Teachers />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </section>
