@@ -2,17 +2,19 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px; /* Espacio entre los elementos */
+    gap: 20px;
     padding: 20px;
 }
 
 .platform-item {
-    background-color: var(--component-gray); /* Color de fondo del botón */
-    border: none; /* Borde del botón */
-    border-radius: 8px; /* Bordes redondeados */
-    width: 200px; /* Ancho fijo de cada elemento */
-    height: 150px; /* Alto fijo de cada elemento */
+    background-color: var(--component-dark);
+    box-shadow: 0 0 20px var(--background-shadow);
+    border: none;
+    border-radius: 8px;
+    width: 200px;
+    height: 150px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -20,25 +22,18 @@
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.3s ease;
-    text-decoration: none; /* Quita el subrayado del texto */
-    color: var(--text-color); /* Color del texto */
+    text-decoration: none;
+    color: var(--text-color);
 }
 
 .platform-item:hover {
     transform: translateY(-5px);
-}
-
-.close {
+    background-color: var(--secundary-color); 
     color: var(--text-color);
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; 
 }
 
-.close:hover,
-.close:focus {
-    color: var(--primary-color);
-    text-decoration: none;
-    cursor: pointer;
+.platform-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
 }

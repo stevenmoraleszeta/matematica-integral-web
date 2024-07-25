@@ -30,28 +30,28 @@
 .navbar-link {
   display: flex;
   align-items: center;
-  color: var(--text-color); /* Color del texto */
-  text-decoration: none; /* Eliminar subrayado */
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 .profile-link {
-  padding: 0; /* Elimina el padding de la imagen */
+  padding: 0; 
 }
 
 .profile-image {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  object-fit: cover; /* Asegura que la imagen se recorte bien en el círculo */
+  object-fit: cover; 
 }
 
 .navbar-link {
-  padding: 10px 12px; /* Espacio dentro del enlace de texto */
-  border-radius: 5px; /* Bordes redondeados */
+  padding: 10px 12px; 
+  border-radius: 5px; 
 }
 
 .navbar-link:hover {
-  background-color: var(--secundary-color); /* Color de fondo al pasar el mouse */
-  color: var(--text-color); /* Color del texto al pasar el mouse */
-  transition: background-color 0.3s; /* Transición suave del color de fondo */
+  background-color: var(--secundary-color); 
+  color: var(--text-color);
+  transition: background-color 0.3s; 
 }
