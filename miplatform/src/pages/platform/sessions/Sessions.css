@@ -1,0 +1,12 @@
+.item-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    min-height: 40px; /* Ajusta según tus necesidades */
+}
+
+.modify-attendance-button {
+    background-color: var(--primary-color-darker);
+    width: auto; /* Ajusta el ancho automáticamente según el contenido */
+    padding: 10px 20px; /* Ajusta el padding según el diseño deseado */
+}

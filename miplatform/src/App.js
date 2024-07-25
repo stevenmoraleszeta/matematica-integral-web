@@ -6,6 +6,8 @@ import NavBar from './components/navBar/NavBar.jsx';
 import PlatformMenu from './pages/platform/platformMenu/PlatformMenu.jsx';
 import Students from './pages/platform/students/Students.jsx';
 import Teachers from './pages/platform/teachers/Teachers.jsx';
+import Groups from './pages/platform/groups/Groups.jsx';
+import Sessions from './pages/platform/sessions/Sessions.jsx';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/platform" element={<PlatformMenu />} />
           <Route path="/platform/students" element={<Students />} />
           <Route path="/platform/teachers" element={<Teachers />} />
+          <Route path="/platform/groups" element={<Groups />} />
+          <Route path="/platform/sessions" element={<Sessions />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </section>
