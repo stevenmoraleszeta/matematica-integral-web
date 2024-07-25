@@ -1,17 +1,16 @@
-// src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Tu configuración de Firebase
+// Configuración de Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyCjRdfqECn2v2w1LMOiRqyuvuy82whYfEA",
-    authDomain: "miplatform-43425.firebaseapp.com",
-    projectId: "miplatform-43425",
-    storageBucket: "miplatform-43425.appspot.com",
-    messagingSenderId: "451276673742",
-    appId: "1:451276673742:web:1b33a7813a05430574369f",
-    measurementId: "G-T9K5XXSYPK"
+    apiKey: "AIzaSyDNDu7vXFqZs8K5dnMEqR3NkLWPOmTWgOU",
+    authDomain: "miplatform-3c978.firebaseapp.com",
+    projectId: "miplatform-3c978",
+    storageBucket: "miplatform-3c978.appspot.com",
+    messagingSenderId: "900192918336",
+    appId: "1:900192918336:web:d5010ec4dc12b80b8038a5",
+    measurementId: "G-KFHKWVMLM4"
 };
 
 
