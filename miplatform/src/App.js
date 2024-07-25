@@ -1,8 +1,9 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/auth/Login';
-import UserProfile from './components/userProfile/UserProfile.jsx';
+import UserProfile from './pages/userProfile/UserProfile.jsx';
 import NavBar from './components/navBar/NavBar.jsx';
+import PlatformMenu from './pages/platform/platformMenu/PlatformMenu.jsx';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/platform" element={<PlatformMenu />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </section>

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/auth';
 import { getAuth, updateProfile, updateEmail, signOut } from "firebase/auth";
 import { Navigate, useNavigate } from 'react-router-dom';
+import RequireAuth from '../../components/RequireAuth';
 
 
 function UserProfile() {
@@ -73,42 +74,44 @@ function UserProfile() {
     }
 
     return (
-        <div className='user-profile-container'>
-            <h1>Perfil de Usuario</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Nombre:</label>
-                    <input
-                        type="text"
-                        name="displayName"
-                        value={userInfo.displayName}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={userInfo.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>URL Imagen Perfil:</label>
-                    <input
-                        type="text"
-                        name="photoURL"
-                        value={userInfo.photoURL}
-                        onChange={handleChange}
-                    />
-                </div>
-                <button type="submit">Guardar Cambios</button>
-                <button onClick={handleLogout}>Cerrar Sesión</button>
-            </form>
-        </div>
+        <RequireAuth>
+            <div className='user-profile-container'>
+                <h1>Perfil de Usuario</h1>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>Nombre:</label>
+                        <input
+                            type="text"
+                            name="displayName"
+                            value={userInfo.displayName}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Email:</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={userInfo.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>URL Imagen Perfil:</label>
+                        <input
+                            type="text"
+                            name="photoURL"
+                            value={userInfo.photoURL}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <button type="submit">Guardar Cambios</button>
+                    <button onClick={handleLogout}>Cerrar Sesión</button>
+                </form>
+            </div>
+        </RequireAuth>
     );
 }
 
