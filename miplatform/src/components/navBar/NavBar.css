@@ -1,0 +1,57 @@
+.topnav {
+  background-color: var(--component-dark);
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  position: fixed;
+  top: 0; 
+  left: 0;
+  right: 0;
+  height: 7vh; 
+  z-index: 1000; 
+  padding: 0 10px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+}
+
+.left-section, .right-section {
+  display: flex;
+  align-items: center;
+}
+
+.left-section {
+  margin-left: 0;
+}
+
+.right-section {
+  margin-right: 0;
+}
+
+.profile-link,
+.navbar-link {
+  display: flex;
+  align-items: center;
+  color: var(--text-color); /* Color del texto */
+  text-decoration: none; /* Eliminar subrayado */
+}
+
+.profile-link {
+  padding: 0; /* Elimina el padding de la imagen */
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover; /* Asegura que la imagen se recorte bien en el círculo */
+}
+
+.navbar-link {
+  padding: 10px 12px; /* Espacio dentro del enlace de texto */
+  border-radius: 5px; /* Bordes redondeados */
+}
+
+.navbar-link:hover {
+  background-color: var(--secundary-color); /* Color de fondo al pasar el mouse */
+  color: var(--text-color); /* Color del texto al pasar el mouse */
+  transition: background-color 0.3s; /* Transición suave del color de fondo */
+}
