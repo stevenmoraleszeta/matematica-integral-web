@@ -12,7 +12,7 @@ function PlatformMenu() {
         { id: 2, label: "Profesores", path: "/platform/teachers", icon: faChalkboardTeacher },
         { id: 3, label: "Grupos", path: "/platform/groups", icon: faUsers },
         { id: 4, label: "Sesiones", path: "/platform/sessions", icon: faCalendarAlt },
-        { id: 5, label: "Calificaciones", path: "/platform/grades", icon: faClipboard },
+        { id: 5, label: "Calificaciones", path: "/platform/scores", icon: faClipboard },
         { id: 6, label: "Reportar", path: "/platform/report", icon: faFileAlt },
     ];
 

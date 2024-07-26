@@ -7,18 +7,18 @@ import useFetchData from '../../../hooks/useFetchData';
 import DataContainer from '../../../components/dataContainer/DataContainer';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
-import AttendanceModal from '../../../components/attendanceModal/AttendanceModal';
+import StudentsListModal from '../../../components/studentsListModal/StudentsListModal';
 
 function Sessions() {
     const groups = useFetchData("groups");
     const teachers = useFetchData("teachers");
-    const [allSessions, setAllSessions] = useState([]); 
-    const [filteredSessions, setFilteredSessions] = useState([]); 
-    const [studentsInGroup, setStudentsInGroup] = useState([]); 
+    const [allSessions, setAllSessions] = useState([]);
+    const [filteredSessions, setFilteredSessions] = useState([]);
+    const [studentsInGroup, setStudentsInGroup] = useState([]);
     const [formData, setFormData] = useState({
         date: '',
         groupId: '',
-        attendance: {}, 
+        attendance: {},
         teacherId: '',
         name: ''
     });
@@ -26,13 +26,20 @@ function Sessions() {
     const [showAttendanceModal, setShowAttendanceModal] = useState(false);
     const [editingSession, setEditingSession] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [groupNames, setGroupNames] = useState({}); 
+    const [groupNames, setGroupNames] = useState({});
 
     const fetchSessions = async () => {
         try {
             const sessionsSnapshot = await getDocs(collection(db, "sessions"));
-            const sessionsList = sessionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setAllSessions(sessionsList); 
+            const sessionsList = sessionsSnapshot.docs.map(doc => {
+                const sessionData = doc.data();
+                return {
+                    id: doc.id,
+                    ...sessionData,
+                    groupName: groupNames[sessionData.groupId] || 'Grupo no encontrado'
+                };
+            });
+            setAllSessions(sessionsList);
         } catch (error) {
             console.error("Error fetching sessions: ", error);
         }
@@ -43,10 +50,10 @@ function Sessions() {
             const groupsSnapshot = await getDocs(collection(db, "groups"));
             const groupsList = groupsSnapshot.docs.reduce((acc, doc) => {
                 const groupData = doc.data();
-                acc[doc.id] = groupData.name; 
+                acc[doc.id] = groupData.name;
                 return acc;
             }, {});
-            setGroupNames(groupsList); 
+            setGroupNames(groupsList);
         } catch (error) {
             console.error("Error fetching groups: ", error);
         }
@@ -58,10 +65,9 @@ function Sessions() {
             const studentsList = studentsSnapshot.docs
                 .filter(doc => doc.data().groupId === groupId)
                 .map(doc => ({ id: doc.id, ...doc.data() }));
-            console.log("Students for group:", studentsList); // Debug
             setStudentsInGroup(studentsList);
             const initialAttendance = studentsList.reduce((acc, student) => {
-                acc[student.id] = "absent"; 
+                acc[student.id] = "absent";
                 return acc;
             }, {});
             setFormData(prevState => ({ ...prevState, attendance: initialAttendance }));
@@ -81,7 +87,8 @@ function Sessions() {
             return (
                 (session.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                 (session.date || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (session.teacherId || '').toLowerCase().includes(searchTerm.toLowerCase())
+                (session.teacherId || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (session.groupName || '').toLowerCase().includes(searchTerm.toLowerCase())
             );
         });
         setFilteredSessions(filteredList);
@@ -89,7 +96,6 @@ function Sessions() {
 
     const handleGroupChange = async (e) => {
         const groupId = e.target.value;
-        console.log("ID del grupo seleccionado: " + groupId); // Debug
         setFormData(prevState => ({ ...prevState, groupId }));
         await fetchStudentsForGroup(groupId);
     };
@@ -120,7 +126,7 @@ function Sessions() {
                 const docRef = await addDoc(collection(db, "sessions"), formData);
                 console.log("Document written with ID: ", docRef.id);
             }
-            await fetchSessions(); 
+            await fetchSessions();
             setFormData({
                 date: '',
                 groupId: '',
@@ -166,7 +172,7 @@ function Sessions() {
             name: session.name || ''
         });
         setEditingSession(session);
-        await fetchStudentsForGroup(session.groupId);
+        await fetchStudentsForGroup(session.groupId); // Fetch students for the current group
         setShowModal(true);
     };
 
@@ -174,7 +180,7 @@ function Sessions() {
         try {
             await deleteDoc(doc(db, "sessions", sessionId));
             console.log("Document successfully deleted!");
-            await fetchSessions(); 
+            await fetchSessions();
         } catch (error) {
             console.error("Error deleting document: ", error);
         }
@@ -184,15 +190,34 @@ function Sessions() {
         setSearchTerm(e.target.value);
     };
 
-    const handleAssignAttendance = (session) => {
-        console.log("Session for attendance:", session); // Debug
+    const handleAssignAttendance = async (session) => {
         if (!session.groupId) {
             alert("Por favor, seleccione un grupo antes de modificar la asistencia.");
             return;
         }
-
+    
         setEditingSession(session);
+        await fetchStudentsForGroup(session.groupId);
+        setFormData(prevState => ({
+            ...prevState,
+            attendance: session.attendance || {} 
+        }));
         setShowAttendanceModal(true);
+    };
+    
+
+    const handleSaveAttendance = async () => {
+        if (editingSession) {
+            try {
+                const sessionRef = doc(db, "sessions", editingSession.id);
+                await updateDoc(sessionRef, { attendance: formData.attendance });
+                console.log("Asistencia actualizada en el documento con ID: ", editingSession.id);
+                await fetchSessions(); // Actualiza la lista de sesiones después de guardar
+            } catch (e) {
+                console.error("Error al actualizar la asistencia: ", e);
+            }
+        }
+        setShowAttendanceModal(false);
     };
 
     return (
@@ -237,12 +262,14 @@ function Sessions() {
                     }
                 ]}
             />
-            <AttendanceModal
+            <StudentsListModal
                 showModal={showAttendanceModal}
                 closeModal={closeAttendanceModal}
                 students={studentsInGroup}
                 attendance={formData.attendance}
                 handleAttendanceChange={handleAttendanceChange}
+                handleSave={handleSaveAttendance}
+                mode="attendance"
             />
         </RequireAuth>
     );

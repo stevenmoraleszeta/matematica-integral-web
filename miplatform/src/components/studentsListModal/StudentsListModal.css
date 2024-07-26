@@ -1,0 +1,36 @@
+.students-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--background-color-low-opacity);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.students-modal-content {
+    background: var(--component-dark);
+    padding: 20px;
+    border-radius: 5px;
+    width: 500px;
+    max-width: 100%;
+    position: relative;
+}
+
+.students-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.students-item p {
+    flex: 1;
+}
+
+.students-item select {
+    flex: 1;
+    padding: 5px;
+}

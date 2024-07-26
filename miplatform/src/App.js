@@ -8,6 +8,7 @@ import Students from './pages/platform/students/Students.jsx';
 import Teachers from './pages/platform/teachers/Teachers.jsx';
 import Groups from './pages/platform/groups/Groups.jsx';
 import Sessions from './pages/platform/sessions/Sessions.jsx';
+import Scores from './pages/platform/scores/Scores.jsx';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/platform/teachers" element={<Teachers />} />
           <Route path="/platform/groups" element={<Groups />} />
           <Route path="/platform/sessions" element={<Sessions />} />
+          <Route path="/platform/scores" element={<Scores />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </section>
