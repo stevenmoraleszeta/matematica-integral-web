@@ -4,6 +4,7 @@ import useFetchData from '../../../hooks/useFetchData';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
+import RequireAuth from '../../../components/RequireAuth';
 
 function Reports() {
     const groups = useFetchData("groups");
@@ -81,10 +82,10 @@ Fecha: ${today}.
 Sesión: ${session.name}.
 Profesor(a): ${teacherName}.
 
-El/la estudiante ${studentName} ${attendanceStatus === 'present' ? 'sí asistió' : 
-    attendanceStatus === 'excusedAbsence' ? 'estuvo ausente con justificación' : 
-    attendanceStatus === 'absent' ? 'no asistió' : 
-    'su estado de asistencia es desconocido'}.
+El/la estudiante ${studentName} ${attendanceStatus === 'present' ? 'sí asistió' :
+                        attendanceStatus === 'excusedAbsence' ? 'estuvo ausente con justificación' :
+                            attendanceStatus === 'absent' ? 'no asistió' :
+                                'su estado de asistencia es desconocido'}.
 
 ${studentName ? `Presentó el ${score.name}, su calificación fue: ${studentScore}` : 'No presentó la prueba.'}
 
@@ -98,7 +99,7 @@ Saludos.`;
 
             // Actualizar la lista de reportes después de guardar uno
             fetchReports();
-            
+
         } catch (error) {
             console.error('Error al enviar el reporte por WhatsApp: ', error);
             alert('Error al enviar el reporte por WhatsApp');
@@ -184,59 +185,61 @@ Saludos.`;
     };
 
     return (
-        <div className="reports">
-            <label htmlFor="group-select">Seleccionar Grupo:</label>
-            <select id="group-select" value={selectedGroup} onChange={handleGroupChange}>
-                <option value="">Seleccionar Grupo</option>
-                {groups.map(group => (
-                    <option key={group.id} value={group.id}>{group.name}</option>
-                ))}
-            </select>
-
-            <label htmlFor="session-select">Seleccionar Sesión:</label>
-            <select id="session-select" value={selectedSession} onChange={handleSessionChange}>
-                <option value="">Seleccionar Sesión</option>
-                {filteredSessions.map(session => (
-                    <option key={session.id} value={session.id}>{session.name}</option>
-                ))}
-            </select>
-
-            <label htmlFor="score-select">Seleccionar Calificación:</label>
-            <select id="score-select" value={selectedScore} onChange={handleScoreChange}>
-                <option value="">Seleccionar Calificación</option>
-                {filteredScores.map(score => (
-                    <option key={score.id} value={score.id}>{score.name}</option>
-                ))}
-            </select>
-
-            <button onClick={handleSendWhatsAppReport}>Enviar reporte por WhatsApp</button>
-
-            <h2>Historial de Reportes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Grupo</th>
-                        <th>Sesión</th>
-                        <th>Calificación</th>
-                        <th>Fecha</th>
-                        <th>Acciones</th> {/* Nueva columna para acciones */}
-                    </tr>
-                </thead>
-                <tbody>
-                    {reports.map(report => (
-                        <tr key={report.id}>
-                            <td>{getGroupName(report.groupId)}</td>
-                            <td>{getSessionName(report.sessionId)}</td>
-                            <td>{getScoreName(report.scoreId)}</td>
-                            <td>{report.date}</td>
-                            <td>
-                                <DeleteIcon onClick={() => deleteReport(report.id)} />
-                            </td>
-                        </tr>
+        <RequireAuth>
+            <div className="reports">
+                <label htmlFor="group-select">Seleccionar Grupo:</label>
+                <select id="group-select" value={selectedGroup} onChange={handleGroupChange}>
+                    <option value="">Seleccionar Grupo</option>
+                    {groups.map(group => (
+                        <option key={group.id} value={group.id}>{group.name}</option>
                     ))}
-                </tbody>
-            </table>
-        </div>
+                </select>
+
+                <label htmlFor="session-select">Seleccionar Sesión:</label>
+                <select id="session-select" value={selectedSession} onChange={handleSessionChange}>
+                    <option value="">Seleccionar Sesión</option>
+                    {filteredSessions.map(session => (
+                        <option key={session.id} value={session.id}>{session.name}</option>
+                    ))}
+                </select>
+
+                <label htmlFor="score-select">Seleccionar Calificación:</label>
+                <select id="score-select" value={selectedScore} onChange={handleScoreChange}>
+                    <option value="">Seleccionar Calificación</option>
+                    {filteredScores.map(score => (
+                        <option key={score.id} value={score.id}>{score.name}</option>
+                    ))}
+                </select>
+
+                <button onClick={handleSendWhatsAppReport}>Enviar reporte por WhatsApp</button>
+
+                <h2>Historial de Reportes</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Grupo</th>
+                            <th>Sesión</th>
+                            <th>Calificación</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th> {/* Nueva columna para acciones */}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {reports.map(report => (
+                            <tr key={report.id}>
+                                <td>{getGroupName(report.groupId)}</td>
+                                <td>{getSessionName(report.sessionId)}</td>
+                                <td>{getScoreName(report.scoreId)}</td>
+                                <td>{report.date}</td>
+                                <td>
+                                    <DeleteIcon onClick={() => deleteReport(report.id)} />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </RequireAuth>
     );
 }
 
