@@ -222,7 +222,7 @@ function Scores() {
                             <p className="item-detail">{score.date}</p>
                         </div>
                         <div className="item-actions">
-                            <button className="modify-scores-button" onClick={() => handleAssignScores(score)}>Modificar calificaciones</button>
+                            <button className="item-action-button" onClick={() => handleAssignScores(score)}>Modificar calificaciones</button>
                             <DeleteIcon onClick={() => deleteScore(score.id)} />
                         </div>
                     </div>

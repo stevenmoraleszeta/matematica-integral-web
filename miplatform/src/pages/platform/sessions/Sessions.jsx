@@ -231,7 +231,7 @@ function Sessions() {
                             <p className="item-detail">{session.date}</p>
                         </div>
                         <div className="item-actions">
-                            <button className="modify-attendance-button" onClick={() => handleAssignAttendance(session)}>Modificar asistencia</button>
+                            <button className="item-action-button" onClick={() => handleAssignAttendance(session)}>Modificar asistencia</button>
                             <DeleteIcon onClick={() => deleteSession(session.id)} />
                         </div>
                     </div>

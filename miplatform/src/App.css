@@ -105,3 +105,16 @@ img {
   padding: 7vh 5vw;
   box-sizing: border-box;
 }
+
+.item-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  min-height: 40px; 
+}
+
+.item-action-button {
+  background-color: var(--primary-color-darker);
+  width: auto; 
+  padding: 10px 20px; 
+}
