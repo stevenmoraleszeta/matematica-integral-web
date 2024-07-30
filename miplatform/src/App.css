@@ -96,6 +96,22 @@ img {
   height: auto;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid var(--primary-color-darker);
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--primary-color-darker);
+}
+
 .app {
   padding-top: 7vh;
   background-color: var(--background-color);

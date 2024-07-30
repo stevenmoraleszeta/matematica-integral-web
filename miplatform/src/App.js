@@ -12,6 +12,7 @@ import Scores from './pages/platform/scores/Scores.jsx';
 import Reports from './pages/platform/reports/Reports.jsx';
 
 function App() {
+  //TODO Añadir la comprobación de inicio de sesión en todos los componentes
   return (
     <Router>
       <NavBar />
