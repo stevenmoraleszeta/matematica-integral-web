@@ -2,7 +2,8 @@ import './Reports.css';
 import React, { useState, useEffect } from 'react';
 import useFetchData from '../../../hooks/useFetchData';
 import { db } from '../../../firebase/firebase';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
+import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 
 function Reports() {
     const groups = useFetchData("groups");
@@ -113,6 +114,16 @@ Saludos.`;
         }
     };
 
+    const deleteReport = async (id) => {
+        try {
+            await deleteDoc(doc(db, 'reports', id));
+            fetchReports(); // Actualizar la lista de reportes después de eliminar uno
+        } catch (error) {
+            console.error('Error al eliminar el reporte: ', error);
+            alert('Error al eliminar el reporte');
+        }
+    };
+
     const fetchReports = async () => {
         try {
             const reportsRef = collection(db, 'reports');
@@ -208,6 +219,7 @@ Saludos.`;
                         <th>Sesión</th>
                         <th>Calificación</th>
                         <th>Fecha</th>
+                        <th>Acciones</th> {/* Nueva columna para acciones */}
                     </tr>
                 </thead>
                 <tbody>
@@ -217,6 +229,9 @@ Saludos.`;
                             <td>{getSessionName(report.sessionId)}</td>
                             <td>{getScoreName(report.scoreId)}</td>
                             <td>{report.date}</td>
+                            <td>
+                                <DeleteIcon onClick={() => deleteReport(report.id)} />
+                            </td>
                         </tr>
                     ))}
                 </tbody>
