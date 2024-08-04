@@ -172,7 +172,7 @@ function Students() {
 
     return (
         <RequireAuth>
-            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal}>
+            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchStudentsWithGroupNames} dbCollection="students">
                 {filteredStudents.map(student => (
                     <div key={student.id} onClick={() => editStudent(student)} className="item-container">
                         <div className="item-data">

@@ -1,3 +1,7 @@
+Módulo solicitudes
+Módulo pagos
+
+Reporte personalizado del estudiante
 Personalización mensaje reporte
 Seguridad 
 Permisos de acceso

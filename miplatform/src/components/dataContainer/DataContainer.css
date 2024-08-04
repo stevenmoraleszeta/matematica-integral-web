@@ -1,15 +1,23 @@
+/*Add Container*/
+.add-container {
+    display: flex;
+    align-items: center;
+}
+
 .data-container {
     padding: 20px;
 }
 
-.add-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
+.upload-input {
+    display: none;
+}
+
+.upload-label {
     cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    width: auto;
 }
 
 .search-input {
