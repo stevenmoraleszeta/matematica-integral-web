@@ -14,6 +14,7 @@ function Students() {
     const [allStudents, setAllStudents] = useState([]); // Estado para todos los estudiantes
     const [filteredStudents, setFilteredStudents] = useState([]); // Estado para los estudiantes filtrados
     const [formData, setFormData] = useState({
+        identificator: '',
         email: '',
         parentEmail: '',
         name: '',
@@ -108,6 +109,7 @@ function Students() {
 
             await fetchStudentsWithGroupNames(); // Refresh student data after submit
             setFormData({
+                identificator: '',
                 email: '',
                 parentEmail: '',
                 name: '',
@@ -125,6 +127,7 @@ function Students() {
 
     const openModal = () => {
         setFormData({
+            identificator: '',
             email: '',
             parentEmail: '',
             name: '',
@@ -144,6 +147,7 @@ function Students() {
 
     const editStudent = (student) => {
         setFormData({
+            identificator: student.id || '',
             email: student.email || '',
             parentEmail: student.parentEmail || '',
             name: student.name || '',

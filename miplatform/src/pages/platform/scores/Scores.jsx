@@ -16,6 +16,7 @@ function Scores() {
     const [filteredScores, setFilteredScores] = useState([]);
     const [studentsInGroup, setStudentsInGroup] = useState([]);
     const [formData, setFormData] = useState({
+        identificator: '',
         date: '',
         groupId: '',
         scores: {},
@@ -123,6 +124,7 @@ function Scores() {
             }
             await fetchScores();
             setFormData({
+                identificator: '',
                 date: '',
                 groupId: '',
                 scores: {},
@@ -137,6 +139,7 @@ function Scores() {
 
     const openModal = () => {
         setFormData({
+            identificator: '',
             date: '',
             groupId: '',
             scores: {},
@@ -158,6 +161,7 @@ function Scores() {
 
     const editScore = async (score) => {
         setFormData({
+            identificator: score.id || '',
             date: score.date || '',
             groupId: score.groupId || '',
             scores: score.scores || {},
@@ -246,6 +250,7 @@ function Scores() {
                         onChange: handleGroupChange 
                     }
                 ]}
+                title={editingScore ? 'Editar Calificaciones' : 'Agregar Calificaciones'}
             />
             <StudentsListModal
                 showModal={showScoresModal}

@@ -17,6 +17,7 @@ const Modal = ({ showModal, closeModal, formData, handleChange, handleSubmit, fi
             <div className="modal-content">
                 <span className="close" onClick={closeModal}>&times;</span>
                 <h2>{title}</h2>
+                <p><b>ID: </b>{formData.identificator}</p>
                 <form onSubmit={handleSubmit}>
                     {fields.map((field, index) => (
                         <div key={index} className="form-group">

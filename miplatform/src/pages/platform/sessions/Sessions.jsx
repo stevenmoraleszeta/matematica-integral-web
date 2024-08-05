@@ -16,6 +16,7 @@ function Sessions() {
     const [filteredSessions, setFilteredSessions] = useState([]);
     const [studentsInGroup, setStudentsInGroup] = useState([]);
     const [formData, setFormData] = useState({
+        identificator: '',
         date: '',
         groupId: '',
         attendance: {},
@@ -128,6 +129,7 @@ function Sessions() {
             }
             await fetchSessions();
             setFormData({
+                identificator: '',
                 date: '',
                 groupId: '',
                 attendance: {},
@@ -143,6 +145,7 @@ function Sessions() {
 
     const openModal = () => {
         setFormData({
+            identificator: '',
             date: '',
             groupId: '',
             attendance: {},
@@ -165,6 +168,7 @@ function Sessions() {
 
     const editSession = async (session) => {
         setFormData({
+            identificator: session.id || '',
             date: session.date || '',
             groupId: session.groupId || '',
             attendance: session.attendance || {},
@@ -261,6 +265,7 @@ function Sessions() {
                         options: teachers.map(teacher => ({ value: teacher.id, label: teacher.name }))
                     }
                 ]}
+                title={editingSession ? 'Editar Sesión' : 'Agregar Sesión'}
             />
             <StudentsListModal
                 showModal={showAttendanceModal}

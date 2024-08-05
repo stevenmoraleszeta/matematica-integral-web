@@ -42,6 +42,7 @@ function Groups() {
 
     const [filteredGroups, setFilteredGroups] = useState([]); // Estado para los grupos filtrados
     const [formData, setFormData] = useState({
+        identificator: '',
         name: '',
         description: '',
         teacherMath: '',
@@ -93,6 +94,7 @@ function Groups() {
             // Refresh group data after submit
             await fetchData(); // Fetch updated data
             setFormData({
+                identificator: '',
                 name: '',
                 description: '',
                 teacherMath: '',
@@ -107,6 +109,7 @@ function Groups() {
 
     const openModal = () => {
         setFormData({
+            identificator: '',
             name: '',
             description: '',
             teacherMath: '',
@@ -123,6 +126,7 @@ function Groups() {
 
     const editGroup = (group) => {
         setFormData({
+            identificator: group.id || '',
             name: group.name || '',
             description: group.description || '',
             teacherMath: group.teacherMath || '',

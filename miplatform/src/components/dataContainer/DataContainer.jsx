@@ -6,9 +6,12 @@ import { db } from '../../firebase/firebase';
 import { MdUpload } from 'react-icons/md';  // Importa el ícono de carga
 
 const DataContainer = ({ searchTerm, handleSearch, openModal, fetchFunction, dbCollection, children }) => {
-    const handleFileUpload = (e) => {
+    const handleFileUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+
+        const confirmUpload = window.confirm("¿Está seguro de que desea cargar estos datos? Esta acción es irreversible.");
+        if (!confirmUpload) return;
 
         const reader = new FileReader();
         reader.onload = async (event) => {
@@ -29,6 +32,7 @@ const DataContainer = ({ searchTerm, handleSearch, openModal, fetchFunction, dbC
             }
 
             await fetchFunction();
+            alert("Los datos han sido cargados exitosamente.");
         };
 
         reader.readAsArrayBuffer(file);

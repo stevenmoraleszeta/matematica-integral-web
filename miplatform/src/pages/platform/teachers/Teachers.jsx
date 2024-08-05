@@ -11,6 +11,7 @@ function Teachers() {
     const [allTeachers, setAllTeachers] = useState([]);
     const [filteredTeachers, setFilteredTeachers] = useState([]);
     const [formData, setFormData] = useState({
+        identificator: '',
         email: '',
         name: '',
         phone: '',
@@ -83,6 +84,7 @@ function Teachers() {
 
             await fetchTeachers(); // Refresh teacher data after submit
             setFormData({
+                identificator: '',
                 email: '',
                 name: '',
                 phone: '',
@@ -97,6 +99,7 @@ function Teachers() {
 
     const openModal = () => {
         setFormData({
+            identificator: '',
             email: '',
             name: '',
             phone: '',
@@ -113,6 +116,7 @@ function Teachers() {
 
     const editTeacher = (teacher) => {
         setFormData({
+            identificator: teacher.id || '',
             email: teacher.email || '',
             name: teacher.name || '',
             phone: teacher.phone || '',
