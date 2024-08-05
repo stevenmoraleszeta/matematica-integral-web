@@ -222,7 +222,7 @@ function Sessions() {
 
     return (
         <RequireAuth>
-            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal}>
+            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchSessions} dbCollection="sessions">
                 {filteredSessions.map(session => (
                     <div key={session.id} className="item-container">
                         <div className="item-data" onClick={() => editSession(session)}>

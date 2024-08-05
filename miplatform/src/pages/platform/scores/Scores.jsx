@@ -213,7 +213,7 @@ function Scores() {
 
     return (
         <RequireAuth>
-            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal}>
+            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchScores} dbCollection="scores">
                 {filteredScores.map(score => (
                     <div key={score.id} className="item-container">
                         <div className="item-data" onClick={() => editScore(score)}>

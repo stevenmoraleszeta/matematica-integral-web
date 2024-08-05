@@ -149,7 +149,7 @@ function Groups() {
 
     return (
         <RequireAuth>
-            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal}>
+            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchData} dbCollection="groups">
                 {filteredGroups.map(group => (
                     <div key={group.id} onClick={() => editGroup(group)} className="item-container">
                         <div className="item-data">
