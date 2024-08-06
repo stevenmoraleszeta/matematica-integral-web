@@ -61,18 +61,28 @@ function Students() {
         // Aplicar filtro basado en searchTerm
         const filteredList = allStudents.filter(student => {
             if (!student) return false;
+
+            const name = String(student.name || '').toLowerCase();
+            const email = String(student.email || '').toLowerCase();
+            const phone = String(student.phone || '').toLowerCase();
+            const parentName = String(student.parentName || '').toLowerCase();
+            const parentEmail = String(student.parentEmail || '').toLowerCase();
+            const parentPhone = String(student.parentPhone || '').toLowerCase();
+            const groupName = String(student.groupName || '').toLowerCase();
+
             return (
-                (student.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (student.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (student.phone || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (student.parentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (student.parentEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (student.parentPhone || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (student.groupName || '').toLowerCase().includes(searchTerm.toLowerCase())
+                name.includes(searchTerm.toLowerCase()) ||
+                email.includes(searchTerm.toLowerCase()) ||
+                phone.includes(searchTerm.toLowerCase()) ||
+                parentName.includes(searchTerm.toLowerCase()) ||
+                parentEmail.includes(searchTerm.toLowerCase()) ||
+                parentPhone.includes(searchTerm.toLowerCase()) ||
+                groupName.includes(searchTerm.toLowerCase())
             );
         });
         setFilteredStudents(filteredList);
     }, [searchTerm, allStudents]);
+
 
     const validatePhoneNumber = (phoneNumber) => {
         const phoneRegex = /^\+\d{10,}$/; // Regex para número de teléfono con código de país
