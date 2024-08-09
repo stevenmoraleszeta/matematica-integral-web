@@ -69,32 +69,42 @@ function Reports() {
             studentsSnapshot.forEach((doc) => {
                 const student = doc.data();
                 const studentId = doc.id;
-                const phone = student.parentPhone;
+                const parentPhone = student.parentPhone;
+                const studentPhone = student.phone;
                 const studentName = student.name || 'Estudiante';
                 const attendanceStatus = sessionAttendance[studentId] || 'no present';
                 const studentScore = studentScores[studentId] || 'No presentó la prueba';
 
                 const message = `Saludos cordiales.
                 
-Reporte semanal del curso de preparación para exámenes de admisión TEC, UCR, UNA.
-
-Fecha: ${today}.
-Sesión: ${session.name}.
-Profesor(a): ${teacherName}.
-
-El/la estudiante ${studentName} ${attendanceStatus === 'present' ? 'sí asistió' :
+    Reporte semanal del curso de preparación para exámenes de admisión TEC, UCR, UNA.
+    
+    Fecha: ${today}.
+    Sesión: ${session.name}.
+    Profesor(a): ${teacherName}.
+    
+    El/la estudiante ${studentName} ${attendanceStatus === 'present' ? 'sí asistió' :
                         attendanceStatus === 'excusedAbsence' ? 'estuvo ausente con justificación' :
                             attendanceStatus === 'absent' ? 'no asistió' :
                                 'su estado de asistencia es desconocido'}.
+    
+    ${studentName ? `Presentó el ${score.name}, su calificación fue: ${studentScore}` : 'No presentó la prueba.'}
+    
+    Quedamos atentos(a) para resolver cualquier consulta.
+    
+    Saludos.`;
 
-${studentName ? `Presentó el ${score.name}, su calificación fue: ${studentScore}` : 'No presentó la prueba.'}
+                // Enviar mensaje al teléfono del encargado
+                if (parentPhone) {
+                    const parentWhatsAppLink = `https://wa.me/${parentPhone}?text=${encodeURIComponent(message)}`;
+                    window.open(parentWhatsAppLink, '_blank');
+                }
 
-Quedamos atentos(a) para resolver cualquier consulta.
-
-Saludos.`;
-
-                const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-                window.open(whatsappLink, '_blank');
+                // Enviar mensaje al teléfono del estudiante
+                if (studentPhone) {
+                    const studentWhatsAppLink = `https://wa.me/${studentPhone}?text=${encodeURIComponent(message)}`;
+                    window.open(studentWhatsAppLink, '_blank');
+                }
             });
 
             // Actualizar la lista de reportes después de guardar uno
@@ -105,6 +115,7 @@ Saludos.`;
             alert('Error al enviar el reporte por WhatsApp');
         }
     };
+
 
     const addReportToFirebase = async (reportData) => {
         try {
