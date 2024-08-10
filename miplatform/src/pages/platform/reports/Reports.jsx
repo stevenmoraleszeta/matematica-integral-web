@@ -79,7 +79,7 @@ function Reports() {
                 
     Reporte semanal del curso de preparación para exámenes de admisión TEC, UCR, UNA.
     
-    Fecha: ${today}.
+    Fecha: ${session.date}.
     Sesión: ${session.name}.
     Profesor(a): ${teacherName}.
     
