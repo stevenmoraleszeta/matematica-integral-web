@@ -3,24 +3,24 @@ import "./PlatformMenu.css";
 import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserGraduate, faChalkboardTeacher, faUsers, faCalendarAlt, faClipboard, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUserGraduate, faChalkboardTeacher, faUsers, faCalendarAlt, faClipboard, faFileAlt, faFileSignature, faTasks } from '@fortawesome/free-solid-svg-icons';
 import RequireAuth from "../../../components/RequireAuth";
-import { useAuth } from '../../../contexts/auth';  // Importa el hook de autenticación
+import { useAuth } from '../../../contexts/auth';
 
 function PlatformMenu() {
-    const { currentUser } = useAuth();  // Obtén el usuario logueado desde el contexto
+    const { currentUser } = useAuth();
 
-    // Definir las opciones disponibles en el menú
     const items = [
         { id: 1, label: "Estudiantes", path: "/platform/students", icon: faUserGraduate, alwaysVisible: true },
         { id: 2, label: "Profesores", path: "/platform/teachers", icon: faChalkboardTeacher, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
         { id: 3, label: "Grupos", path: "/platform/groups", icon: faUsers, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
         { id: 4, label: "Sesiones", path: "/platform/sessions", icon: faCalendarAlt, alwaysVisible: true },
-        { id: 5, label: "Calificaciones", path: "/platform/scores", icon: faClipboard, alwaysVisible: true },
-        { id: 6, label: "Reportar", path: "/platform/reports", icon: faFileAlt, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
+        { id: 5, label: "Quices", path: "/platform/scores", icon: faClipboard, alwaysVisible: true },
+        { id: 6, label: "Simulacros", path: "/platform/mockExams", icon: faFileSignature, alwaysVisible: true },
+        { id: 7, label: "Tareas", path: "/platform/homeworks", icon: faTasks, alwaysVisible: true },  // Cambié el icono aquí
+        { id: 8, label: "Reportar", path: "/platform/reports", icon: faFileAlt, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
     ];
 
-    // Filtrar las opciones según el correo del usuario, pero siempre mostrar las que tienen "alwaysVisible"
     const filteredItems = items.filter(item => item.alwaysVisible || (item.emails && item.emails.includes(currentUser?.email)));
 
     return (

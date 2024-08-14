@@ -10,14 +10,16 @@ function Reports() {
     const groups = useFetchData("groups");
     const allSessions = useFetchData("sessions");
     const allScores = useFetchData("scores");
+    const allMockExams = useFetchData("mockExams");
 
     const [selectedGroup, setSelectedGroup] = useState('');
     const [filteredSessions, setFilteredSessions] = useState([]);
     const [filteredScores, setFilteredScores] = useState([]);
     const [selectedSession, setSelectedSession] = useState('');
     const [selectedScore, setSelectedScore] = useState('');
+    const [selectedMockExam, setSelectedMockExam] = useState('');
     const [teachers, setTeachers] = useState({});
-    const [reports, setReports] = useState([]); // Estado para almacenar los reportes
+    const [reports, setReports] = useState([])
 
     const handleGroupChange = (e) => {
         setSelectedGroup(e.target.value);
@@ -31,6 +33,10 @@ function Reports() {
         setSelectedScore(e.target.value);
     };
 
+    const handleMockExamChange = (e) => {
+        setSelectedMockExam(e.target.value);
+    };
+
     const handleSendWhatsAppReport = async () => {
         if (!selectedGroup || !selectedSession || !selectedScore) {
             alert('Por favor, completa todos los campos antes de enviar el reporte.');
@@ -42,6 +48,7 @@ function Reports() {
             groupId: selectedGroup,
             sessionId: selectedSession,
             scoreId: selectedScore,
+            mockExamId: selectedMockExam,
             date: today
         };
 
@@ -55,14 +62,17 @@ function Reports() {
 
             const session = allSessions.find(sess => sess.id === selectedSession);
             const score = allScores.find(scr => scr.id === selectedScore);
+            const mockExam = allMockExams.find(mcke => mcke.id === selectedMockExam);
 
-            if (!session || !score) {
-                alert('Datos de sesión o calificación no encontrados.');
+            if (!session || !score || !mockExam) {
+                alert('Datos de sesión, calificación o simulacro no encontrados.');
                 return;
             }
 
+
             const sessionAttendance = session.attendance || {};
             const studentScores = score.scores || {};
+            const mockExamAttendance = mockExam.attendance || {};
 
             const teacherName = teachers[session.teacherId] || 'Profesor(a) no disponible';
 
@@ -72,9 +82,10 @@ function Reports() {
                 const parentPhone = student.parentPhone;
                 const studentPhone = student.phone;
                 const studentName = student.name || 'Estudiante';
-                const attendanceStatus = sessionAttendance[studentId] || 'no present';
+                const attendanceStatus = sessionAttendance[studentId] || 'Ausente';
                 const studentScore = studentScores[studentId] || 'No presentó la prueba';
-
+                const mockExamStatus = mockExamAttendance[studentId] || 'Ausente';
+                //TODO Modificar el examen según los datos disponibles
                 const message = `Saludos cordiales.
                 
     Reporte semanal del curso de preparación para exámenes de admisión TEC, UCR, UNA.
@@ -89,6 +100,8 @@ function Reports() {
                                 'su estado de asistencia es desconocido'}.
     
     ${studentName ? `Presentó el ${score.name}, su calificación fue: ${studentScore}` : 'No presentó la prueba.'}
+
+    Participación en el simulacro: ${mockExamStatus !== "Ausente" ? "Presente" : "Ausente"}.
     
     Quedamos atentos(a) para resolver cualquier consulta.
     
@@ -195,6 +208,11 @@ function Reports() {
         return score ? score.name : 'Desconocido';
     };
 
+    const getMockExamName = (id) => {
+        const mockExam = allMockExams.find(score => score.id === id);
+        return mockExam ? mockExam.name : 'Desconocido';
+    };
+
     return (
         <RequireAuth>
             <div className="reports">
@@ -222,6 +240,14 @@ function Reports() {
                     ))}
                 </select>
 
+                <label htmlFor="mockExam-select">Seleccionar Simulacro:</label>
+                <select id="mockExam-select" value={selectedMockExam} onChange={handleMockExamChange}>
+                    <option value="">Seleccionar Simulacro</option>
+                    {allMockExams.map(mockExam => (
+                        <option key={mockExam.id} value={mockExam.id}>{mockExam.name}</option>
+                    ))}
+                </select>
+
                 <button onClick={handleSendWhatsAppReport}>Enviar reporte por WhatsApp</button>
 
                 <h2>Historial de Reportes</h2>
@@ -231,8 +257,9 @@ function Reports() {
                             <th>Grupo</th>
                             <th>Sesión</th>
                             <th>Calificación</th>
-                            <th>Fecha</th>
-                            <th>Acciones</th> {/* Nueva columna para acciones */}
+                            <th>Simulacro</th>
+                            <th>Fecha Envío</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -241,6 +268,7 @@ function Reports() {
                                 <td>{getGroupName(report.groupId)}</td>
                                 <td>{getSessionName(report.sessionId)}</td>
                                 <td>{getScoreName(report.scoreId)}</td>
+                                <td>{getMockExamName(report.mockExamId)}</td>
                                 <td>{report.date}</td>
                                 <td>
                                     <DeleteIcon onClick={() => deleteReport(report.id)} />

@@ -10,6 +10,8 @@ import Groups from './pages/platform/groups/Groups.jsx';
 import Sessions from './pages/platform/sessions/Sessions.jsx';
 import Scores from './pages/platform/scores/Scores.jsx';
 import Reports from './pages/platform/reports/Reports.jsx';
+import MockExams from './pages/platform/mockExams/MockExams.jsx';
+import Homeworks from './pages/platform/homeworks/Homeworks.jsx';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
           <Route path="/platform/groups" element={<Groups />} />
           <Route path="/platform/sessions" element={<Sessions />} />
           <Route path="/platform/scores" element={<Scores />} />
+          <Route path="/platform/mockExams" element={<MockExams />} />
+          <Route path="/platform/homeworks" element={<Homeworks />} />
           <Route path="/platform/reports" element={<Reports />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
