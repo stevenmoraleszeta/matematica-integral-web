@@ -1,7 +1,6 @@
 Módulo solicitudes
 Módulo pagos
 
-Tareas
 Reporte mensual
 Reporte personalizado del estudiante
 Personalización mensaje reporte
