@@ -40,10 +40,24 @@ const StudentsListModal = ({ showModal, closeModal, students, attendance = {}, s
                                 <select
                                     value={attendance[student.id] || 'absent'}
                                     onChange={(e) => handleAttendanceChange(student.id, e.target.value)}
+                                    className={
+                                        attendance[student.id] === 'present' ? 'present-select' :
+                                        attendance[student.id] === 'excusedAbsence' ? 'excused-select' :
+                                        'absent-select'
+                                    }
                                 >
                                     <option value="present">Presente</option>
                                     <option value="absent">Ausente</option>
                                     <option value="excusedAbsence">Ausente Justificado</option>
+                                </select>
+                            ) : mode === 'submited' ? (
+                                <select
+                                    value={attendance[student.id] || 'notSubmited'}
+                                    onChange={(e) => handleAttendanceChange(student.id, e.target.value)}
+                                    className={attendance[student.id] === 'submited' ? 'submited-select' : 'not-submited-select'}
+                                >
+                                    <option value="submited">Entregada</option>
+                                    <option value="notSubmited">Sin entregar</option>
                                 </select>
                             ) : (
                                 <input

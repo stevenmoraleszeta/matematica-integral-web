@@ -16,9 +16,10 @@ function Homeworks() {
     const [studentsInGroup, setStudentsInGroup] = useState([]);
     const [formData, setFormData] = useState({
         identificator: '',
-        date: '',
+        startDate: '',
+        submitDate: '',
         groupId: '',
-        attendance: {},
+        scores: {},
         teacherId: '',
         name: ''
     });
@@ -28,20 +29,20 @@ function Homeworks() {
     const [searchTerm, setSearchTerm] = useState('');
     const [groupNames, setGroupNames] = useState({});
 
-    const fetchSessions = async () => {
+    const fetchHomeworks = async () => {
         try {
-            const sessionsSnapshot = await getDocs(collection(db, "sessions"));
-            const sessionsList = sessionsSnapshot.docs.map(doc => {
-                const sessionData = doc.data();
+            const homeworksSnapshot = await getDocs(collection(db, "homeworks"));
+            const homeworksList = homeworksSnapshot.docs.map(doc => {
+                const homeworkData = doc.data();
                 return {
                     id: doc.id,
-                    ...sessionData,
-                    groupName: groupNames[sessionData.groupId] || 'Grupo no encontrado'
+                    ...homeworkData,
+                    groupName: groupNames[homeworkData.groupId] || 'Grupo no encontrado'
                 };
             });
-            setHomeworks(sessionsList);
+            setHomeworks(homeworksList);
         } catch (error) {
-            console.error("Error fetching sessions: ", error);
+            console.error("Error fetching homeworks: ", error);
         }
     };
 
@@ -66,29 +67,30 @@ function Homeworks() {
                 .filter(doc => doc.data().groupId === groupId)
                 .map(doc => ({ id: doc.id, ...doc.data() }));
             setStudentsInGroup(studentsList);
-            const initialAttendance = studentsList.reduce((acc, student) => {
-                acc[student.id] = "absent";
+            const initialScores = studentsList.reduce((acc, student) => {
+                acc[student.id] = "notSubmited";
                 return acc;
             }, {});
-            setFormData(prevState => ({ ...prevState, attendance: initialAttendance }));
+            setFormData(prevState => ({ ...prevState, scores: initialScores }));
         } catch (error) {
             console.error("Error fetching students: ", error);
         }
     };
 
     useEffect(() => {
-        fetchSessions();
+        fetchHomeworks();
         fetchGroups();
     }, []);
 
     useEffect(() => {
-        const filteredList = allHomeworks.filter(session => {
-            if (!session) return false;
+        const filteredList = allHomeworks.filter(homework => {
+            if (!homework) return false;
             return (
-                (session.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (session.date || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (session.teacherId || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (session.groupName || '').toLowerCase().includes(searchTerm.toLowerCase())
+                (homework.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (homework.submitDate || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (homework.startDate || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (homework.teacherId || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (homework.groupName || '').toLowerCase().includes(searchTerm.toLowerCase())
             );
         });
         setFilteredHomeworks(filteredList);
@@ -100,11 +102,11 @@ function Homeworks() {
         await fetchStudentsForGroup(groupId);
     };
 
-    const handleAttendanceChange = (studentId, status) => {
+    const handleScoresChange = (studentId, status) => {
         setFormData(prevState => ({
             ...prevState,
-            attendance: {
-                ...prevState.attendance,
+            scores: {
+                ...prevState.scores,
                 [studentId]: status
             }
         }));
@@ -119,19 +121,20 @@ function Homeworks() {
         e.preventDefault();
         try {
             if (editingHomework) {
-                const sessionRef = doc(db, "sessions", editingHomework.id);
-                await updateDoc(sessionRef, formData);
+                const homeworkRef = doc(db, "homeworks", editingHomework.id);
+                await updateDoc(homeworkRef, formData);
                 console.log("Document updated with ID: ", editingHomework.id);
             } else {
-                const docRef = await addDoc(collection(db, "sessions"), formData);
+                const docRef = await addDoc(collection(db, "homeworks"), formData);
                 console.log("Document written with ID: ", docRef.id);
             }
-            await fetchSessions();
+            await fetchHomeworks();
             setFormData({
                 identificator: '',
-                date: '',
+                startDate: '',
+                submitDate: '',
                 groupId: '',
-                attendance: {},
+                scores: {},
                 teacherId: '',
                 name: ''
             });
@@ -145,9 +148,10 @@ function Homeworks() {
     const openModal = () => {
         setFormData({
             identificator: '',
-            date: '',
+            startDate: '',
+            submitDate: '',
             groupId: '',
-            attendance: {},
+            scores: {},
             teacherId: '',
             name: ''
         });
@@ -160,30 +164,31 @@ function Homeworks() {
         setEditingHomework(null);
     };
 
-    const closeAttendanceModal = () => {
+    const closeScoresModal = () => {
         setShowScoresModal(false);
         setEditingHomework(null);
     };
 
-    const editSession = async (session) => {
+    const editHomework = async (homework) => {
         setFormData({
-            identificator: session.id || '',
-            date: session.date || '',
-            groupId: session.groupId || '',
-            attendance: session.attendance || {},
-            teacherId: session.teacherId || '',
-            name: session.name || ''
+            identificator: homework.id || '',
+            startDate: homework.startDate || '',
+            submitDate: homework.submitDate || '',
+            groupId: homework.groupId || '',
+            scores: homework.scores || {},
+            teacherId: homework.teacherId || '',
+            name: homework.name || ''
         });
-        setEditingHomework(session);
-        await fetchStudentsForGroup(session.groupId); // Fetch students for the current group
+        setEditingHomework(homework);
+        await fetchStudentsForGroup(homework.groupId); // Fetch students for the current group
         setShowModal(true);
     };
 
-    const deleteSession = async (sessionId) => {
+    const deleteHomework = async (homeworkId) => {
         try {
-            await deleteDoc(doc(db, "sessions", sessionId));
+            await deleteDoc(doc(db, "homeworks", homeworkId));
             console.log("Document successfully deleted!");
-            await fetchSessions();
+            await fetchHomeworks();
         } catch (error) {
             console.error("Error deleting document: ", error);
         }
@@ -193,29 +198,29 @@ function Homeworks() {
         setSearchTerm(e.target.value);
     };
 
-    const handleAssignAttendance = async (session) => {
-        if (!session.groupId) {
+    const handleAssignScores = async (homework) => {
+        if (!homework.groupId) {
             alert("Por favor, seleccione un grupo antes de modificar la asistencia.");
             return;
         }
-    
-        setEditingHomework(session);
-        await fetchStudentsForGroup(session.groupId);
+
+        setEditingHomework(homework);
+        await fetchStudentsForGroup(homework.groupId);
         setFormData(prevState => ({
             ...prevState,
-            attendance: session.attendance || {} 
+            scores: homework.scores || {}
         }));
         setShowScoresModal(true);
     };
-    
 
-    const handleSaveAttendance = async () => {
+
+    const handleSaveScores = async () => {
         if (editingHomework) {
             try {
-                const sessionRef = doc(db, "sessions", editingHomework.id);
-                await updateDoc(sessionRef, { attendance: formData.attendance });
+                const homeworkRef = doc(db, "homeworks", editingHomework.id);
+                await updateDoc(homeworkRef, { scores: formData.scores });
                 console.log("Asistencia actualizada en el documento con ID: ", editingHomework.id);
-                await fetchSessions(); // Actualiza la lista de sesiones después de guardar
+                await fetchHomeworks(); // Actualiza la lista de sesiones después de guardar
             } catch (e) {
                 console.error("Error al actualizar la asistencia: ", e);
             }
@@ -225,17 +230,17 @@ function Homeworks() {
 
     return (
         <RequireAuth>
-            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchSessions} dbCollection="sessions">
-                {filteredHomeworks.map(session => (
-                    <div key={session.id} className="item-container">
-                        <div className="item-data" onClick={() => editSession(session)}>
-                            <p className="item-title">{session.name}</p>
-                            <p className="item-detail">{groupNames[session.groupId] || 'Grupo no encontrado'}</p>
-                            <p className="item-detail">{session.date}</p>
+            <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchHomeworks} dbCollection="homeworks">
+                {filteredHomeworks.map(homework => (
+                    <div key={homework.id} className="item-container">
+                        <div className="item-data" onClick={() => editHomework(homework)}>
+                            <p className="item-title">{homework.name}</p>
+                            <p className="item-detail">{groupNames[homework.groupId] || 'Grupo no encontrado'}</p>
+                            <p className="item-detail">{homework.date}</p>
                         </div>
                         <div className="item-actions">
-                            <button className="item-action-button" onClick={() => handleAssignAttendance(session)}>Modificar asistencia</button>
-                            <DeleteIcon onClick={() => deleteSession(session.id)} />
+                            <button className="item-action-button" onClick={() => handleAssignScores(homework)}>Modificar asistencia</button>
+                            <DeleteIcon onClick={() => deleteHomework(homework.id)} />
                         </div>
                     </div>
                 ))}
@@ -249,13 +254,14 @@ function Homeworks() {
                 handleSubmit={handleSubmit}
                 fields={[
                     { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Fecha', name: 'date', type: 'date' },
+                    { label: 'Fecha Inicio', name: 'startDate', type: 'date' },
+                    { label: 'Fecha Entrega', name: 'submitDate', type: 'date' },
                     {
                         label: 'Grupo',
                         name: 'groupId',
                         type: 'select',
                         options: groups.map(group => ({ value: group.id, label: group.name })),
-                        onChange: handleGroupChange 
+                        onChange: handleGroupChange
                     },
                     {
                         label: 'Profesor',
@@ -268,12 +274,12 @@ function Homeworks() {
             />
             <StudentsListModal
                 showModal={showScoresModal}
-                closeModal={closeAttendanceModal}
+                closeModal={closeScoresModal}
                 students={studentsInGroup}
-                attendance={formData.attendance}
-                handleAttendanceChange={handleAttendanceChange}
-                handleSave={handleSaveAttendance}
-                mode="attendance"
+                attendance={formData.scores}
+                handleAttendanceChange={handleScoresChange}
+                handleSave={handleSaveScores}
+                mode="submited"
             />
         </RequireAuth>
     );
