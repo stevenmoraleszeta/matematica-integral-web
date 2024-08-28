@@ -1,4 +1,3 @@
-Módulo solicitudes
 Módulo pagos
 
 Reporte mensual
