@@ -1,0 +1,76 @@
+.form-response-container {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: var(--component-dark);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px var(--background-shadow);
+    color: var(--text-color);
+}
+
+.question-item {
+    margin-bottom: 20px;
+}
+
+.response-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.option-item {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.response-option-input {
+    margin-right: 10px;
+    accent-color: var(--primary-color);
+    width: 16px; /* Ancho fijo */
+    height: 16px; /* Alto fijo */
+    display: inline-block;
+    position: relative;
+}
+
+.response-option-input[type="checkbox"]:checked::before,
+.response-option-input[type="radio"]:checked::before {
+    content: "X";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-color);
+    font-size: 15px;
+    line-height: 1;
+    font-weight: bolder;
+}
+
+.response-option-input[type="radio"]:checked,
+.response-option-input[type="checkbox"]:checked {
+    background-color: var(--secundary-color);
+    color: var(--text-color);
+    border-radius: 4px; /* Mantener la forma redondeada */
+}
+
+.response-option-input:hover {
+    cursor: pointer;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+    background-color: var(--primary-color-darker);
+}

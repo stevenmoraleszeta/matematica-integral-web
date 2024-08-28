@@ -1,0 +1,138 @@
+.question-editor {
+    margin: 20px 0;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--text-color);
+}
+
+.question-item {
+    background-color: var(--component-dark);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px var(--background-shadow);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.question-item:hover {
+    box-shadow: 0 1px 5px var(--background-shadow);
+    transform: scale(1.02);
+}
+
+.question-header {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.question-input {
+    width: 100%;  /* Asegurarse de que el input ocupe todo el espacio disponible */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.question-type-select {
+    width: 100%;  /* Asegurarse de que el select ocupe todo el espacio disponible */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.options-container {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacio entre las opciones */
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    
+    gap: 10px; /* Espacio entre el input de opción y los íconos */
+}
+
+.option-input {
+    flex-grow: 1; /* El input de opción debería ocupar todo el espacio disponible */
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.question-actions {
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    gap: 10px; /* Añade espacio entre los iconos */
+}
+
+/* Estilos para los íconos */
+.question-actions button,
+.option-item button {
+    padding: 0;  /* Eliminar padding */
+    margin: 0;  /* Eliminar margen */
+    border: none;  /* Sin bordes */
+    background: none;  /* Sin fondo */
+    cursor: pointer;  /* Mostrar cursor de puntero al pasar por encima */
+    color: var(--light-gray);  /* Color de los íconos */
+    font-size: 18px;  /* Tamaño de los íconos */
+    transition: color 0.2s ease;
+    width: auto;  /* Ajustar el ancho al contenido */
+    height: auto;  /* Ajustar el alto al contenido */
+    line-height: 1;  /* Asegurar que el contenido no se estire */
+    display: inline-flex;  /* Alinear íconos de manera eficiente */
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;  /* Asegurarse de que los íconos no compriman los inputs */
+}
+
+.question-actions button:hover,
+.option-item button:hover {
+    color: var(--secundary-color);  /* Cambiar color al pasar el cursor */
+}
+
+/* Ajustes para el botón de agregar opción */
+.add-option-btn,
+.add-question-btn {
+    padding: 8px 12px;  /* Ajustar padding */
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.add-option-btn:hover,
+.add-question-btn:hover {
+    background-color: var(--primary-color-darker);
+}
+
+.add-question-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.add-question-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    transition: background-color 0.2s ease;
+}
+
+.add-question-btn:hover {
+    background-color: var(--primary-color-darker);
+}

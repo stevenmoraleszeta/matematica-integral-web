@@ -3,7 +3,7 @@ import "./PlatformMenu.css";
 import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserGraduate, faChalkboardTeacher, faUsers, faCalendarAlt, faClipboard, faFileAlt, faFileSignature, faTasks } from '@fortawesome/free-solid-svg-icons';
+import { faUserGraduate, faChalkboardTeacher, faUsers, faCalendarAlt, faClipboard, faFileAlt, faFileSignature, faTasks, faFileContract } from '@fortawesome/free-solid-svg-icons'; // Usa faFileContract
 import RequireAuth from "../../../components/RequireAuth";
 import { useAuth } from '../../../contexts/auth';
 
@@ -17,8 +17,9 @@ function PlatformMenu() {
         { id: 4, label: "Sesiones", path: "/platform/sessions", icon: faCalendarAlt, alwaysVisible: true },
         { id: 5, label: "Quices", path: "/platform/scores", icon: faClipboard, alwaysVisible: true },
         { id: 6, label: "Simulacros", path: "/platform/mockExams", icon: faFileSignature, alwaysVisible: true },
-        { id: 7, label: "Tareas", path: "/platform/homeworks", icon: faTasks, alwaysVisible: true },  // Cambié el icono aquí
-        { id: 8, label: "Reportar", path: "/platform/reports", icon: faFileAlt, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
+        { id: 7, label: "Tareas", path: "/platform/homeworks", icon: faTasks, alwaysVisible: true },
+        { id: 8, label: "Formularios", path: "/platform/forms", icon: faFileContract, alwaysVisible: true }, // Usa faFileContract
+        { id: 9, label: "Reportar", path: "/platform/reports", icon: faFileAlt, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
     ];
 
     const filteredItems = items.filter(item => item.alwaysVisible || (item.emails && item.emails.includes(currentUser?.email)));
