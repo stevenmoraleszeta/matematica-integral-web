@@ -4,36 +4,25 @@ import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, deleteDoc, getDocs, doc, updateDoc } from 'firebase/firestore';
 import DataContainer from '../../../components/dataContainer/DataContainer';
-import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
-import DataModal from '../../../components/dataModal/DataModal'; 
+import DataModal from '../../../components/dataModal/DataModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLink, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faLink, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import './Forms.css';
 
 function Forms() {
     const [forms, setForms] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [showModal, setShowModal] = useState(false); 
+    const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
         id: '',
         name: '',
         subject: '',
-        createdAt: '',
-        isActive: true,
-        timeLimit: 'unlimited',
+        estado: 'Activo',
+        timeLimit: '0',
     });
 
     const navigate = useNavigate();
 
-    //TODO No se está guardando la información del formulario
-    //TODO El campo activo no muestra opciones
-    //TODO Fecha de creación debe ser automático y no modificable
-    //TODO Lo botones de acciones deben tener hover y estar alineados a la izquierda
-    //TODO Debe añadirse tiempo y desactivarse en caso de que así se haya seleccionado
-    //TODO Hacer una pregunta obligatoria o no obligatoria
-    //TODO Agregar la posibilidad de cargar imagenes en las preguntas
-    //TODO Mostrarse una pantalla después de enviar una respuesta
-    //TODO Deben poderse ver las respuestas
-    // Función optimizada para obtener los formularios con manejo de errores.
     const fetchForms = useCallback(async () => {
         try {
             const formsSnapshot = await getDocs(collection(db, "forms"));
@@ -47,14 +36,12 @@ function Forms() {
         }
     }, []);
 
-    // Usa `useEffect` para cargar los formularios una vez montado el componente.
     useEffect(() => {
         fetchForms();
     }, [fetchForms]);
 
-    // Función de búsqueda optimizada usando `useMemo` para memorizar los resultados.
     const filteredForms = useMemo(() => {
-        return forms.filter(form => 
+        return forms.filter(form =>
             form.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             form.subject?.toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -66,22 +53,20 @@ function Forms() {
 
     const openModal = (form = null) => {
         if (form) {
-            setFormData({ 
-                id: form.id, 
-                name: form.name, 
-                subject: form.subject || '', 
-                createdAt: form.createdAt || new Date().toISOString().split('T')[0], 
-                isActive: form.isActive !== undefined ? form.isActive : true, 
-                timeLimit: form.timeLimit || 'unlimited' 
+            setFormData({
+                id: form.id,
+                name: form.name,
+                subject: form.subject || '',
+                estado: form.estado || 'Activo',
+                timeLimit: form.timeLimit.toString() || '0',
             });
         } else {
             setFormData({
                 id: '',
                 name: '',
                 subject: '',
-                createdAt: new Date().toISOString().split('T')[0], 
-                isActive: true,
-                timeLimit: 'unlimited',
+                estado: 'Activo',
+                timeLimit: '0',
             });
         }
         setShowModal(true);
@@ -92,26 +77,53 @@ function Forms() {
     };
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: type === 'checkbox' ? checked : value
-        }));
+        const { name, value } = e.target;
+
+        if (name === 'timeLimit') {
+            if (/^\d*$/.test(value)) {
+                setFormData(prevState => ({
+                    ...prevState,
+                    [name]: value
+                }));
+            } else {
+                alert('El tiempo debe ser un número entero positivo.');
+            }
+        } else {
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const timeLimit = formData.timeLimit.trim() === '' ? 0 : parseInt(formData.timeLimit, 10);
+
         try {
+            const dataToSave = {
+                name: formData.name.trim(),
+                subject: formData.subject.trim(),
+                estado: formData.estado,
+                timeLimit: isNaN(timeLimit) ? 0 : timeLimit,
+            };
+
             if (formData.id) {
                 const formRef = doc(db, "forms", formData.id);
-                await updateDoc(formRef, formData);
+                await updateDoc(formRef, dataToSave);
+                console.log("Formulario actualizado correctamente:", dataToSave);
             } else {
-                const docRef = await addDoc(collection(db, "forms"), formData);
+                const docRef = await addDoc(collection(db, "forms"), dataToSave);
+                console.log("Formulario creado con ID:", docRef.id);
                 navigate(`/platform/forms/edit/${docRef.id}`);
             }
+
             fetchForms();
             setShowModal(false);
-        } catch (e) {
-            console.error("Error saving form: ", e);
+        } catch (error) {
+            console.error("Error al guardar el formulario:", error);
+            alert(`Error al guardar el formulario: ${error.message}`);
         }
     };
 
@@ -125,51 +137,66 @@ function Forms() {
     };
 
     const deleteForm = async (formId) => {
-        try {
-            await deleteDoc(doc(db, "forms", formId));
-            fetchForms();
-        } catch (error) {
-            console.error("Error deleting form: ", error);
+        if (window.confirm('¿Estás seguro de que deseas eliminar este formulario? Esta acción no se puede deshacer.')) {
+            try {
+                await deleteDoc(doc(db, "forms", formId));
+                fetchForms();
+            } catch (error) {
+                console.error("Error deleting form: ", error);
+            }
         }
     };
 
     return (
         <RequireAuth>
-            <DataContainer 
-                searchTerm={searchTerm} 
-                handleSearch={handleSearch} 
-                openModal={() => openModal()} 
+            <DataContainer
+                searchTerm={searchTerm}
+                handleSearch={handleSearch}
+                openModal={() => openModal()}
                 fetchFunction={fetchForms}
             >
                 {filteredForms.map(form => (
                     <div key={form.id} className="item-container" onClick={() => openModal(form)}>
                         <div className="item-data">
                             <p className="item-title">{form.name}</p>
-                            <p className="item-detail">{form.questions ? form.questions.length : 0} preguntas</p>
+                            <p className="item-detail"><strong>Asignatura:</strong> {form.subject || 'N/A'}</p>
+                            <p className="item-detail"><strong>Estado:</strong> {form.estado}</p>
                         </div>
                         <div className="form-actions">
-                            <FontAwesomeIcon 
-                                icon={faLink} 
-                                onClick={(e) => { e.stopPropagation(); copyToClipboard(form.id); }} 
-                                className="form-action-icon" 
-                                title="Copiar enlace de respuestas" 
-                            />
-                            <FontAwesomeIcon 
-                                icon={faPen} 
-                                onClick={(e) => { e.stopPropagation(); navigate(`/platform/forms/edit/${form.id}`); }} 
-                                className="form-action-icon" 
-                                title="Modificar formulario" 
-                            />
-                            <DeleteIcon 
-                                onClick={(e) => { e.stopPropagation(); deleteForm(form.id); }} 
-                            />
+                            <div className="icon-wrapper">
+                                <FontAwesomeIcon
+                                    icon={faLink}
+                                    onClick={(e) => { e.stopPropagation(); copyToClipboard(form.id); }}
+                                    className="form-action-icon"
+                                    title="Copiar enlace de respuestas"
+                                />
+                            </div>
+                            <div className="icon-wrapper">
+                                <FontAwesomeIcon
+                                    icon={faPen}
+                                    onClick={(e) => { e.stopPropagation(); navigate(`/platform/forms/edit/${form.id}`); }}
+                                    className="form-action-icon"
+                                    title="Modificar formulario"
+                                />
+                            </div>
+                            <div className="icon-wrapper">
+                                <FontAwesomeIcon
+                                    icon={faTrash}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        deleteForm(form.id);
+                                    }}
+                                    className="form-action-icon"
+                                    title="Eliminar formulario"
+                                />
+                            </div>
                         </div>
                     </div>
                 ))}
             </DataContainer>
 
             {showModal && (
-                <DataModal 
+                <DataModal
                     showModal={showModal}
                     closeModal={closeModal}
                     formData={formData}
@@ -179,14 +206,18 @@ function Forms() {
                     fields={[
                         { label: 'Nombre', name: 'name', type: 'text', placeholder: 'Nombre del formulario' },
                         { label: 'Asignatura', name: 'subject', type: 'text', placeholder: 'Asignatura' },
-                        { label: 'Fecha de Creación', name: 'createdAt', type: 'text', placeholder: 'Fecha de Creación', disabled: true },
-                        { label: 'Activo', name: 'isActive', type: 'checkbox', placeholder: 'Activo' },
-                        { label: 'Tiempo Límite', name: 'timeLimit', type: 'select', options: [
-                            { value: 'unlimited', label: 'Ilimitado' },
-                            { value: '30', label: '30 Minutos' },
-                            { value: '60', label: '1 Hora' },
-                            { value: '120', label: '2 Horas' },
-                        ]}
+                        {
+                            label: 'Estado', name: 'estado', type: 'select', options: [
+                                { value: 'Activo', label: 'Activo' },
+                                { value: 'Inactivo', label: 'Inactivo' },
+                            ]
+                        },
+                        {
+                            label: 'Tiempo Límite', 
+                            name: 'timeLimit', 
+                            type: 'text', 
+                            placeholder: 'Escribe la cantidad de minutos o "0"',
+                        },
                     ]}
                 />
             )}
