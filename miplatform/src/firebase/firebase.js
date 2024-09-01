@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage"; // Importa Firebase Storage
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -13,13 +14,16 @@ const firebaseConfig = {
     measurementId: "G-KFHKWVMLM4"
 };
 
-
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
 
 // Inicializa el servicio de autenticación
 const auth = getAuth(app);
-// Initialize Firestore
+
+// Inicializa Firestore
 const db = getFirestore(app);
 
-export { auth, db };
+// Inicializa Firebase Storage
+const storage = getStorage(app);
+
+export { auth, db, storage };

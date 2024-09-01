@@ -1,0 +1,50 @@
+.responses-viewer-container {
+    padding: 20px;
+}
+
+.response-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}.responses-viewer-container {
+    padding: 20px;
+}
+
+.response-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.response-item h3 {
+    margin-bottom: 10px;
+}
+
+.response-item ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.charts-container {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.chart-item {
+    flex: 1 1 45%;
+    min-width: 300px;
+}
+
+
+.response-item h3 {
+    margin-bottom: 10px;
+}
+
+.response-item ul {
+    list-style-type: none;
+    padding: 0;
+}

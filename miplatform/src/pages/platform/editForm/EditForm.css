@@ -136,3 +136,25 @@
 .add-question-btn:hover {
     background-color: var(--primary-color-darker);
 }
+
+.question-image-preview {
+    width: 100%; 
+    max-width: 400px;
+    height: auto;
+    display: block; 
+    margin: 0 auto 20px auto; 
+    border-radius: 3%;
+}
+
+@media (max-width: 768px) {
+    .question-image-preview {
+        max-width: 100%; 
+    }
+}
+
+@media (max-width: 480px) {
+    .question-image-preview {
+        max-width: 80%; 
+        margin: 10px auto;
+    }
+}

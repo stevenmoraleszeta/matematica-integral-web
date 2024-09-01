@@ -13,7 +13,8 @@ import Reports from './pages/platform/reports/Reports.jsx';
 import MockExams from './pages/platform/mockExams/MockExams.jsx';
 import Homeworks from './pages/platform/homeworks/Homeworks.jsx';
 import Forms from './pages/platform/forms/Forms.jsx';
-import EditForm from './components/editForm/EditForm.jsx';
+import EditForm from './pages/platform/editForm/EditForm.jsx';
+import ResponsesViewer from './pages/platform/responsesViewer/ResponsesViewer.jsx';
 import FormResponse from './pages/platform/formResponse/FormResponse.jsx';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/platform/forms" element={<Forms />} />
                     <Route path="/platform/forms/edit/:formId" element={<EditForm />} />
                     <Route path="/forms/response/:formId" element={<FormResponse />} />
+                    <Route path="/platform/forms/responses/:formId" element={<ResponsesViewer />} />
                     <Route path="/platform/reports" element={<Reports />} />
                     <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>

@@ -6,7 +6,7 @@ import { collection, addDoc, deleteDoc, getDocs, doc, updateDoc } from 'firebase
 import DataContainer from '../../../components/dataContainer/DataContainer';
 import DataModal from '../../../components/dataModal/DataModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLink, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faLink, faPen, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 import './Forms.css';
 
 function Forms() {
@@ -14,7 +14,7 @@ function Forms() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
-        id: '',
+        identificator: '',
         name: '',
         subject: '',
         estado: 'Activo',
@@ -54,15 +54,15 @@ function Forms() {
     const openModal = (form = null) => {
         if (form) {
             setFormData({
-                id: form.id,
+                identificator: form.id,
                 name: form.name,
                 subject: form.subject || '',
                 estado: form.estado || 'Activo',
-                timeLimit: form.timeLimit.toString() || '0',
+                timeLimit: form.timeLimit?.toString() || '0',
             });
         } else {
             setFormData({
-                id: '',
+                identificator: '',
                 name: '',
                 subject: '',
                 estado: 'Activo',
@@ -109,14 +109,13 @@ function Forms() {
                 timeLimit: isNaN(timeLimit) ? 0 : timeLimit,
             };
 
-            if (formData.id) {
-                const formRef = doc(db, "forms", formData.id);
+            if (formData.identificator) { // Cambié de formData.id a formData.identificator
+                const formRef = doc(db, "forms", formData.identificator);
                 await updateDoc(formRef, dataToSave);
                 console.log("Formulario actualizado correctamente:", dataToSave);
             } else {
                 const docRef = await addDoc(collection(db, "forms"), dataToSave);
                 console.log("Formulario creado con ID:", docRef.id);
-                navigate(`/platform/forms/edit/${docRef.id}`);
             }
 
             fetchForms();
@@ -165,10 +164,13 @@ function Forms() {
                         <div className="form-actions">
                             <div className="icon-wrapper">
                                 <FontAwesomeIcon
-                                    icon={faLink}
-                                    onClick={(e) => { e.stopPropagation(); copyToClipboard(form.id); }}
+                                    icon={faEye}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate(`/platform/forms/responses/${form.id}`);
+                                    }}
                                     className="form-action-icon"
-                                    title="Copiar enlace de respuestas"
+                                    title="Ver respuestas"
                                 />
                             </div>
                             <div className="icon-wrapper">
@@ -177,6 +179,14 @@ function Forms() {
                                     onClick={(e) => { e.stopPropagation(); navigate(`/platform/forms/edit/${form.id}`); }}
                                     className="form-action-icon"
                                     title="Modificar formulario"
+                                />
+                            </div>
+                            <div className="icon-wrapper">
+                                <FontAwesomeIcon
+                                    icon={faLink}
+                                    onClick={(e) => { e.stopPropagation(); copyToClipboard(form.id); }}
+                                    className="form-action-icon"
+                                    title="Copiar enlace de respuestas"
                                 />
                             </div>
                             <div className="icon-wrapper">
@@ -202,7 +212,7 @@ function Forms() {
                     formData={formData}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
-                    title={formData.id ? "Editar Formulario" : "Crear Nuevo Formulario"}
+                    title={formData.identificator ? "Editar Formulario" : "Crear Nuevo Formulario"}
                     fields={[
                         { label: 'Nombre', name: 'name', type: 'text', placeholder: 'Nombre del formulario' },
                         { label: 'Asignatura', name: 'subject', type: 'text', placeholder: 'Asignatura' },
@@ -213,9 +223,9 @@ function Forms() {
                             ]
                         },
                         {
-                            label: 'Tiempo Límite', 
-                            name: 'timeLimit', 
-                            type: 'text', 
+                            label: 'Tiempo Límite',
+                            name: 'timeLimit',
+                            type: 'text',
                             placeholder: 'Escribe la cantidad de minutos o "0"',
                         },
                     ]}

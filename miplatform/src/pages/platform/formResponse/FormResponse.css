@@ -1,7 +1,7 @@
 .form-response-container {
     margin: 20px auto;
     max-width: 800px;
-    padding: 20px;
+    padding: 20px 20px 100px 20px; /* Ajusta el padding inferior para evitar que la barra cubra el contenido */
     background-color: var(--component-dark);
     border-radius: 8px;
     box-shadow: 0 1px 3px var(--background-shadow);
@@ -30,8 +30,8 @@
 .response-option-input {
     margin-right: 10px;
     accent-color: var(--primary-color);
-    width: 16px; /* Ancho fijo */
-    height: 16px; /* Alto fijo */
+    width: 16px;
+    height: 16px;
     display: inline-block;
     position: relative;
 }
@@ -53,14 +53,37 @@
 .response-option-input[type="checkbox"]:checked {
     background-color: var(--secundary-color);
     color: var(--text-color);
-    border-radius: 4px; /* Mantener la forma redondeada */
+    border-radius: 4px;
 }
 
 .response-option-input:hover {
     cursor: pointer;
 }
 
+.fixed-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 800px; /* Mantén el mismo ancho que el contenedor */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--background-color-low-opacity);
+    padding: 10px 20px;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1); /* Añade un pequeño sombreado para diferenciación */
+    z-index: 1000;
+}
+
+.time-remaining {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
 .submit-button {
+    width: auto;
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 8px;
@@ -73,4 +96,65 @@
 
 .submit-button:hover {
     background-color: var(--primary-color-darker);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-color-low-opacity);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.modal-content {
+    background-color: var(--background-color);
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal-button {
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.modal-button.cancel {
+    background-color: var(--red-color);
+}
+
+.modal-button.cancel:hover {
+    background-color: var(--red-color-darker);
+}
+
+.question-image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+    border-radius: 3%;
+}
+
+@media (max-width: 768px) {
+    .question-image {
+        max-width: 100%; 
+    }
+}
+
+@media (max-width: 480px) {
+    .question-image {
+        max-width: 80%;
+        margin: 10px auto;
+    }
 }

@@ -9,6 +9,8 @@
   --primary-color-darker: #024d76;
   --secundary-color: #e7a500;
   --secundary-color-darker: #e7a500;
+  --red-color: #d32f2f;
+  --red-color-darker: #741c1c;
 }
 
 body, html {
