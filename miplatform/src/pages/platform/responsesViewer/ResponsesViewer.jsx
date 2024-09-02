@@ -3,8 +3,12 @@ import { useParams } from 'react-router-dom';
 import { db } from '../../../firebase/firebase';
 import { collection, getDocs, query, where, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { Pie } from 'react-chartjs-2';
+import { Chart, ArcElement, Tooltip, Legend } from 'chart.js'; // Importa y registra los elementos necesarios
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import './ResponsesViewer.css';
+
+// Registra los elementos necesarios para los gráficos de Chart.js
+Chart.register(ArcElement, Tooltip, Legend);
 
 function ResponsesViewer() {
     const { formId } = useParams();
@@ -37,6 +41,9 @@ function ResponsesViewer() {
                     id: doc.id,
                     ...doc.data(),
                 }));
+
+                // Ordenar las respuestas de la más reciente a la más antigua
+                responsesList.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
                 setResponses(responsesList);
                 setFilteredResponses(responsesList); // Inicialmente, las respuestas filtradas son todas
@@ -130,10 +137,14 @@ function ResponsesViewer() {
 
     return (
         <div className="responses-viewer-container">
-            
             <div className="charts-container">
                 {responses[0].responses.map((_, questionIndex) => (
                     <div key={questionIndex} className="chart-item">
+                        {/* Encabezado de la pregunta */}
+                        <center><h5 className="chart-title">
+                            {questions[questionIndex]?.questionText || `Pregunta ${questionIndex + 1}`}
+                        </h5></center>
+                        {/* Gráfico de Pie */}
                         <Pie
                             data={getQuestionResponses(questionIndex)}
                             options={{
@@ -142,16 +153,15 @@ function ResponsesViewer() {
                                     legend: {
                                         position: 'top',
                                     },
-                                    title: {
-                                        display: true,
-                                        text: questions[questionIndex]?.questionText || `Pregunta ${questionIndex + 1}`,
-                                    },
                                 },
                             }}
                         />
                     </div>
                 ))}
             </div>
+            <center>
+                <h1>Respuestas de {formName}</h1>
+            </center>
             <div className="search-bar">
                 <input
                     type="text"
@@ -161,18 +171,16 @@ function ResponsesViewer() {
                     className="search-input"
                 />
             </div>
-            <center>
-                <h1>Respuestas de {formName}</h1>
-            </center>
             <div className="response-list">
                 {filteredResponses.map((response, index) => (
                     <div key={response.id} className="response-item" onClick={() => handleResponseClick(response)}>
                         <h3>
-                            Respuesta #{index + 1} - {formatDate(response.timestamp)}
+                            Respuesta #{filteredResponses.length - index} - {formatDate(response.timestamp)}
                         </h3>
                     </div>
                 ))}
             </div>
+
 
             {/* Modal para mostrar la respuesta seleccionada */}
             {selectedResponse && (
@@ -187,7 +195,7 @@ function ResponsesViewer() {
                                 </div>
                             ))}
                         </div>
-                        <div className="modal-buttons-container"> {/* Contenedor para botones */}
+                        <div className="modal-buttons-container">
                             <button className="close-modal" onClick={closeModal}>
                                 Cerrar
                             </button>
@@ -196,7 +204,6 @@ function ResponsesViewer() {
                     </div>
                 </div>
             )}
-
         </div>
     );
 }

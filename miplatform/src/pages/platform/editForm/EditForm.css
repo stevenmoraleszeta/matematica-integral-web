@@ -28,7 +28,7 @@
 }
 
 .question-input {
-    width: 100%;  /* Asegurarse de que el input ocupe todo el espacio disponible */
+    width: 100%;  
     padding: 10px;
     font-size: 16px;
     border-radius: 4px;
@@ -37,7 +37,7 @@
 }
 
 .question-type-select {
-    width: 100%;  /* Asegurarse de que el select ocupe todo el espacio disponible */
+    width: 100%;  
     padding: 10px;
     font-size: 16px;
     border-radius: 4px;
@@ -49,18 +49,17 @@
     margin-top: 15px;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Espacio entre las opciones */
+    gap: 10px; 
 }
 
 .option-item {
     display: flex;
     align-items: center;
-    
-    gap: 10px; /* Espacio entre el input de opción y los íconos */
+    gap: 10px; 
 }
 
 .option-input {
-    flex-grow: 1; /* El input de opción debería ocupar todo el espacio disponible */
+    flex-grow: 1; 
     padding: 8px;
     font-size: 14px;
     border-radius: 4px;
@@ -76,36 +75,33 @@
     margin-top: 10px;
 }
 
-
-/* Estilos para los íconos */
 .question-actions button,
 .option-item button {
-    padding: 0;  /* Eliminar padding */
-    margin: 0;  /* Eliminar margen */
-    border: none;  /* Sin bordes */
-    background: none;  /* Sin fondo */
-    cursor: pointer;  /* Mostrar cursor de puntero al pasar por encima */
-    color: var(--light-gray);  /* Color de los íconos */
-    font-size: 18px;  /* Tamaño de los íconos */
+    padding: 0;  
+    margin: 0;
+    border: none;  
+    background: none; 
+    cursor: pointer; 
+    color: var(--light-gray);  
+    font-size: 18px;  
     transition: color 0.2s ease;
-    width: auto;  /* Ajustar el ancho al contenido */
-    height: auto;  /* Ajustar el alto al contenido */
-    line-height: 1;  /* Asegurar que el contenido no se estire */
-    display: inline-flex;  /* Alinear íconos de manera eficiente */
+    width: auto; 
+    height: auto; 
+    line-height: 1; 
+    display: inline-flex; 
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;  /* Asegurarse de que los íconos no compriman los inputs */
+    flex-shrink: 0; 
 }
 
 .question-actions button:hover,
 .option-item button:hover {
-    color: var(--secundary-color);  /* Cambiar color al pasar el cursor */
+    color: var(--secundary-color); 
 }
 
-/* Ajustes para el botón de agregar opción */
 .add-option-btn,
 .add-question-btn {
-    padding: 8px 12px;  /* Ajustar padding */
+    padding: 8px 12px; 
     cursor: pointer;
     background-color: var(--primary-color);
     color: var(--text-color);
@@ -160,3 +156,40 @@
         margin: 10px auto;
     }
 }
+
+.correct-answer-checkbox {
+    width: 16px;           /* Tamaño del checkbox */
+    height: 16px;          /* Tamaño del checkbox */
+    cursor: pointer;       /* Cambia el cursor al pasar */
+    accent-color: #007BFF; /* Color del tema, ajusta a tu esquema de colores */
+    border: 1px solid #ccc; /* Bordes claros para cuando no está marcado */
+    background-color: white; /* Fondo blanco para cuando no está marcado */
+    appearance: none;      /* Remueve el estilo del navegador para personalizar */
+    display: inline-block; /* Asegura el tamaño del checkbox */
+    position: relative;    /* Para los estilos de marcado */
+}
+
+.correct-answer-checkbox:checked {
+    background-color: #007BFF; /* Fondo azul cuando está marcado */
+    border: 1px solid #007BFF; /* Bordes del mismo color del tema */
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Sombra clara para marcar el estado */
+}
+
+.correct-answer-checkbox::before {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    opacity: 0; /* Invisible si no está marcado */
+}
+
+.correct-answer-checkbox:checked::before {
+    opacity: 1; /* Visible si está marcado */
+}
+

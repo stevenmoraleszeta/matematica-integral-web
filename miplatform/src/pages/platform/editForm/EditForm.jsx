@@ -1,3 +1,4 @@
+// EditForm.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -136,6 +137,22 @@ function EditForm() {
         }
     };
 
+    // Manejo de selección de múltiples respuestas correctas
+    const handleCorrectAnswerToggle = (qIndex, option) => {
+        const updatedQuestions = [...form.questions];
+        const correctAnswers = updatedQuestions[qIndex].correctAnswers || [];
+
+        // Si ya está marcado, lo quita; si no, lo agrega
+        if (correctAnswers.includes(option)) {
+            updatedQuestions[qIndex].correctAnswers = correctAnswers.filter(ans => ans !== option);
+        } else {
+            updatedQuestions[qIndex].correctAnswers = [...correctAnswers, option];
+        }
+
+        setForm(prevState => ({ ...prevState, questions: updatedQuestions }));
+        saveForm(updatedQuestions);
+    };
+
     return (
         <div className="edit-form-container">
             <center><h1>Editando Formulario: {form.name}</h1></center>
@@ -177,6 +194,13 @@ function EditForm() {
                                             placeholder={`Opción ${oIndex + 1}`}
                                             className="option-input"
                                         />
+                                        <input
+                                            type="checkbox"
+                                            className="correct-answer-checkbox"
+                                            checked={(question.correctAnswers || []).includes(option)}
+                                            onChange={() => handleCorrectAnswerToggle(qIndex, option)}
+                                            title="Marcar como respuesta correcta"
+                                        />
                                         <button
                                             type="button"
                                             onClick={() => deleteOption(qIndex, oIndex)}
@@ -192,7 +216,6 @@ function EditForm() {
                             </div>
                         )}
 
-                        {/* Íconos de acciones de preguntas */}
                         <div className="question-actions">
                             <button onClick={() => triggerFileInput(qIndex)}>
                                 <FontAwesomeIcon icon={faUpload} title="Subir nueva imagen" />

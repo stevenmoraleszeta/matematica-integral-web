@@ -1,3 +1,4 @@
+// FormResponse.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../../../firebase/firebase';
@@ -7,15 +8,18 @@ import "./FormResponse.css";
 
 function FormResponse() {
     const { formId } = useParams();
-    const [form, setForm] = useState({ name: '', questions: [], timeLimit: 0 });
+    const [form, setForm] = useState({ name: '', questions: [], timeLimit: 0, isActive: true });
     const [responses, setResponses] = useState([]);
     const [timeRemaining, setTimeRemaining] = useState(null);
     const [showStartModal, setShowStartModal] = useState(true);
     const [showSubmitModal, setShowSubmitModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showInactiveModal, setShowInactiveModal] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [isStarted, setIsStarted] = useState(false);
     const [isTimeUp, setIsTimeUp] = useState(false);
+    const [grade, setGrade] = useState(null); // Estado para la calificación
+    const [incorrectAnswers, setIncorrectAnswers] = useState([]); // Estado para almacenar respuestas incorrectas
     const intervalRef = useRef(null);
 
     useEffect(() => {
@@ -27,9 +31,15 @@ function FormResponse() {
                         const formData = formDoc.data();
                         setForm({
                             ...formData,
-                            questions: formData.questions || [] // Asegura que `questions` siempre sea un array
+                            questions: formData.questions || []
                         });
                         setResponses((formData.questions || []).map(() => ''));
+
+                        if (formData.estado === "Inactivo") {
+                            setShowInactiveModal(true);
+                            return;
+                        }
+
                         if (formData.timeLimit > 0) {
                             setTimeRemaining(formData.timeLimit * 60);
                         }
@@ -107,10 +117,51 @@ function FormResponse() {
             Array.isArray(response) ? response.join(', ') : response
         );
 
+        // Calcular la calificación y encontrar respuestas incorrectas
+        let correctCount = 0;
+        let totalGradedQuestions = 0;
+        const incorrectAnswersTemp = []; // Lista temporal para las respuestas incorrectas
+
+        form.questions.forEach((question, index) => {
+            const correctAnswers = question.correctAnswers || [];
+            if (correctAnswers.length > 0) {
+                totalGradedQuestions++;
+
+                if (question.type === 'multiple-choice' || question.type === 'checkboxes') {
+                    const userAnswers = Array.isArray(responses[index]) ? responses[index] : [responses[index]];
+
+                    // Comprobar si todas las respuestas correctas están en las respuestas del usuario
+                    const allCorrect = correctAnswers.every(ans => userAnswers.includes(ans));
+
+                    // Comprobar si las respuestas del usuario no tienen respuestas incorrectas
+                    const noIncorrect = userAnswers.every(ans => correctAnswers.includes(ans));
+
+                    if (allCorrect && noIncorrect) {
+                        correctCount++;
+                    } else {
+                        incorrectAnswersTemp.push(index); // Marcar la pregunta como incorrecta
+                    }
+                } else if (question.type === 'text') {
+                    // Comparar respuestas de texto si es necesario
+                    if (responses[index] === correctAnswers[0]) {
+                        correctCount++;
+                    } else {
+                        incorrectAnswersTemp.push(index);
+                    }
+                }
+            }
+        });
+
+        // Si hay preguntas calificables, calcular la nota
+        const calculatedGrade = totalGradedQuestions > 0 ? (correctCount / totalGradedQuestions) * 100 : null;
+        setGrade(calculatedGrade); // Almacena la calificación en el estado
+        setIncorrectAnswers(incorrectAnswersTemp); // Actualiza el estado con las respuestas incorrectas
+
         const responseMetadata = {
             formId,
             timestamp: new Date().toISOString(),
             responses: formattedResponses,
+            grade: calculatedGrade,
         };
 
         try {
@@ -137,12 +188,16 @@ function FormResponse() {
         setShowSuccessModal(false);
     };
 
+    const closeInactiveModal = () => {
+        setShowInactiveModal(false);
+    };
+
     return (
         <div className="form-response-container">
             <h1>{form.name}</h1>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {(form.questions || []).map((question, index) => (
-                    <div key={index} className="question-item">
+                    <div key={index} className={`question-item ${incorrectAnswers.includes(index) ? 'incorrect' : ''}`}>
                         {question.imageUrl && (
                             <img src={question.imageUrl} alt="Question Image" className="question-image" />
                         )}
@@ -152,12 +207,12 @@ function FormResponse() {
                                 type="text"
                                 value={responses[index]}
                                 onChange={(e) => handleResponseChange(index, e.target.value)}
-                                className="response-input"
+                                className={`response-input`}
                                 disabled={formSubmitted || isTimeUp}
                             />
                         ) : (
                             (question.options || []).map((option, oIndex) => (
-                                <div key={oIndex} className="option-item">
+                                <div key={oIndex} className={`option-item`}>
                                     <input
                                         type={question.type === 'multiple-choice' ? 'radio' : 'checkbox'}
                                         name={`question-${index}`}
@@ -202,10 +257,14 @@ function FormResponse() {
                 <div className="modal">
                     <div className="modal-content">
                         <h2>Iniciar Respuesta</h2>
-                        {form.timeLimit > 0 && (
-                            <p>Minutos disponibles: {form.timeLimit}</p>
+                        {form.timeLimit > 0 ? (
+                            <>
+                                <p>Minutos disponibles: {form.timeLimit}</p>
+                                <p>El tiempo comenzará una vez que inicies la respuesta.</p>
+                            </>
+                        ) : (
+                            <p>No hay límite de tiempo para completar este formulario. Puedes tomar el tiempo que necesites.</p>
                         )}
-                        <p>El tiempo comenzará una vez que inicies la respuesta.</p>
                         <button onClick={startResponse} className="modal-button">
                             Iniciar Respuesta
                         </button>
@@ -234,10 +293,26 @@ function FormResponse() {
                 <div className="modal">
                     <div className="modal-content">
                         <h2>Respuesta Enviada</h2>
-                        <p>Tu respuesta ha sido enviada con éxito.</p>
+                        {grade !== null && (
+                            <div>
+                                <h4>Tu respuesta ha sido enviada con éxito.</h4>
+                                <h4>Tu calificación es:</h4>
+                                <h1>{Math.round(grade)}%</h1>
+                            </div>
+                        )}
                         <button onClick={closeSuccessModal} className="modal-button">
                             Cerrar
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de formulario inactivo */}
+            {showInactiveModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>Formulario Inactivo</h2>
+                        <p>Este formulario está actualmente inactivo y no acepta respuestas. Contacte con el profesor.</p>
                     </div>
                 </div>
             )}
