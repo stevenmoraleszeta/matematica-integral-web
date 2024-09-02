@@ -11,5 +11,6 @@
     //DO Debe añadirse tiempo y desactivarse en caso de que así se haya seleccionado
     //DO Agregar la posibilidad de cargar imagenes en las preguntas
     //DO Mostrarse una pantalla después de enviar una respuesta
-    //TODO Deben poderse ver las respuestas individuales o en conjunto.
+    //DO Deben poderse ver las respuestas individuales o en conjunto.
     //TODO No permitir respuestas en un formulario si está inactivo
+    //TODO Poder registrar respuestas correctas para que de la nota automática

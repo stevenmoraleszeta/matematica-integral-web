@@ -70,10 +70,12 @@
 
 .question-actions {
     display: flex;
-    justify-content: end;
-    width: 100%;
-    gap: 10px; /* Añade espacio entre los iconos */
+    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
 }
+
 
 /* Estilos para los íconos */
 .question-actions button,

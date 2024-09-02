@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faArrowUp, faArrowDown, faCopy } from '@fortawesome/free-solid-svg-icons';
-import './EditForm.css'; // Asegúrate de tener los estilos necesarios
+import { faTrash, faArrowUp, faArrowDown, faCopy, faUpload } from '@fortawesome/free-solid-svg-icons';
+import './EditForm.css';
 import { db, storage } from '../../../firebase/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Importa las funciones de Storage
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 function EditForm() {
     const { formId } = useParams();
     const [form, setForm] = useState({ name: '', questions: [] });
     const [currentQuestion, setCurrentQuestion] = useState({ type: 'text', questionText: '', options: [], imageUrl: '' });
+    const fileInputRefs = useRef([]);
 
     useEffect(() => {
         const fetchForm = async () => {
@@ -21,7 +22,7 @@ function EditForm() {
                         const formData = formDoc.data();
                         setForm({
                             ...formData,
-                            questions: formData.questions || [] // Asegura que `questions` sea un array
+                            questions: formData.questions || []
                         });
                     }
                 } catch (error) {
@@ -74,7 +75,7 @@ function EditForm() {
     const addOption = (qIndex) => {
         const updatedQuestions = [...form.questions];
         if (!updatedQuestions[qIndex].options) {
-            updatedQuestions[qIndex].options = []; // Asegura que `options` sea un array
+            updatedQuestions[qIndex].options = [];
         }
         updatedQuestions[qIndex].options.push('');
         setForm(prevState => ({ ...prevState, questions: updatedQuestions }));
@@ -95,7 +96,45 @@ function EditForm() {
         saveForm(updatedQuestions);
     };
 
-    // Resto de las funciones de manejo de duplicación, eliminación, y reordenamiento...
+    const deleteQuestion = (qIndex) => {
+        const updatedQuestions = form.questions.filter((_, index) => index !== qIndex);
+        setForm(prevState => ({ ...prevState, questions: updatedQuestions }));
+        saveForm(updatedQuestions);
+    };
+
+    const duplicateQuestion = (qIndex) => {
+        const updatedQuestions = [...form.questions];
+        const duplicatedQuestion = { ...updatedQuestions[qIndex] };
+        updatedQuestions.splice(qIndex + 1, 0, duplicatedQuestion);
+        setForm(prevState => ({ ...prevState, questions: updatedQuestions }));
+        saveForm(updatedQuestions);
+    };
+
+    const moveQuestionUp = (qIndex) => {
+        if (qIndex === 0) return;
+        const updatedQuestions = [...form.questions];
+        const temp = updatedQuestions[qIndex];
+        updatedQuestions[qIndex] = updatedQuestions[qIndex - 1];
+        updatedQuestions[qIndex - 1] = temp;
+        setForm(prevState => ({ ...prevState, questions: updatedQuestions }));
+        saveForm(updatedQuestions);
+    };
+
+    const moveQuestionDown = (qIndex) => {
+        if (qIndex === form.questions.length - 1) return;
+        const updatedQuestions = [...form.questions];
+        const temp = updatedQuestions[qIndex];
+        updatedQuestions[qIndex] = updatedQuestions[qIndex + 1];
+        updatedQuestions[qIndex + 1] = temp;
+        setForm(prevState => ({ ...prevState, questions: updatedQuestions }));
+        saveForm(updatedQuestions);
+    };
+
+    const triggerFileInput = (index) => {
+        if (fileInputRefs.current[index]) {
+            fileInputRefs.current[index].click();
+        }
+    };
 
     return (
         <div className="edit-form-container">
@@ -125,15 +164,8 @@ function EditForm() {
                                 <option value="multiple-choice">Opción múltiple</option>
                                 <option value="checkboxes">Casillas de verificación</option>
                             </select>
-                            <input
-                                type="file"
-                                onChange={(e) => handleImageUpload(e.target.files[0], qIndex)}
-                                accept="image/*"
-                                className="image-upload-input"
-                            />
                         </div>
 
-                        {/* Opciones de la pregunta */}
                         {(question.type === 'multiple-choice' || question.type === 'checkboxes') && (
                             <div className="options-container">
                                 {question.options.map((option, oIndex) => (
@@ -159,6 +191,32 @@ function EditForm() {
                                 </button>
                             </div>
                         )}
+
+                        {/* Íconos de acciones de preguntas */}
+                        <div className="question-actions">
+                            <button onClick={() => triggerFileInput(qIndex)}>
+                                <FontAwesomeIcon icon={faUpload} title="Subir nueva imagen" />
+                                <input
+                                    type="file"
+                                    ref={(el) => (fileInputRefs.current[qIndex] = el)}
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => handleImageUpload(e.target.files[0], qIndex)}
+                                    accept="image/*"
+                                />
+                            </button>
+                            <button onClick={() => moveQuestionUp(qIndex)}>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                            </button>
+                            <button onClick={() => moveQuestionDown(qIndex)}>
+                                <FontAwesomeIcon icon={faArrowDown} />
+                            </button>
+                            <button onClick={() => duplicateQuestion(qIndex)}>
+                                <FontAwesomeIcon icon={faCopy} />
+                            </button>
+                            <button onClick={() => deleteQuestion(qIndex)}>
+                                <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                        </div>
                     </div>
                 ))}
                 <div className="add-question-container">
