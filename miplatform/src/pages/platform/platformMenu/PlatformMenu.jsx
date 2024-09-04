@@ -16,9 +16,9 @@ function PlatformMenu() {
         { id: 3, label: "Grupos", path: "/platform/groups", icon: faUsers, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
         { id: 4, label: "Sesiones", path: "/platform/sessions", icon: faCalendarAlt, alwaysVisible: true },
         { id: 5, label: "Quices", path: "/platform/scores", icon: faClipboard, alwaysVisible: true },
-        { id: 6, label: "Simulacros", path: "/platform/mockExams", icon: faFileSignature, alwaysVisible: true },
+        { id: 6, label: "Simulacros", path: "/platform/mockExams", icon: faFileSignature, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"]  },
         { id: 7, label: "Tareas", path: "/platform/homeworks", icon: faTasks, alwaysVisible: true },
-        { id: 8, label: "Formularios", path: "/platform/forms", icon: faFileContract, alwaysVisible: true }, // Usa faFileContract
+        { id: 8, label: "Formularios", path: "/platform/forms", icon: faFileContract, alwaysVisible: true }, 
         { id: 9, label: "Reportar", path: "/platform/reports", icon: faFileAlt, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
     ];
 

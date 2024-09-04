@@ -2,23 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../../../firebase/firebase';
 import { collection, getDocs, query, where, doc, getDoc, deleteDoc } from 'firebase/firestore';
-import { Pie } from 'react-chartjs-2';
-import { Chart, ArcElement, Tooltip, Legend } from 'chart.js'; // Importa y registra los elementos necesarios
+import { Pie, Bar } from 'react-chartjs-2'; // Importamos también Bar para el gráfico de barras
+import { Chart, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import './ResponsesViewer.css';
 
 // Registra los elementos necesarios para los gráficos de Chart.js
-Chart.register(ArcElement, Tooltip, Legend);
+Chart.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 function ResponsesViewer() {
     const { formId } = useParams();
     const [responses, setResponses] = useState([]);
-    const [filteredResponses, setFilteredResponses] = useState([]); // Estado para las respuestas filtradas
+    const [filteredResponses, setFilteredResponses] = useState([]);
     const [formName, setFormName] = useState('');
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedResponse, setSelectedResponse] = useState(null);
-    const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchResponses = async () => {
@@ -46,7 +46,7 @@ function ResponsesViewer() {
                 responsesList.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
                 setResponses(responsesList);
-                setFilteredResponses(responsesList); // Inicialmente, las respuestas filtradas son todas
+                setFilteredResponses(responsesList);
             } catch (error) {
                 console.error('Error fetching responses:', error);
             } finally {
@@ -107,6 +107,27 @@ function ResponsesViewer() {
         };
     };
 
+    const getGradesData = () => {
+        const grades = responses.map((response) => response.grade || 0);
+        const gradeCounts = grades.reduce((acc, grade) => {
+            const roundedGrade = Math.round(grade);
+            acc[roundedGrade] = (acc[roundedGrade] || 0) + 1;
+            return acc;
+        }, {});
+        return {
+            labels: Object.keys(gradeCounts),
+            datasets: [
+                {
+                    label: 'Distribución de Calificaciones',
+                    data: Object.values(gradeCounts),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                },
+            ],
+        };
+    };
+
     const handleResponseClick = (response) => {
         setSelectedResponse(response);
     };
@@ -140,11 +161,9 @@ function ResponsesViewer() {
             <div className="charts-container">
                 {responses[0].responses.map((_, questionIndex) => (
                     <div key={questionIndex} className="chart-item">
-                        {/* Encabezado de la pregunta */}
                         <center><h5 className="chart-title">
                             {questions[questionIndex]?.questionText || `Pregunta ${questionIndex + 1}`}
                         </h5></center>
-                        {/* Gráfico de Pie */}
                         <Pie
                             data={getQuestionResponses(questionIndex)}
                             options={{
@@ -158,6 +177,24 @@ function ResponsesViewer() {
                         />
                     </div>
                 ))}
+                <div className="chart-item">
+                    <center><h5 className="chart-title">Distribución de Calificaciones</h5></center>
+                    <Bar
+                        data={getGradesData()}
+                        options={{
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Distribución de Calificaciones',
+                                },
+                            },
+                        }}
+                    />
+                </div>
             </div>
             <center>
                 <h1>Respuestas de {formName}</h1>
@@ -181,7 +218,6 @@ function ResponsesViewer() {
                 ))}
             </div>
 
-
             {/* Modal para mostrar la respuesta seleccionada */}
             {selectedResponse && (
                 <div className="modal">
@@ -194,6 +230,9 @@ function ResponsesViewer() {
                                     <p>{answer}</p>
                                 </div>
                             ))}
+                            {selectedResponse.grade !== null && (
+                                <p><strong>Calificación:</strong> {Math.round(selectedResponse.grade)}%</p>
+                            )}
                         </div>
                         <div className="modal-buttons-container">
                             <button className="close-modal" onClick={closeModal}>

@@ -1,8 +1,6 @@
 # TODO esta semana
 # JUEVES
-1) Reportes modulares
-2) Restringir simulacros
-3) Agregar tareas a los reportes
+-) Restringir simulacros
 
 5) Formularios (tiempo).
     //DO No se está guardando la información del formulario
@@ -14,5 +12,12 @@
     //DO Deben poderse ver las respuestas individuales o en conjunto.
     //DO No permitir respuestas en un formulario si está inactivo
     //DO Poder registrar respuestas correctas para que de la nota automática
-    //TODO Mostrar las calificaciones en la vista de respuestas
+    //DO Mostrar las calificaciones en la vista de respuestas
     //TODO Upload it to the web platform
+
+
+------------------------------------------------------------------------------------
+Sustituir quices y tareas por formularios.
+Implementar quices y tareas (formularios) en lso reportes.
+
+Reportes modulares
