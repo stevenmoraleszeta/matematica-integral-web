@@ -59,12 +59,13 @@
 }
 
 .option-input {
-    flex-grow: 1; 
+    flex-grow: 12;
     padding: 8px;
     font-size: 14px;
     border-radius: 4px;
     background-color: var(--background-color);
     color: var(--text-color);
+    width: 100px;
 }
 
 .question-actions {
@@ -158,6 +159,7 @@
 }
 
 .correct-answer-checkbox {
+    flex-grow: 1;
     width: 16px;           /* Tamaño del checkbox */
     height: 16px;          /* Tamaño del checkbox */
     cursor: pointer;       /* Cambia el cursor al pasar */

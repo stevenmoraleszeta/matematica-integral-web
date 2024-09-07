@@ -186,6 +186,7 @@ function EditForm() {
                         {(question.type === 'multiple-choice' || question.type === 'checkboxes') && (
                             <div className="options-container">
                                 {question.options.map((option, oIndex) => (
+                                    //TODO Arreglar tamaño checkbox
                                     <div key={oIndex} className="option-item">
                                         <input
                                             type="text"
