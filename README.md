@@ -13,7 +13,8 @@
     //DO No permitir respuestas en un formulario si está inactivo
     //DO Poder registrar respuestas correctas para que de la nota automática
     //DO Mostrar las calificaciones en la vista de respuestas
-    //TODO Upload it to the web platform
+    //DO Upload it to the web platform
+    //TODO Fix answer forms web platform error
 
 
 ------------------------------------------------------------------------------------
