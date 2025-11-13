@@ -1,7 +1,21 @@
 {
-  "name": "miplatform",
+  "name": "matematica-integral-web",
   "version": "0.1.0",
   "private": true,
+  "description": "Educational management platform for Matemática Integral - Full-stack web application built with React and Firebase",
+  "author": "Steven Morales Fallas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/matematica-integral-web.git"
+  },
+  "keywords": [
+    "react",
+    "firebase",
+    "education",
+    "learning-management-system",
+    "full-stack",
+    "matematica-integral"
+  ],
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
@@ -11,7 +25,6 @@
     "@testing-library/user-event": "^13.5.0",
     "chart.js": "^4.3.0",
     "firebase": "^10.12.4",
-    "miplatform": "file:",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",

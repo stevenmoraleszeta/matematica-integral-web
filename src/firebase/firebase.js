@@ -1,18 +1,25 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage"; // Importa Firebase Storage
+import { getStorage } from "firebase/storage";
 
-// Configuración de Firebase
+// Firebase Configuration
+// Make sure to set up your .env file with the required environment variables
+// See .env.example for the required variables
 const firebaseConfig = {
-    apiKey: "AIzaSyDNDu7vXFqZs8K5dnMEqR3NkLWPOmTWgOU",
-    authDomain: "miplatform-3c978.firebaseapp.com",
-    projectId: "miplatform-3c978",
-    storageBucket: "miplatform-3c978.appspot.com",
-    messagingSenderId: "900192918336",
-    appId: "1:900192918336:web:d5010ec4dc12b80b8038a5",
-    measurementId: "G-KFHKWVMLM4"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
+
+// Validate that required environment variables are set
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+    console.error("Firebase configuration is missing. Please check your .env file.");
+}
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
