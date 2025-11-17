@@ -30,14 +30,10 @@ function UserProfile() {
     }, [currentUser]);
 
     const handleLogout = async () => {
-        if (window.confirm("¿Está seguro de que desea cerrar sesión?")) {
-            try {
-                await signOut(auth);
-                navigate('/login');
-            } catch (error) {
-                console.error('Failed to log out:', error);
-                alert('Error al cerrar sesión. Por favor, intente de nuevo.');
-            }
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error('Failed to log out', error);
         }
     };
 
@@ -65,19 +61,16 @@ function UserProfile() {
                 navigate('/platform');
             }
         } catch (error) {
-            console.error('Error updating profile:', error);
-            alert(error.code === 'auth/email-already-in-use' 
-                ? 'Este correo electrónico ya está en uso.' 
-                : 'Error al actualizar el perfil. Por favor, intente de nuevo.');
+            console.error('Error updating profile', error);
         }
     };
 
     if (!currentUser) {
-        return <Navigate to="/platform" replace />;
+        return <Navigate to="/home" />;
     }
 
     if (loading) {
-        return <div>Cargando...</div>;
+        return <div>Cargando</div>;
     }
 
     return (

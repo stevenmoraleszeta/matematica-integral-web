@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -8,10 +8,9 @@ import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
 
 function Students() {
-    const groups = useFetchData("groups");
+    const { data: groups } = useFetchData("groups");
 
-    const [allStudents, setAllStudents] = useState([]); // Estado para todos los estudiantes
-    const [filteredStudents, setFilteredStudents] = useState([]); // Estado para los estudiantes filtrados
+    const [allStudents, setAllStudents] = useState([]);
     const [formData, setFormData] = useState({
         identificator: '',
         email: '',
@@ -29,16 +28,14 @@ function Students() {
     // Fetch students with group names
     const fetchStudentsWithGroupNames = useCallback(async () => {
         try {
-            const [groupsSnapshot, studentsSnapshot] = await Promise.all([
-                getDocs(collection(db, "groups")),
-                getDocs(collection(db, "students"))
-            ]);
-
+            const groupsSnapshot = await getDocs(collection(db, "groups"));
             const groupsMap = {};
             groupsSnapshot.forEach(doc => {
-                groupsMap[doc.id] = doc.data().name;
+                const groupData = doc.data();
+                groupsMap[doc.id] = groupData.name;
             });
 
+            const studentsSnapshot = await getDocs(collection(db, "students"));
             const studentsWithGroupNames = studentsSnapshot.docs.map(doc => {
                 const studentData = doc.data();
                 return {
@@ -50,8 +47,7 @@ function Students() {
 
             setAllStudents(studentsWithGroupNames);
         } catch (error) {
-            console.error("Error fetching students or groups:", error);
-            alert('Error al cargar los datos. Por favor, recargue la página.');
+            console.error("Error fetching students or groups: ", error);
         }
     }, []);
 
@@ -59,36 +55,27 @@ function Students() {
         fetchStudentsWithGroupNames();
     }, [fetchStudentsWithGroupNames]);
 
-    useEffect(() => {
-        if (!searchTerm.trim()) {
-            setFilteredStudents(allStudents);
-            return;
-        }
-
+    const filteredStudents = useMemo(() => {
+        if (!searchTerm) return allStudents;
+        
         const searchLower = searchTerm.toLowerCase();
-        const filteredList = allStudents.filter(student => {
+        return allStudents.filter(student => {
             if (!student) return false;
 
-            const searchFields = [
-                student.name,
-                student.email,
-                student.phone,
-                student.parentName,
-                student.parentEmail,
-                student.parentPhone,
-                student.groupName
-            ];
-
-            return searchFields.some(field => 
-                String(field || '').toLowerCase().includes(searchLower)
+            return (
+                String(student.name || '').toLowerCase().includes(searchLower) ||
+                String(student.email || '').toLowerCase().includes(searchLower) ||
+                String(student.phone || '').toLowerCase().includes(searchLower) ||
+                String(student.parentName || '').toLowerCase().includes(searchLower) ||
+                String(student.parentEmail || '').toLowerCase().includes(searchLower) ||
+                String(student.parentPhone || '').toLowerCase().includes(searchLower) ||
+                String(student.groupName || '').toLowerCase().includes(searchLower)
             );
         });
-        setFilteredStudents(filteredList);
     }, [searchTerm, allStudents]);
 
 
     const validatePhoneNumber = useCallback((phoneNumber) => {
-        if (!phoneNumber) return true; // Permitir vacío
         const phoneRegex = /^\+\d{10,}$/;
         return phoneRegex.test(phoneNumber);
     }, []);
@@ -98,16 +85,16 @@ function Students() {
         setFormData(prevState => ({ ...prevState, [name]: value }));
     }, []);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         const { phone, parentPhone } = formData;
 
         if (phone && !validatePhoneNumber(phone)) {
-            alert('Número de teléfono inválido. Asegúrate de incluir el código de país (ej: +50612345678).');
+            alert('Número de teléfono inválido. Asegúrate de incluir el código de país.');
             return;
         }
         if (parentPhone && !validatePhoneNumber(parentPhone)) {
-            alert('Número de teléfono del encargado inválido. Asegúrate de incluir el código de país (ej: +50612345678).');
+            alert('Número de teléfono del encargado inválido. Asegúrate de incluir el código de país.');
             return;
         }
 
@@ -115,11 +102,13 @@ function Students() {
             if (editingStudent) {
                 const studentRef = doc(db, "students", editingStudent.id);
                 await updateDoc(studentRef, formData);
+                console.log("Document updated with ID: ", editingStudent.id);
             } else {
-                await addDoc(collection(db, "students"), formData);
+                const docRef = await addDoc(collection(db, "students"), formData);
+                console.log("Document written with ID: ", docRef.id);
             }
 
-            await fetchStudentsWithGroupNames();
+            await fetchStudentsWithGroupNames(); // Refresh student data after submit
             setFormData({
                 identificator: '',
                 email: '',
@@ -132,13 +121,12 @@ function Students() {
             });
             setEditingStudent(null);
             setShowModal(false);
-        } catch (error) {
-            console.error("Error adding/updating document:", error);
-            alert('Error al guardar el estudiante. Por favor, intente de nuevo.');
+        } catch (e) {
+            console.error("Error adding/updating document: ", e);
         }
-    };
+    }, [editingStudent, formData, validatePhoneNumber, fetchStudentsWithGroupNames]);
 
-    const openModal = () => {
+    const openModal = useCallback(() => {
         setFormData({
             identificator: '',
             email: '',
@@ -151,14 +139,14 @@ function Students() {
         });
         setEditingStudent(null);
         setShowModal(true);
-    };
+    }, []);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setShowModal(false);
         setEditingStudent(null);
-    };
+    }, []);
 
-    const editStudent = (student) => {
+    const editStudent = useCallback((student) => {
         setFormData({
             identificator: student.id || '',
             email: student.email || '',
@@ -171,21 +159,31 @@ function Students() {
         });
         setEditingStudent(student);
         setShowModal(true);
-    };
+    }, []);
 
     const deleteStudent = useCallback(async (studentId) => {
         try {
             await deleteDoc(doc(db, "students", studentId));
-            await fetchStudentsWithGroupNames();
+            console.log("Document successfully deleted!");
+            await fetchStudentsWithGroupNames(); // Refresh student data after delete
         } catch (error) {
-            console.error("Error deleting document:", error);
-            alert('Error al eliminar el estudiante. Por favor, intente de nuevo.');
+            console.error("Error deleting document: ", error);
         }
     }, [fetchStudentsWithGroupNames]);
 
     const handleSearch = useCallback((e) => {
         setSearchTerm(e.target.value);
     }, []);
+
+    const modalFields = useMemo(() => [
+        { label: 'Nombre', name: 'name', type: 'text' },
+        { label: 'Correo', name: 'email', type: 'email' },
+        { label: 'Teléfono', name: 'phone', type: 'text' },
+        { label: 'Nombre Encargado', name: 'parentName', type: 'text' },
+        { label: 'Correo Encargado', name: 'parentEmail', type: 'email' },
+        { label: 'Teléfono Encargado', name: 'parentPhone', type: 'text' },
+        { label: 'Grupo', name: 'groupId', type: 'select', options: groups.map(group => ({ value: group.id, label: group.name })) }
+    ], [groups]);
 
     return (
         <RequireAuth>
@@ -207,15 +205,7 @@ function Students() {
                 formData={formData}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
-                fields={[
-                    { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Correo', name: 'email', type: 'email' },
-                    { label: 'Teléfono', name: 'phone', type: 'text' },
-                    { label: 'Nombre Encargado', name: 'parentName', type: 'text' },
-                    { label: 'Correo Encargado', name: 'parentEmail', type: 'email' },
-                    { label: 'Teléfono Encargado', name: 'parentPhone', type: 'text' },
-                    { label: 'Grupo', name: 'groupId', type: 'select', options: groups.map(group => ({ value: group.id, label: group.name })) }
-                ]}
+                fields={modalFields}
                 title={editingStudent ? 'Editar Estudiante' : 'Agregar Estudiante'}
             />
         </RequireAuth>

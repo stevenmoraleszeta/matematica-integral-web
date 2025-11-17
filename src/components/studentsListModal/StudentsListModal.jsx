@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './StudentsListModal.css';
 
 const StudentsListModal = ({ showModal, closeModal, students, attendance = {}, scores = {}, handleAttendanceChange, handleScoreChange, handleSave, mode }) => {

@@ -19,13 +19,10 @@ function Login() {
             setError('');
             setLoading(true);
             await signInWithEmailAndPassword(auth, email, password);
-        } catch (err) {
-            setError(err.code === 'auth/invalid-credential' 
-                ? 'Credenciales inválidas. Por favor, verifique su email y contraseña.' 
-                : 'Error al iniciar sesión. Por favor, intente de nuevo.');
-        } finally {
-            setLoading(false);
+        } catch {
+            setError('Failed to log in');
         }
+        setLoading(false);
     };
 
     if (currentUser) {
@@ -37,7 +34,7 @@ function Login() {
             <div className="login-form">
                 <h1>Matemática Integral</h1>
                 <h3>Ingrese sus credenciales</h3>
-                {error && <p className="error-message">{error}</p>}
+                {error && <p>{error}</p>}
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="email">
                         Email:

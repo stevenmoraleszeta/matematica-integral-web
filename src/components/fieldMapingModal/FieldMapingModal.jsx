@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const FieldMappingModal = ({ showModal, closeModal, data, onSubmit }) => {
     const [mappings, setMappings] = useState({});

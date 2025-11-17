@@ -1,24 +1,23 @@
+import { memo, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import './DeleteIcon.css'; // Si necesitas estilos específicos para el ícono
+import './DeleteIcon.css';
 
-const DeleteIcon = ({ onClick }) => {
-    const handleClick = (e) => {
+const DeleteIcon = memo(({ onClick }) => {
+    const handleClick = useCallback((e) => {
         e.stopPropagation();
-        if (onClick && window.confirm("¿Estás seguro de que quieres eliminar este elemento?")) {
+        if (window.confirm("¿Estás seguro de que quieres eliminar este elemento?")) {
             onClick();
         }
-    };
+    }, [onClick]);
 
     return (
-        <div className="delete-icon" onClick={handleClick} role="button" tabIndex={0} onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                handleClick(e);
-            }
-        }} aria-label="Eliminar elemento">
+        <div className="delete-icon" onClick={handleClick}>
             <FontAwesomeIcon icon={faTrash} />
         </div>
     );
-};
+});
+
+DeleteIcon.displayName = 'DeleteIcon';
 
 export default DeleteIcon;

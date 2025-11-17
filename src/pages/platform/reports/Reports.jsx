@@ -1,5 +1,5 @@
 import './Reports.css';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import useFetchData from '../../../hooks/useFetchData';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
@@ -7,10 +7,10 @@ import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import RequireAuth from '../../../components/RequireAuth';
 
 function Reports() {
-    const groups = useFetchData("groups");
-    const allSessions = useFetchData("sessions");
-    const allScores = useFetchData("scores");
-    const allMockExams = useFetchData("mockExams");
+    const { data: groups } = useFetchData("groups");
+    const { data: allSessions } = useFetchData("sessions");
+    const { data: allScores } = useFetchData("scores");
+    const { data: allMockExams } = useFetchData("mockExams");
 
     const [selectedGroup, setSelectedGroup] = useState('');
     const [filteredSessions, setFilteredSessions] = useState([]);
@@ -21,21 +21,21 @@ function Reports() {
     const [teachers, setTeachers] = useState({});
     const [reports, setReports] = useState([])
 
-    const handleGroupChange = (e) => {
+    const handleGroupChange = useCallback((e) => {
         setSelectedGroup(e.target.value);
-    };
+    }, []);
 
-    const handleSessionChange = (e) => {
+    const handleSessionChange = useCallback((e) => {
         setSelectedSession(e.target.value);
-    };
+    }, []);
 
-    const handleScoreChange = (e) => {
+    const handleScoreChange = useCallback((e) => {
         setSelectedScore(e.target.value);
-    };
+    }, []);
 
-    const handleMockExamChange = (e) => {
+    const handleMockExamChange = useCallback((e) => {
         setSelectedMockExam(e.target.value);
-    };
+    }, []);
 
     const handleSendWhatsAppReport = async () => {
         if (!selectedGroup || !selectedSession || !selectedScore) {
@@ -178,40 +178,45 @@ function Reports() {
         fetchTeachers();
     }, []);
 
+    const filteredSessionsMemo = useMemo(() => {
+        if (!selectedGroup || !allSessions.length) return [];
+        return allSessions.filter(session => session.groupId === selectedGroup);
+    }, [selectedGroup, allSessions]);
+
+    const filteredScoresMemo = useMemo(() => {
+        if (!selectedGroup || !allScores.length) return [];
+        return allScores.filter(score => score.groupId === selectedGroup);
+    }, [selectedGroup, allScores]);
+
     useEffect(() => {
-        if (selectedGroup) {
-            setFilteredSessions(allSessions.filter(session => session.groupId === selectedGroup));
-            setFilteredScores(allScores.filter(score => score.groupId === selectedGroup));
-        } else {
-            setFilteredSessions([]);
-            setFilteredScores([]);
-        }
-    }, [selectedGroup, allSessions, allScores]);
+        setFilteredSessions(filteredSessionsMemo);
+        setFilteredScores(filteredScoresMemo);
+    }, [filteredSessionsMemo, filteredScoresMemo]);
 
     useEffect(() => {
         fetchReports(); // Cargar reportes cuando el componente se monte
     }, []);
 
     // Funciones para obtener nombres a partir de IDs
-    const getGroupName = (id) => {
+    const getGroupName = useCallback((id) => {
         const group = groups.find(group => group.id === id);
         return group ? group.name : 'Desconocido';
-    };
+    }, [groups]);
 
-    const getSessionName = (id) => {
+    const getSessionName = useCallback((id) => {
         const session = allSessions.find(session => session.id === id);
         return session ? session.name : 'Desconocido';
-    };
+    }, [allSessions]);
 
-    const getScoreName = (id) => {
+    const getScoreName = useCallback((id) => {
         const score = allScores.find(score => score.id === id);
         return score ? score.name : 'Desconocido';
-    };
+    }, [allScores]);
 
-    const getMockExamName = (id) => {
+    const getMockExamName = useCallback((id) => {
         const mockExam = allMockExams.find(score => score.id === id);
         return mockExam ? mockExam.name : 'Desconocido';
-    };
+    }, [allMockExams]);
 
     return (
         <RequireAuth>
