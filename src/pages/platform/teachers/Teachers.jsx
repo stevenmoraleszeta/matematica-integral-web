@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -7,6 +8,7 @@ import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
 
 function Teachers() {
+    const { t } = useTranslation();
     const [allTeachers, setAllTeachers] = useState([]);
     const [filteredTeachers, setFilteredTeachers] = useState([]);
     const [formData, setFormData] = useState({
@@ -141,7 +143,7 @@ function Teachers() {
 
     return (
         <RequireAuth>
-            <h1>Profesores</h1>
+            <h1>{t('teachers.title')}</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchTeachers} dbCollection="teachers">
                 {filteredTeachers.map(teacher => (
                     <div key={teacher.id} onClick={() => editTeacher(teacher)} className="item-container">
@@ -161,12 +163,12 @@ function Teachers() {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 fields={[
-                    { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Correo', name: 'email', type: 'email' },
-                    { label: 'Teléfono', name: 'phone', type: 'text' },
-                    { label: 'Materia', name: 'subject', type: 'text' }
+                    { label: t('formFields.name'), name: 'name', type: 'text' },
+                    { label: t('formFields.email'), name: 'email', type: 'email' },
+                    { label: t('formFields.phone'), name: 'phone', type: 'text' },
+                    { label: t('formFields.subject'), name: 'subject', type: 'text' }
                 ]}
-                title={editingTeacher ? 'Editar Profesor' : 'Agregar Profesor'}
+                title={editingTeacher ? t('teachers.edit') : t('teachers.add')}
             />
         </RequireAuth>
     );

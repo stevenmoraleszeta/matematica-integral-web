@@ -1,5 +1,6 @@
 import './Reports.css';
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import useFetchData from '../../../hooks/useFetchData';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
@@ -7,6 +8,7 @@ import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import RequireAuth from '../../../components/RequireAuth';
 
 function Reports() {
+    const { t } = useTranslation();
     const { data: groups } = useFetchData("groups");
     const { data: allSessions } = useFetchData("sessions");
     const { data: allScores } = useFetchData("scores");
@@ -39,7 +41,7 @@ function Reports() {
 
     const handleSendWhatsAppReport = async () => {
         if (!selectedGroup || !selectedSession || !selectedScore) {
-            alert('Por favor, completa todos los campos antes de enviar el reporte.');
+            alert(t('reports.completeFields'));
             return;
         }
 
@@ -65,7 +67,7 @@ function Reports() {
             const mockExam = allMockExams.find(mcke => mcke.id === selectedMockExam);
 
             if (!session || !score || !mockExam) {
-                alert('Datos de sesión, calificación o simulacro no encontrados.');
+                alert(t('reports.dataNotFound'));
                 return;
             }
 
@@ -74,38 +76,41 @@ function Reports() {
             const studentScores = score.scores || {};
             const mockExamAttendance = mockExam.attendance || {};
 
-            const teacherName = teachers[session.teacherId] || 'Profesor(a) no disponible';
+            const teacherName = teachers[session.teacherId] || t('teachers.notAvailable');
 
             studentsSnapshot.forEach((doc) => {
                 const student = doc.data();
                 const studentId = doc.id;
                 const parentPhone = student.parentPhone;
                 const studentPhone = student.phone;
-                const studentName = student.name || 'Estudiante';
-                const attendanceStatus = sessionAttendance[studentId] || 'Ausente';
-                const studentScore = studentScores[studentId] || 'No presentó la prueba';
-                const mockExamStatus = mockExamAttendance[studentId] || 'Ausente';
+                const studentName = student.name || t('reports.studentDefault');
+                const attendanceStatus = sessionAttendance[studentId] || 'absent';
+                const studentScore = studentScores[studentId] || t('scores.noScore');
+                const mockExamStatus = mockExamAttendance[studentId] || 'absent';
                 //TODO Modificar el examen según los datos disponibles
-                const message = `Saludos cordiales.
+                const attendanceText = attendanceStatus === 'present' ? t('attendance.attended') :
+                        attendanceStatus === 'excusedAbsence' ? t('attendance.absentJustified') :
+                            attendanceStatus === 'absent' ? t('attendance.didNotAttend') :
+                                t('attendance.unknown');
+                const mockExamText = mockExamStatus !== 'absent' ? t('reports.attendedMock') : t('reports.absentMock');
+                const scoreText = studentName ? `${t('reports.scoreInfo')} ${score.name}, ${t('reports.scoreWas')}: ${studentScore}` : t('reports.noTest');
+                const message = `${t('reports.greeting')}
                 
-    Reporte semanal del curso de preparación para exámenes de admisión TEC, UCR, UNA.
+    ${t('reports.weeklyReport')}
     
-    Fecha: ${session.date}.
-    Sesión: ${session.name}.
-    Profesor(a): ${teacherName}.
+    ${t('reports.date')}: ${session.date}.
+    ${t('reports.session')}: ${session.name}.
+    ${t('reports.teacher')}: ${teacherName}.
     
-    El/la estudiante ${studentName} ${attendanceStatus === 'present' ? 'sí asistió' :
-                        attendanceStatus === 'excusedAbsence' ? 'estuvo ausente con justificación' :
-                            attendanceStatus === 'absent' ? 'no asistió' :
-                                'su estado de asistencia es desconocido'}.
+    ${t('reports.student')} ${studentName} ${attendanceText}.
     
-    ${studentName ? `Presentó el ${score.name}, su calificación fue: ${studentScore}` : 'No presentó la prueba.'}
+    ${scoreText}
 
-    Participación en el simulacro: ${mockExamStatus !== "Ausente" ? "Presente" : "Ausente"}.
+    ${t('reports.mockExamParticipation')}: ${mockExamText}.
     
-    Quedamos atentos(a) para resolver cualquier consulta.
+    ${t('reports.closing')}
     
-    Saludos.`;
+    ${t('reports.goodbye')}`;
 
                 // Enviar mensaje al teléfono del encargado
                 if (parentPhone) {
@@ -125,7 +130,7 @@ function Reports() {
 
         } catch (error) {
             console.error('Error al enviar el reporte por WhatsApp: ', error);
-            alert('Error al enviar el reporte por WhatsApp');
+            alert(t('reports.sendError'));
         }
     };
 
@@ -145,7 +150,7 @@ function Reports() {
             fetchReports(); // Actualizar la lista de reportes después de eliminar uno
         } catch (error) {
             console.error('Error al eliminar el reporte: ', error);
-            alert('Error al eliminar el reporte');
+            alert(t('reports.deleteError'));
         }
     };
 
@@ -200,71 +205,71 @@ function Reports() {
     // Funciones para obtener nombres a partir de IDs
     const getGroupName = useCallback((id) => {
         const group = groups.find(group => group.id === id);
-        return group ? group.name : 'Desconocido';
-    }, [groups]);
+        return group ? group.name : t('common.unknown');
+    }, [groups, t]);
 
     const getSessionName = useCallback((id) => {
         const session = allSessions.find(session => session.id === id);
-        return session ? session.name : 'Desconocido';
-    }, [allSessions]);
+        return session ? session.name : t('common.unknown');
+    }, [allSessions, t]);
 
     const getScoreName = useCallback((id) => {
         const score = allScores.find(score => score.id === id);
-        return score ? score.name : 'Desconocido';
-    }, [allScores]);
+        return score ? score.name : t('common.unknown');
+    }, [allScores, t]);
 
     const getMockExamName = useCallback((id) => {
         const mockExam = allMockExams.find(score => score.id === id);
-        return mockExam ? mockExam.name : 'Desconocido';
-    }, [allMockExams]);
+        return mockExam ? mockExam.name : t('common.unknown');
+    }, [allMockExams, t]);
 
     return (
         <RequireAuth>
             <div className="reports">
-                <label htmlFor="group-select">Seleccionar Grupo:</label>
+                <label htmlFor="group-select">{t('reports.selectGroup')}:</label>
                 <select id="group-select" value={selectedGroup} onChange={handleGroupChange}>
-                    <option value="">Seleccionar Grupo</option>
+                    <option value="">{t('reports.selectGroup')}</option>
                     {groups.map(group => (
                         <option key={group.id} value={group.id}>{group.name}</option>
                     ))}
                 </select>
 
-                <label htmlFor="session-select">Seleccionar Sesión:</label>
+                <label htmlFor="session-select">{t('reports.selectSession')}:</label>
                 <select id="session-select" value={selectedSession} onChange={handleSessionChange}>
-                    <option value="">Seleccionar Sesión</option>
+                    <option value="">{t('reports.selectSession')}</option>
                     {filteredSessions.map(session => (
                         <option key={session.id} value={session.id}>{session.name}</option>
                     ))}
                 </select>
 
-                <label htmlFor="score-select">Seleccionar Calificación:</label>
+                <label htmlFor="score-select">{t('reports.selectScore')}:</label>
                 <select id="score-select" value={selectedScore} onChange={handleScoreChange}>
-                    <option value="">Seleccionar Calificación</option>
+                    <option value="">{t('reports.selectScore')}</option>
                     {filteredScores.map(score => (
                         <option key={score.id} value={score.id}>{score.name}</option>
                     ))}
                 </select>
 
-                <label htmlFor="mockExam-select">Seleccionar Simulacro:</label>
+                <label htmlFor="mockExam-select">{t('reports.selectMockExam')}:</label>
                 <select id="mockExam-select" value={selectedMockExam} onChange={handleMockExamChange}>
-                    <option value="">Seleccionar Simulacro</option>
+                    <option value="">{t('reports.selectMockExam')}</option>
                     {allMockExams.map(mockExam => (
                         <option key={mockExam.id} value={mockExam.id}>{mockExam.name}</option>
                     ))}
                 </select>
 
-                <button onClick={handleSendWhatsAppReport}>Enviar reporte por WhatsApp</button>
+                <button onClick={handleSendWhatsAppReport}>{t('reports.sendReport')}</button>
 
-                <h2>Historial de Reportes</h2>
+                <h2>{t('reports.reportHistory')}</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>Grupo</th>
-                            <th>Sesión</th>
-                            <th>Calificación</th>
-                            <th>Simulacro</th>
-                            <th>Fecha Envío</th>
-                            <th>Acciones</th>
+                            <th>{t('reports.group')}</th>
+                            <th>{t('reports.session')}</th>
+                            <th>{t('reports.score')}</th>
+                            <th>{t('reports.mockExam')}</th>
+                            <th>{t('reports.sendDate')}</th>
+                            <th>{t('common.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>

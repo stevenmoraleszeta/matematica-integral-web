@@ -1,9 +1,12 @@
 import './DataModal.css';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Modal = memo(({ showModal, closeModal, formData, handleChange, handleSubmit, fields, title }) => {
+    const { t } = useTranslation();
+    
     const openWhatsApp = (phoneNumber) => {
         if (phoneNumber) {
             window.open(`https://wa.me/${phoneNumber}`, '_blank');
@@ -17,7 +20,7 @@ const Modal = memo(({ showModal, closeModal, formData, handleChange, handleSubmi
             <div className="modal-content">
                 <span className="close" onClick={closeModal}>&times;</span>
                 <h2>{title}</h2>
-                <p><b>ID: </b>{formData.identificator}</p>
+                <p><b>{t('common.id')}: </b>{formData.identificator}</p>
                 <form onSubmit={handleSubmit}>
                     {fields.map((field, index) => (
                         <div key={index} className="form-group">
@@ -30,7 +33,7 @@ const Modal = memo(({ showModal, closeModal, formData, handleChange, handleSubmi
                                         value={formData[field.name]}
                                         onChange={handleChange}
                                     >
-                                        <option value="">Seleccionar</option>
+                                        <option value="">{t('common.select')}</option>
                                         {field.options.map(option => (
                                             <option key={option.value} value={option.value}>
                                                 {option.label}
@@ -65,7 +68,7 @@ const Modal = memo(({ showModal, closeModal, formData, handleChange, handleSubmi
                             </label>
                         </div>
                     ))}
-                    <button type="submit" className="submit-button">Guardar</button>
+                    <button type="submit" className="submit-button">{t('common.save')}</button>
                 </form>
             </div>
         </div>

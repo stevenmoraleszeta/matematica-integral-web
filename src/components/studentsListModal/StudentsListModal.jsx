@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './StudentsListModal.css';
 
 const StudentsListModal = ({ showModal, closeModal, students, attendance = {}, scores = {}, handleAttendanceChange, handleScoreChange, handleSave, mode }) => {
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
 
     if (!showModal) return null;
@@ -17,21 +19,21 @@ const StudentsListModal = ({ showModal, closeModal, students, attendance = {}, s
         <div className="students-modal-overlay">
             <div className="students-modal-content">
                 <span className="close" onClick={closeModal}>&times;</span>
-                <h2>{mode === 'attendance' ? 'Modificar Asistencia' : 'Modificar Calificaciones'}</h2>
+                <h2>{mode === 'attendance' ? t('sessions.modifyAttendance') : t('scores.modifyScores')}</h2>
 
                 {/* Barra de búsqueda */}
                 <input
                     type="text"
-                    placeholder="Buscar por nombre, correo o teléfono"
+                    placeholder={t('studentsList.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="search-bar"
                 />
 
-                <button className="save-button" onClick={handleSave}>Guardar</button>
+                <button className="save-button" onClick={handleSave}>{t('common.save')}</button>
                 
                 {filteredStudents.length === 0 ? (
-                    <p>No se encontraron estudiantes.</p>
+                    <p>{t('studentsList.noStudents')}</p>
                 ) : (
                     filteredStudents.map(student => (
                         <div key={student.id} className="students-item">
@@ -46,9 +48,9 @@ const StudentsListModal = ({ showModal, closeModal, students, attendance = {}, s
                                         'absent-select'
                                     }
                                 >
-                                    <option value="present">Presente</option>
-                                    <option value="absent">Ausente</option>
-                                    <option value="excusedAbsence">Ausente Justificado</option>
+                                    <option value="present">{t('attendance.present')}</option>
+                                    <option value="absent">{t('attendance.absent')}</option>
+                                    <option value="excusedAbsence">{t('attendance.excusedAbsence')}</option>
                                 </select>
                             ) : mode === 'submited' ? (
                                 <select
@@ -56,8 +58,8 @@ const StudentsListModal = ({ showModal, closeModal, students, attendance = {}, s
                                     onChange={(e) => handleAttendanceChange(student.id, e.target.value)}
                                     className={attendance[student.id] === 'submited' ? 'submited-select' : 'not-submited-select'}
                                 >
-                                    <option value="submited">Entregada</option>
-                                    <option value="notSubmited">Sin entregar</option>
+                                    <option value="submited">{t('homeworks.submitted')}</option>
+                                    <option value="notSubmited">{t('homeworks.notSubmitted')}</option>
                                 </select>
                             ) : (
                                 <input

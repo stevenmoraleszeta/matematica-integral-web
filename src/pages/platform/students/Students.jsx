@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -8,6 +9,7 @@ import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
 
 function Students() {
+    const { t } = useTranslation();
     const { data: groups } = useFetchData("groups");
 
     const [allStudents, setAllStudents] = useState([]);
@@ -41,7 +43,7 @@ function Students() {
                 return {
                     id: doc.id,
                     ...studentData,
-                    groupName: groupsMap[studentData.groupId] || 'Sin grupo'
+                    groupName: groupsMap[studentData.groupId] || t('noGroup')
                 };
             });
 
@@ -176,18 +178,18 @@ function Students() {
     }, []);
 
     const modalFields = useMemo(() => [
-        { label: 'Nombre', name: 'name', type: 'text' },
-        { label: 'Correo', name: 'email', type: 'email' },
-        { label: 'Teléfono', name: 'phone', type: 'text' },
-        { label: 'Nombre Encargado', name: 'parentName', type: 'text' },
-        { label: 'Correo Encargado', name: 'parentEmail', type: 'email' },
-        { label: 'Teléfono Encargado', name: 'parentPhone', type: 'text' },
-        { label: 'Grupo', name: 'groupId', type: 'select', options: groups.map(group => ({ value: group.id, label: group.name })) }
+        { label: t('formFields.name'), name: 'name', type: 'text' },
+        { label: t('formFields.email'), name: 'email', type: 'email' },
+        { label: t('formFields.phone'), name: 'phone', type: 'text' },
+        { label: t('formFields.parentName'), name: 'parentName', type: 'text' },
+        { label: t('formFields.parentEmail'), name: 'parentEmail', type: 'email' },
+        { label: t('formFields.parentPhone'), name: 'parentPhone', type: 'text' },
+        { label: t('formFields.group'), name: 'groupId', type: 'select', options: groups.map(group => ({ value: group.id, label: group.name })) }
     ], [groups]);
 
     return (
         <RequireAuth>
-            <h1>Estudiantes</h1>
+            <h1>{t('students.title')}</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchStudentsWithGroupNames} dbCollection="students">
                 {filteredStudents.map(student => (
                     <div key={student.id} onClick={() => editStudent(student)} className="item-container">
@@ -207,7 +209,7 @@ function Students() {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 fields={modalFields}
-                title={editingStudent ? 'Editar Estudiante' : 'Agregar Estudiante'}
+                title={editingStudent ? t('students.edit') : t('students.add')}
             />
         </RequireAuth>
     );

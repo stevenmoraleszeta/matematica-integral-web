@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, deleteDoc, doc, getDocs, writeBatch } from 'firebase/firestore';
 import './DataManagement.css';
 
 function DataManagement() {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState('');
 
@@ -39,12 +41,12 @@ function DataManagement() {
             for (const collectionName of collections) {
                 const deleted = await deleteAllFromCollection(collectionName);
                 totalDeleted += deleted;
-                setStatus(`Eliminados ${deleted} documentos de ${collectionName}...`);
+                setStatus(`${t('common.delete')} ${deleted} ${t('common.documents')} de ${collectionName}...`);
             }
 
-            setStatus(`✓ Eliminados ${totalDeleted} documentos en total.`);
+            setStatus(`${t('dataManagement.deleteSuccess')} ${totalDeleted} ${t('dataManagement.deleteSuccessFull')}`);
         } catch (error) {
-            setStatus(`✗ Error al eliminar datos: ${error.message}`);
+            setStatus(`${t('dataManagement.deleteError')}: ${error.message}`);
         } finally {
             setLoading(false);
         }
@@ -53,7 +55,7 @@ function DataManagement() {
     // Función para generar datos ficticios
     const generateFakeData = async () => {
         setLoading(true);
-        setStatus('Generando datos ficticios...');
+        setStatus(`${t('dataManagement.generateFake')}...`);
 
         try {
             // 1. Crear profesores
@@ -442,9 +444,9 @@ function DataManagement() {
                 await addDoc(collection(db, 'reports'), report);
             }
 
-            setStatus('✓ ¡Datos ficticios generados exitosamente!');
+            setStatus(t('dataManagement.generateSuccess'));
         } catch (error) {
-            setStatus(`✗ Error al generar datos: ${error.message}`);
+            setStatus(`${t('dataManagement.generateError')}: ${error.message}`);
             console.error('Error:', error);
         } finally {
             setLoading(false);
@@ -453,7 +455,7 @@ function DataManagement() {
 
     // Función para hacer todo el proceso
     const resetAndGenerateData = async () => {
-        if (!window.confirm('¿Estás seguro? Esto eliminará TODOS los datos existentes y creará datos ficticios nuevos.')) {
+        if (!window.confirm(t('dataManagement.confirmReset'))) {
             return;
         }
 
@@ -465,9 +467,9 @@ function DataManagement() {
     return (
         <div className="data-management">
             <div className="data-management-container">
-                <h1>Gestión de Datos</h1>
+                <h1>{t('dataManagement.title')}</h1>
                 <p className="warning">
-                    ⚠️ ADVERTENCIA: Estas operaciones son destructivas y no se pueden deshacer.
+                    {t('dataManagement.warning')}
                 </p>
 
                 <div className="actions">
@@ -476,7 +478,7 @@ function DataManagement() {
                         disabled={loading}
                         className="btn btn-danger"
                     >
-                        Eliminar Todos los Datos
+                        {t('dataManagement.deleteAll')}
                     </button>
 
                     <button 
@@ -484,7 +486,7 @@ function DataManagement() {
                         disabled={loading}
                         className="btn btn-primary"
                     >
-                        Generar Datos Ficticios
+                        {t('dataManagement.generateFake')}
                     </button>
 
                     <button 
@@ -492,7 +494,7 @@ function DataManagement() {
                         disabled={loading}
                         className="btn btn-warning"
                     >
-                        Eliminar y Generar Nuevos Datos
+                        {t('dataManagement.resetAndGenerate')}
                     </button>
                 </div>
 
@@ -505,7 +507,7 @@ function DataManagement() {
                 {loading && (
                     <div className="loading">
                         <div className="spinner"></div>
-                        <p>Procesando...</p>
+                        <p>{t('dataManagement.processing')}</p>
                     </div>
                 )}
             </div>

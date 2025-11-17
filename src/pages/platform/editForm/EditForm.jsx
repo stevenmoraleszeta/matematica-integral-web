@@ -1,6 +1,7 @@
 // EditForm.js
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faArrowUp, faArrowDown, faCopy, faUpload } from '@fortawesome/free-solid-svg-icons';
 import './EditForm.css';
@@ -9,6 +10,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 function EditForm() {
+    const { t } = useTranslation();
     const { formId } = useParams();
     const [form, setForm] = useState({ name: '', questions: [] });
     const [currentQuestion, setCurrentQuestion] = useState({ type: 'text', questionText: '', options: [], imageUrl: '' });
@@ -155,7 +157,7 @@ function EditForm() {
 
     return (
         <div className="edit-form-container">
-            <center><h1>Editando Formulario: {form.name}</h1></center>
+            <center><h1>{t('forms.editTitle')}: {form.name}</h1></center>
             <div className="question-editor">
                 {form.questions.map((question, qIndex) => (
                     <div key={qIndex} className="question-item">
@@ -168,7 +170,7 @@ function EditForm() {
                                 name="questionText"
                                 value={question.questionText || ''}
                                 onChange={(e) => handleQuestionChange(e, qIndex)}
-                                placeholder="Pregunta"
+                                placeholder={t('responsesViewer.question')}
                                 className="question-input"
                             />
                             <select
@@ -200,7 +202,7 @@ function EditForm() {
                                             className="correct-answer-checkbox"
                                             checked={(question.correctAnswers || []).includes(option)}
                                             onChange={() => handleCorrectAnswerToggle(qIndex, option)}
-                                            title="Marcar como respuesta correcta"
+                                            title={t('forms.markCorrect')}
                                         />
                                         <button
                                             type="button"
@@ -212,14 +214,14 @@ function EditForm() {
                                     </div>
                                 ))}
                                 <button type="button" onClick={() => addOption(qIndex)} className="add-option-btn">
-                                    Agregar opción
+                                    {t('forms.addOption')}
                                 </button>
                             </div>
                         )}
 
                         <div className="question-actions">
                             <button onClick={() => triggerFileInput(qIndex)}>
-                                <FontAwesomeIcon icon={faUpload} title="Subir nueva imagen" />
+                                <FontAwesomeIcon icon={faUpload} title={t('forms.uploadImage')} />
                                 <input
                                     type="file"
                                     ref={(el) => (fileInputRefs.current[qIndex] = el)}

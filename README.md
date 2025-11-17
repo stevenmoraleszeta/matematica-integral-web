@@ -13,7 +13,7 @@ MI Platform (Matemática Integral Platform) is a full-stack web application desi
 
 ### ⚠️ Project Status
 
-**Important Note:** This project was paused over a year ago by the client academy due to resource issues. The client has given full permission to show or distribute this project. The platform is now publicly accessible without requiring authentication for demonstration purposes.
+**Important Note:** This project was paused over a year ago by the client academy due to resource issues. The client has given full permission for us to show or distribute this project. The platform is now publicly accessible without requiring authentication for demonstration purposes.
 
 ### Key Features
 
@@ -25,6 +25,7 @@ MI Platform (Matemática Integral Platform) is a full-stack web application desi
 - 📊 **Assessment Tools**: Quizzes, mock exams, and homework tracking
 - 📝 **Form Builder**: Create and manage custom forms for data collection
 - 📈 **Reporting**: Generate comprehensive reports and analytics
+- 🗄️ **Data Management**: Advanced tools for data manipulation, bulk deletion, and test data generation
 - 🔐 **Secure Authentication**: Firebase Authentication with email/password
 - ☁️ **Cloud Storage**: Firebase Firestore for data storage
 
@@ -124,6 +125,7 @@ matematica-integral-web/
 │   │   ├── auth/          # Authentication pages
 │   │   │   └── Login.jsx
 │   │   ├── platform/      # Main platform pages
+│   │   │   ├── dataManagement/
 │   │   │   ├── editForm/
 │   │   │   ├── formResponse/
 │   │   │   ├── forms/
@@ -377,6 +379,125 @@ reports
 - **Cloud Firestore**: Primary database for all application data
 - **Firebase Storage**: File storage for question images
 - **Firebase Analytics**: Usage analytics (initialized but optional)
+
+## 🗄️ Data Management Module
+
+The Data Management module provides advanced administrative tools for managing the platform's database. This module is designed for development, testing, and administrative purposes.
+
+### Access
+
+**URL Route:** `/platform/data-management`
+
+Access the Data Management module by navigating to the route `/platform/data-management` in the application, or through the platform menu (if available for authorized administrators).
+
+### Features
+
+#### 1. **Bulk Data Deletion**
+- Delete all data from specific Firestore collections
+- Supports deletion from all major collections:
+  - Students, Teachers, Groups
+  - Sessions, Scores, Homeworks
+  - Mock Exams, Forms
+  - Responses, Reports
+- Batch deletion for improved performance
+- Real-time status updates during deletion process
+
+#### 2. **Test Data Generation**
+- Generate comprehensive fake data for testing purposes
+- Creates realistic test data including:
+  - **Teachers**: Multiple teacher profiles with contact information
+  - **Students**: Student profiles with parent/guardian information
+  - **Groups**: Student groups with assigned teachers
+  - **Sessions**: Class sessions with attendance records
+  - **Scores**: Quiz scores for students
+  - **Homeworks**: Homework assignments with submission tracking
+  - **Mock Exams**: Mock exam records with attendance
+  - **Forms**: Form templates with various question types
+  - **Responses**: Student responses to forms with grading
+  - **Reports**: Report records linking sessions, scores, and mock exams
+- Automatically creates relationships between entities (students to groups, sessions to teachers, etc.)
+- Generates realistic attendance and scoring data
+
+#### 3. **Reset and Regenerate**
+- Combined operation that first deletes all existing data
+- Then generates fresh test data
+- Useful for resetting the development environment
+- Includes confirmation dialog to prevent accidental execution
+
+### Usage
+
+**⚠️ WARNING**: All operations in this module are **destructive** and **irreversible**. Exercise extreme caution when using these features.
+
+1. **Access the Data Management Module**
+   - Navigate to the route: `/platform/data-management`
+   - Or access from the platform menu (if available)
+   - Available to authorized administrators only
+
+2. **Delete All Data**
+   - Click "Delete All Data" button
+   - Confirms deletion of all collections
+   - Shows progress for each collection being deleted
+   - Displays total number of documents deleted
+
+3. **Generate Fake Data**
+   - Click "Generate Fake Data" button
+   - Creates realistic test data across all collections
+   - Shows progress during generation
+   - Confirms successful generation
+
+4. **Reset and Generate New Data**
+   - Click "Delete and Generate New Data" button
+   - Confirmation dialog appears to prevent accidental execution
+   - Deletes all existing data first
+   - Then generates fresh test data
+
+### Safety Features
+
+- **Confirmation Dialogs**: Critical operations require explicit confirmation
+- **Status Indicators**: Real-time feedback on operation progress
+- **Error Handling**: Comprehensive error messages for troubleshooting
+- **Loading States**: Visual indicators during processing
+- **Warning Messages**: Clear warnings about destructive nature of operations
+
+### Use Cases
+
+- **Development Environment**: Quickly populate test data for development
+- **Testing**: Generate varied datasets for testing features
+- **Demonstrations**: Create sample data for platform demonstrations
+- **Data Reset**: Clear and reset the database for clean slate testing
+- **QA Testing**: Generate different data scenarios for quality assurance
+
+### Technical Implementation
+
+The Data Management module uses:
+- **Firebase Firestore Batch Operations**: For efficient bulk deletions
+- **Firebase Firestore Transactions**: To ensure data consistency
+- **React State Management**: For real-time UI updates
+- **Error Handling**: Comprehensive try-catch blocks with user feedback
+- **Internationalization**: Fully translated interface (ES/EN)
+
+### Collections Affected
+
+The following Firestore collections are managed by this module:
+- `students`
+- `teachers`
+- `groups`
+- `sessions`
+- `scores`
+- `homeworks`
+- `mockExams`
+- `forms`
+- `responses`
+- `reports`
+
+### Notes
+
+- All operations are performed on the actual Firebase database
+- Changes cannot be undone once executed
+- Generated test data follows realistic patterns and relationships
+- Data generation respects Firestore collection schemas
+- Phone numbers include proper country code formatting
+- Dates are formatted according to application standards
 
 ## 🚀 Deployment
 

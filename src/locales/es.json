@@ -1,0 +1,249 @@
+{
+  "navbar": {
+    "home": "Plataforma",
+    "changeTheme": "Cambiar tema",
+    "changeToLight": "Cambiar a modo claro",
+    "changeToDark": "Cambiar a modo oscuro",
+    "changeLanguage": "Cambiar idioma",
+    "switchToEnglish": "Cambiar a inglés",
+    "switchToSpanish": "Cambiar a español"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar...",
+    "close": "Cerrar",
+    "yes": "Sí",
+    "no": "No",
+    "select": "Seleccionar",
+    "id": "ID",
+    "addRecord": "Agregar Registro",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este elemento?",
+    "uploadConfirm": "¿Está seguro de que desea cargar estos datos? Esta acción es irreversible.",
+    "uploadSuccess": "Los datos han sido cargados exitosamente.",
+    "uploadError": "Error al procesar el archivo. Por favor, verifique que el formato sea correcto.",
+    "notFound": "No encontrado",
+    "noResults": "No se encontraron resultados.",
+    "unknown": "Desconocido",
+    "actions": "Acciones",
+    "documents": "documentos"
+  },
+  "formFields": {
+    "name": "Nombre",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "subject": "Materia",
+    "date": "Fecha",
+    "group": "Grupo",
+    "teacher": "Profesor",
+    "status": "Estado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "parentName": "Nombre Encargado",
+    "parentEmail": "Correo Encargado",
+    "parentPhone": "Teléfono Encargado",
+    "startDate": "Fecha Inicio",
+    "endDate": "Fecha Final",
+    "submitDate": "Fecha Entrega",
+    "description": "Descripción",
+    "mathTeacher": "Profesor de Matemáticas",
+    "verbalTeacher": "Profesor de Verbal",
+    "formName": "Nombre del formulario",
+    "formNamePlaceholder": "Nombre del formulario",
+    "timeLimit": "Tiempo Límite",
+    "timeLimitPlaceholder": "Escribe la cantidad de minutos o \"0\""
+  },
+  "menu": {
+    "students": "Estudiantes",
+    "teachers": "Profesores",
+    "groups": "Grupos",
+    "sessions": "Sesiones",
+    "quizzes": "Quices",
+    "mockExams": "Simulacros",
+    "homeworks": "Tareas",
+    "forms": "Formularios",
+    "reports": "Reportar"
+  },
+  "students": {
+    "title": "Estudiantes",
+    "edit": "Editar Estudiante",
+    "add": "Agregar Estudiante",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este estudiante?"
+  },
+  "teachers": {
+    "title": "Profesores",
+    "edit": "Editar Profesor",
+    "add": "Agregar Profesor",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este profesor?",
+    "notAvailable": "Profesor(a) no disponible"
+  },
+  "groups": {
+    "title": "Grupos",
+    "edit": "Editar Grupo",
+    "add": "Agregar Grupo",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este grupo?",
+    "notFound": "Grupo no encontrado"
+  },
+  "sessions": {
+    "title": "Sesiones",
+    "edit": "Editar Sesión",
+    "add": "Agregar Sesión",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar esta sesión?",
+    "modifyAttendance": "Modificar Asistencia"
+  },
+  "scores": {
+    "title": "Quices",
+    "edit": "Editar Calificaciones",
+    "add": "Agregar Calificaciones",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar estas calificaciones?",
+    "modifyScores": "Modificar Calificaciones",
+    "noScore": "No presentó la prueba"
+  },
+  "mockExams": {
+    "title": "Simulacros",
+    "edit": "Editar Simulacro",
+    "add": "Agregar Simulacro",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este simulacro?"
+  },
+  "homeworks": {
+    "title": "Tareas",
+    "edit": "Editar Tarea",
+    "add": "Agregar Tarea",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar esta tarea?",
+    "submitted": "Entregada",
+    "notSubmitted": "Sin entregar"
+  },
+  "forms": {
+    "title": "Formularios",
+    "edit": "Editar Formulario",
+    "add": "Crear Nuevo Formulario",
+    "editTitle": "Editando Formulario",
+    "delete": "Eliminar formulario",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este formulario?",
+    "viewResponses": "Ver respuestas",
+    "copyLink": "Copiar enlace de respuestas",
+    "responses": "Respuestas de",
+    "searchResponses": "Buscar respuestas...",
+    "responseNumber": "Respuesta #",
+    "addOption": "Agregar opción",
+    "markCorrect": "Marcar como respuesta correcta",
+    "uploadImage": "Subir nueva imagen"
+  },
+  "formResponse": {
+    "timeRemaining": "Tiempo restante",
+    "submitAnswers": "Enviar Respuestas",
+    "startResponse": "Iniciar Respuesta",
+    "availableMinutes": "Minutos disponibles",
+    "timeWillStart": "El tiempo comenzará una vez que inicies la respuesta.",
+    "noTimeLimit": "No hay límite de tiempo para completar este formulario. Puedes tomar el tiempo que necesites.",
+    "confirmSubmit": "Confirmar Envío",
+    "confirmSubmitMessage": "¿Estás seguro de que deseas enviar las respuestas?",
+    "responseSent": "Respuesta Enviada",
+    "successMessage": "Tu respuesta ha sido enviada con éxito.",
+    "yourGrade": "Tu calificación es",
+    "inactiveForm": "Formulario Inactivo",
+    "inactiveMessage": "Este formulario está actualmente inactivo y no acepta respuestas. Contacte con el profesor."
+  },
+  "attendance": {
+    "present": "Presente",
+    "absent": "Ausente",
+    "excusedAbsence": "Ausente Justificado",
+    "unknown": "su estado de asistencia es desconocido",
+    "attended": "sí asistió",
+    "absentJustified": "estuvo ausente con justificación",
+    "didNotAttend": "no asistió"
+  },
+  "reports": {
+    "title": "Reportes",
+    "selectGroup": "Seleccionar Grupo",
+    "selectSession": "Seleccionar Sesión",
+    "selectScore": "Seleccionar Calificación",
+    "selectMockExam": "Seleccionar Simulacro",
+    "sendReport": "Enviar reporte por WhatsApp",
+    "reportHistory": "Historial de Reportes",
+    "group": "Grupo",
+    "session": "Sesión",
+    "score": "Calificación",
+    "mockExam": "Simulacro",
+    "sendDate": "Fecha Envío",
+    "completeFields": "Por favor, completa todos los campos antes de enviar el reporte.",
+    "dataNotFound": "Datos de sesión, calificación o simulacro no encontrados.",
+    "sendError": "Error al enviar el reporte por WhatsApp",
+    "deleteError": "Error al eliminar el reporte",
+    "greeting": "Saludos cordiales.",
+    "weeklyReport": "Reporte semanal del curso de preparación para exámenes de admisión TEC, UCR, UNA.",
+    "date": "Fecha",
+    "teacher": "Profesor(a)",
+    "student": "El/la estudiante",
+    "scoreInfo": "Presentó el",
+    "scoreWas": "su calificación fue",
+    "noTest": "No presentó la prueba.",
+    "mockExamParticipation": "Participación en el simulacro",
+    "closing": "Quedamos atentos(a) para resolver cualquier consulta.",
+    "goodbye": "Saludos.",
+    "studentDefault": "Estudiante",
+    "attendedMock": "Presente",
+    "absentMock": "Ausente"
+  },
+  "studentsList": {
+    "noStudents": "No se encontraron estudiantes.",
+    "searchPlaceholder": "Buscar por nombre, correo o teléfono"
+  },
+  "fieldMapping": {
+    "title": "Mapea los campos del archivo",
+    "column": "Columna",
+    "selectField": "Seleccionar un campo",
+    "saveMapping": "Guardar Mapeo"
+  },
+  "projectStatus": {
+    "importantNote": "Nota Importante",
+    "message": "Este proyecto fue pausado hace más de un año por la academia cliente debido a problemas de recursos. El cliente ha dado permiso total para que nosotros mostremos o distribuyamos este proyecto. La plataforma ahora es accesible públicamente sin requerir autenticación para fines de demostración."
+  },
+  "login": {
+    "title": "Matemática Integral",
+    "enterCredentials": "Ingrese sus credenciales",
+    "email": "Correo",
+    "password": "Contraseña",
+    "emailPlaceholder": "Ingrese su correo",
+    "passwordPlaceholder": "Ingrese su contraseña",
+    "loginButton": "Iniciar Sesión",
+    "loginError": "Error al iniciar sesión"
+  },
+  "userProfile": {
+    "title": "Perfil de Usuario",
+    "name": "Nombre",
+    "email": "Correo",
+    "photoURL": "URL Imagen Perfil",
+    "saveChanges": "Guardar Cambios",
+    "logout": "Cerrar Sesión"
+  },
+  "dataManagement": {
+    "title": "Gestión de Datos",
+    "warning": "⚠️ ADVERTENCIA: Estas operaciones son destructivas y no se pueden deshacer.",
+    "deleteAll": "Eliminar Todos los Datos",
+    "generateFake": "Generar Datos Ficticios",
+    "resetAndGenerate": "Eliminar y Generar Nuevos Datos",
+    "processing": "Procesando...",
+    "deleteSuccess": "✓ Todos los datos han sido eliminados exitosamente.",
+    "deleteError": "✗ Error al eliminar datos",
+    "generateSuccess": "✓ Datos ficticios generados exitosamente.",
+    "generateError": "✗ Error al generar datos",
+    "confirmReset": "¿Estás seguro? Esto eliminará TODOS los datos existentes y creará datos ficticios nuevos."
+  },
+  "noGroup": "Sin grupo",
+  "responsesViewer": {
+    "gradeDistribution": "Distribución de Calificaciones",
+    "question": "Pregunta",
+    "responseDetails": "Detalles de la Respuesta",
+    "grade": "Calificación"
+  },
+  "buttons": {
+    "modifyAttendance": "Modificar asistencia",
+    "modifyScores": "Modificar calificaciones"
+  }
+}

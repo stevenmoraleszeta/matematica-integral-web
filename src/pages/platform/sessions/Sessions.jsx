@@ -1,5 +1,6 @@
 import './Sessions.css';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -10,6 +11,7 @@ import DataModal from '../../../components/dataModal/DataModal';
 import StudentsListModal from '../../../components/studentsListModal/StudentsListModal';
 
 function Sessions() {
+    const { t } = useTranslation();
     const { data: groups } = useFetchData("groups");
     const { data: teachers } = useFetchData("teachers");
     const [allSessions, setAllSessions] = useState([]);
@@ -37,7 +39,7 @@ function Sessions() {
                 return {
                     id: doc.id,
                     ...sessionData,
-                    groupName: groupNames[sessionData.groupId] || 'Grupo no encontrado'
+                    groupName: groupNames[sessionData.groupId] || t('groups.notFound')
                 };
             });
             setAllSessions(sessionsList);
@@ -227,17 +229,17 @@ function Sessions() {
 
     return (
         <RequireAuth>
-            <h1>Sesiones</h1>
+            <h1>{t('sessions.title')}</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchSessions} dbCollection="sessions">
                 {filteredSessions.map(session => (
                     <div key={session.id} className="item-container">
                         <div className="item-data" onClick={() => editSession(session)}>
                             <p className="item-title">{session.name}</p>
-                            <p className="item-detail">{groupNames[session.groupId] || 'Grupo no encontrado'}</p>
+                            <p className="item-detail">{groupNames[session.groupId] || t('groups.notFound')}</p>
                             <p className="item-detail">{session.date}</p>
                         </div>
                         <div className="item-actions">
-                            <button className="item-action-button" onClick={() => handleAssignAttendance(session)}>Modificar asistencia</button>
+                            <button className="item-action-button" onClick={() => handleAssignAttendance(session)}>{t('buttons.modifyAttendance')}</button>
                             <DeleteIcon onClick={() => deleteSession(session.id)} />
                         </div>
                     </div>
@@ -251,23 +253,23 @@ function Sessions() {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 fields={[
-                    { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Fecha', name: 'date', type: 'date' },
+                    { label: t('formFields.name'), name: 'name', type: 'text' },
+                    { label: t('formFields.date'), name: 'date', type: 'date' },
                     {
-                        label: 'Grupo',
+                        label: t('formFields.group'),
                         name: 'groupId',
                         type: 'select',
                         options: groups.map(group => ({ value: group.id, label: group.name })),
                         onChange: handleGroupChange 
                     },
                     {
-                        label: 'Profesor',
+                        label: t('formFields.teacher'),
                         name: 'teacherId',
                         type: 'select',
                         options: teachers.map(teacher => ({ value: teacher.id, label: teacher.name }))
                     }
                 ]}
-                title={editingSession ? 'Editar Sesión' : 'Agregar Sesión'}
+                title={editingSession ? t('sessions.edit') : t('sessions.add')}
             />
             <StudentsListModal
                 showModal={showAttendanceModal}

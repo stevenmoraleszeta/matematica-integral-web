@@ -1,5 +1,6 @@
 import './Scores.css';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -10,6 +11,7 @@ import DataModal from '../../../components/dataModal/DataModal';
 import StudentsListModal from '../../../components/studentsListModal/StudentsListModal';
 
 function Scores() {
+    const { t } = useTranslation();
     const { data: groups } = useFetchData("groups");
     const { data: students } = useFetchData("students");
     const [allScores, setAllScores] = useState([]);
@@ -36,7 +38,7 @@ function Scores() {
                 return {
                     id: doc.id,
                     ...scoreData,
-                    groupName: groupNames[scoreData.groupId] || 'Grupo no encontrado'
+                    groupName: groupNames[scoreData.groupId] || t('groups.notFound')
                 };
             });
             setAllScores(scoresList);
@@ -218,17 +220,17 @@ function Scores() {
 
     return (
         <RequireAuth>
-            <h1>Quices</h1>
+            <h1>{t('scores.title')}</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchScores} dbCollection="scores">
                 {filteredScores.map(score => (
                     <div key={score.id} className="item-container">
                         <div className="item-data" onClick={() => editScore(score)}>
                             <p className="item-title">{score.name}</p>
-                            <p className="item-detail">{groupNames[score.groupId] || 'Grupo no encontrado'}</p>
+                            <p className="item-detail">{groupNames[score.groupId] || t('groups.notFound')}</p>
                             <p className="item-detail">{score.date}</p>
                         </div>
                         <div className="item-actions">
-                            <button className="item-action-button" onClick={() => handleAssignScores(score)}>Modificar calificaciones</button>
+                            <button className="item-action-button" onClick={() => handleAssignScores(score)}>{t('buttons.modifyScores')}</button>
                             <DeleteIcon onClick={() => deleteScore(score.id)} />
                         </div>
                     </div>
@@ -242,17 +244,17 @@ function Scores() {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 fields={[
-                    { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Fecha', name: 'date', type: 'date' },
+                    { label: t('formFields.name'), name: 'name', type: 'text' },
+                    { label: t('formFields.date'), name: 'date', type: 'date' },
                     {
-                        label: 'Grupo',
+                        label: t('formFields.group'),
                         name: 'groupId',
                         type: 'select',
                         options: groups.map(group => ({ value: group.id, label: group.name })),
                         onChange: handleGroupChange 
                     }
                 ]}
-                title={editingScore ? 'Editar Calificaciones' : 'Agregar Calificaciones'}
+                title={editingScore ? t('scores.edit') : t('scores.add')}
             />
             <StudentsListModal
                 showModal={showScoresModal}
