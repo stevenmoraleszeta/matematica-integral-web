@@ -5,60 +5,107 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-    z-index: 1000;
+    z-index: 2000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     background-color: var(--background-color-low-opacity);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeIn var(--transition-base);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .modal-content {
     background-color: var(--component-dark);
-    padding: 30px;
-    border-radius: 12px;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
     max-width: 600px;
     width: 90%;
-    max-height: 80%;
+    max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 4px 8px var(--background-shadow);
+    box-shadow: var(--shadow-xl);
     position: relative;
+    border: 1px solid var(--separator-color);
+    animation: slideUp var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-lg);
+    }
 }
 
 .modal-content h2 {
     margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 24px;
+    margin-bottom: var(--spacing-lg);
+    font-size: 28px;
     color: var(--text-color);
+    font-weight: 700;
+    letter-spacing: -0.4px;
 }
 
 .close {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 30px;
-    color: var(--text-color);
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    font-size: 28px;
+    color: var(--text-secondary);
     cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    line-height: 1;
 }
 
 .close:hover {
-    color: var(--secundary-color);
+    color: var(--text-color);
+    background-color: var(--component-elevated);
+    transform: rotate(90deg);
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-lg);
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 10px;
-    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    font-size: 15px;
 }
 
 .input-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--spacing-sm);
 }
 
 input {
@@ -67,14 +114,25 @@ input {
 
 .whatsapp-button {
     font-size: 22px;
-    color: var(--text-color);
+    color: var(--text-secondary);
     cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
 }
 
 .whatsapp-button:hover {
-    color: var(--secundary-color);
+    color: var(--green-color);
+    background-color: var(--component-elevated);
+    transform: scale(1.1);
 }
 
 .submit-button {
-    margin-top: 20px;
+    margin-top: var(--spacing-lg);
+    width: 100%;
 }

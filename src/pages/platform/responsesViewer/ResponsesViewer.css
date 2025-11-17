@@ -1,39 +1,62 @@
 .responses-viewer-container {
-    padding: 20px;
+    padding: 0;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .response-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ajusta el ancho mínimo y máximo */
-    gap: 10px;
-    padding-bottom: 10vh;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-2xl);
+}
+
+@media (max-width: 768px) {
+    .response-list {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
 }
 
 .response-item {
     background: var(--component-dark);
-    padding: 15px;
-    border-radius: 8px;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all var(--transition-base);
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-sm);
 }
 
 .response-item:hover {
-    transform: scale(1.05);
+    transform: translateY(-4px);
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-lg);
+    background-color: var(--component-elevated);
 }
 
 .charts-container {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-around;
-    padding-bottom: 10vh;
+    margin-top: var(--spacing-xl);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    padding-bottom: var(--spacing-2xl);
+}
+
+@media (max-width: 768px) {
+    .charts-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
 }
 
 .chart-item {
-    flex: 1 1 calc(33.333% - 20px);
-    min-width: 250px;
-    max-width: 400px;
+    background: var(--component-dark);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .modal {
@@ -45,36 +68,78 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: var(--background-color-low-opacity);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 2000;
+    animation: fadeIn var(--transition-base);
 }
 
 .modal-content {
-    padding: 20px;
-    border-radius: 8px;
+    background: var(--component-dark);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
     width: 90%;
     max-width: 600px;
     position: relative;
     overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-xl);
+    animation: slideUp var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-lg);
+    }
 }
 
 .modal-buttons-container {
     display: flex;
-    gap: 10px;
+    gap: var(--spacing-sm);
     justify-content: flex-end;
     align-items: center;
-    margin-top: 20px; 
+    margin-top: var(--spacing-lg);
+    flex-wrap: wrap;
 }
 
 .close-modal {
-    padding: 10px 20px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     cursor: pointer;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 17px;
+    transition: all var(--transition-base);
+}
+
+.close-modal:hover {
+    background-color: var(--primary-color-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
 .delete-response-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
-    border-radius: 5px;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background-color: var(--red-color);
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-weight: 600;
+}
+
+.delete-response-btn:hover {
+    background-color: var(--red-color-darker);
+    transform: scale(1.05);
 }

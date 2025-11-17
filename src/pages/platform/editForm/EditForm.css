@@ -1,138 +1,187 @@
 .question-editor {
-    margin: 20px 0;
-    max-width: 800px;
+    margin: var(--spacing-xl) 0;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
     color: var(--text-color);
+    padding: 0 var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+    .question-editor {
+        padding: 0 var(--spacing-md);
+    }
 }
 
 .question-item {
     background-color: var(--component-dark);
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px var(--background-shadow);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid transparent;
+    transition: all var(--transition-base);
 }
 
 .question-item:hover {
-    box-shadow: 0 1px 5px var(--background-shadow);
-    transform: scale(1.02);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    background-color: var(--component-elevated);
 }
 
 .question-header {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
 }
 
 .question-input {
-    width: 100%;  
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 4px;
-    background-color: var(--background-color);
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 17px;
+    border-radius: var(--radius-md);
+    background-color: var(--component-elevated);
     color: var(--text-color);
+    border: 1px solid transparent;
+    transition: all var(--transition-base);
+}
+
+.question-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-color-light);
 }
 
 .question-type-select {
-    width: 100%;  
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 4px;
-    background-color: var(--background-color);
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 17px;
+    border-radius: var(--radius-md);
+    background-color: var(--component-elevated);
     color: var(--text-color);
+    border: 1px solid transparent;
+    transition: all var(--transition-base);
+}
+
+.question-type-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-color-light);
 }
 
 .options-container {
-    margin-top: 15px;
+    margin-top: var(--spacing-md);
     display: flex;
     flex-direction: column;
-    gap: 10px; 
+    gap: var(--spacing-sm);
 }
 
 .option-item {
     display: flex;
     align-items: center;
-    gap: 10px; 
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background-color: var(--component-elevated);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+}
+
+.option-item:hover {
+    background-color: var(--component-hover);
 }
 
 .option-input {
-    flex:auto;
-    padding: 8px;
-    font-size: 14px;
-    border-radius: 4px;
-    background-color: var(--background-color);
+    flex: auto;
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: var(--radius-md);
+    background-color: var(--component-dark);
     color: var(--text-color);
+    border: 1px solid transparent;
+    transition: all var(--transition-base);
+}
+
+.option-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-color-light);
 }
 
 .question-actions {
     display: flex;
-    gap: 10px;
+    gap: var(--spacing-sm);
     justify-content: flex-end;
     align-items: center;
-    margin-top: 10px;
+    margin-top: var(--spacing-md);
 }
 
 .question-actions button,
 .option-item button {
-    padding: 0;  
+    padding: var(--spacing-xs);
     margin: 0;
-    border: none;  
-    background: none; 
-    cursor: pointer; 
-    color: var(--light-gray);  
-    font-size: 18px;  
-    transition: color 0.2s ease;
-    width: auto; 
-    height: auto; 
-    line-height: 1; 
-    display: inline-flex; 
+    border: none;
+    background: var(--component-elevated);
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 18px;
+    transition: all var(--transition-base);
+    width: 36px;
+    height: 36px;
+    line-height: 1;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; 
+    flex-shrink: 0;
+    border-radius: var(--radius-md);
 }
 
 .question-actions button:hover,
 .option-item button:hover {
-    color: var(--secundary-color); 
+    color: var(--red-color);
+    background-color: rgba(255, 59, 48, 0.1);
+    transform: scale(1.1);
 }
 
 .add-option-btn,
 .add-question-btn {
-    padding: 8px 12px; 
+    padding: 10px 16px;
     cursor: pointer;
     background-color: var(--primary-color);
     color: var(--text-color);
     border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: background-color 0.2s ease;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    transition: all var(--transition-base);
+    letter-spacing: -0.2px;
 }
 
 .add-option-btn:hover,
 .add-question-btn:hover {
-    background-color: var(--primary-color-darker);
+    background-color: var(--primary-color-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
 .add-question-container {
-    margin-top: 20px;
+    margin-top: var(--spacing-xl);
     display: flex;
     justify-content: center;
 }
 
 .add-question-btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 17px;
+    border-radius: var(--radius-md);
     background-color: var(--primary-color);
     color: var(--text-color);
-    transition: background-color 0.2s ease;
+    transition: all var(--transition-base);
+    font-weight: 600;
 }
 
 .add-question-btn:hover {
-    background-color: var(--primary-color-darker);
+    background-color: var(--primary-color-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .question-image-preview {
@@ -159,38 +208,46 @@
 
 .correct-answer-checkbox {
     flex: auto;
-    width: 16px;           /* Tamaño del checkbox */
-    height: 16px;          /* Tamaño del checkbox */
-    cursor: pointer;       /* Cambia el cursor al pasar */
-    accent-color: #007BFF; /* Color del tema, ajusta a tu esquema de colores */
-    border: 1px solid #ccc; /* Bordes claros para cuando no está marcado */
-    background-color: white; /* Fondo blanco para cuando no está marcado */
-    appearance: none;      /* Remueve el estilo del navegador para personalizar */
-    display: inline-block; /* Asegura el tamaño del checkbox */
-    position: relative;    /* Para los estilos de marcado */
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+    border: 2px solid var(--text-tertiary);
+    background-color: var(--component-dark);
+    appearance: none;
+    display: inline-block;
+    position: relative;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+}
+
+.correct-answer-checkbox:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.1);
 }
 
 .correct-answer-checkbox:checked {
-    background-color: #007BFF; /* Fondo azul cuando está marcado */
-    border: 1px solid #007BFF; /* Bordes del mismo color del tema */
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Sombra clara para marcar el estado */
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-color-light);
 }
 
 .correct-answer-checkbox::before {
     content: "";
     display: block;
-    width: 6px;
+    width: 5px;
     height: 10px;
-    border: solid white;
+    border: solid var(--text-color);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
     position: absolute;
-    top: 2px;
-    left: 5px;
-    opacity: 0; /* Invisible si no está marcado */
+    top: 3px;
+    left: 6px;
+    opacity: 0;
+    transition: opacity var(--transition-base);
 }
 
 .correct-answer-checkbox:checked::before {
-    opacity: 1; /* Visible si está marcado */
+    opacity: 1;
 }
 

@@ -141,6 +141,7 @@ function Teachers() {
 
     return (
         <RequireAuth>
+            <h1>Profesores</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchTeachers} dbCollection="teachers">
                 {filteredTeachers.map(teacher => (
                     <div key={teacher.id} onClick={() => editTeacher(teacher)} className="item-container">
