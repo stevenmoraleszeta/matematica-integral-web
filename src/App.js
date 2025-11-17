@@ -1,22 +1,22 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/auth/Login.jsx';
-import UserProfile from './pages/userProfile/UserProfile.jsx';
-import NavBar from './components/navBar/NavBar.jsx';
-import ProjectStatusBanner from './components/projectStatusBanner/ProjectStatusBanner.jsx';
-import PlatformMenu from './pages/platform/platformMenu/PlatformMenu.jsx';
-import Students from './pages/platform/students/Students.jsx';
-import Teachers from './pages/platform/teachers/Teachers.jsx';
-import Groups from './pages/platform/groups/Groups.jsx';
-import Sessions from './pages/platform/sessions/Sessions.jsx';
-import Scores from './pages/platform/scores/Scores.jsx';
-import Reports from './pages/platform/reports/Reports.jsx';
-import MockExams from './pages/platform/mockExams/MockExams.jsx';
-import Homeworks from './pages/platform/homeworks/Homeworks.jsx';
-import Forms from './pages/platform/forms/Forms.jsx';
-import EditForm from './pages/platform/editForm/EditForm.jsx';
-import ResponsesViewer from './pages/platform/responsesViewer/ResponsesViewer.jsx';
-import FormResponse from './pages/platform/formResponse/FormResponse.jsx';
+import Login from './pages/auth/Login';
+import UserProfile from './pages/userProfile/UserProfile';
+import NavBar from './components/navBar/NavBar';
+import ProjectStatusBanner from './components/ProjectStatusBanner/ProjectStatusBanner';
+import PlatformMenu from './pages/platform/platformMenu/PlatformMenu';
+import Students from './pages/platform/students/Students';
+import Teachers from './pages/platform/teachers/Teachers';
+import Groups from './pages/platform/groups/Groups';
+import Sessions from './pages/platform/sessions/Sessions';
+import Scores from './pages/platform/scores/Scores';
+import Reports from './pages/platform/reports/Reports';
+import MockExams from './pages/platform/mockExams/MockExams';
+import Homeworks from './pages/platform/homeworks/Homeworks';
+import Forms from './pages/platform/forms/Forms';
+import EditForm from './pages/platform/editForm/EditForm';
+import ResponsesViewer from './pages/platform/responsesViewer/ResponsesViewer';
+import FormResponse from './pages/platform/formResponse/FormResponse';
 
 function App() {
     return (
@@ -40,7 +40,7 @@ function App() {
                     <Route path="/forms/response/:formId" element={<FormResponse />} />
                     <Route path="/platform/forms/responses/:formId" element={<ResponsesViewer />} />
                     <Route path="/platform/reports" element={<Reports />} />
-                    <Route path="*" element={<Navigate to="/platform" />} />
+                    <Route path="*" element={<Navigate to="/platform" replace />} />
                 </Routes>
             </section>
         </Router>

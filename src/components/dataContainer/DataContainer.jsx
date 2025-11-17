@@ -1,4 +1,3 @@
-import React from 'react';
 import './DataContainer.css';
 import { collection, addDoc } from 'firebase/firestore';
 import { read, utils } from 'xlsx';
@@ -11,28 +10,65 @@ const DataContainer = ({ searchTerm, handleSearch, openModal, fetchFunction, dbC
         if (!file) return;
 
         const confirmUpload = window.confirm("¿Está seguro de que desea cargar estos datos? Esta acción es irreversible.");
-        if (!confirmUpload) return;
+        if (!confirmUpload) {
+            e.target.value = ''; // Reset file input
+            return;
+        }
 
         const reader = new FileReader();
+        
+        reader.onerror = () => {
+            alert("Error al leer el archivo. Por favor, intente de nuevo.");
+            e.target.value = '';
+        };
+
         reader.onload = async (event) => {
-            const data = new Uint8Array(event.target.result);
-            const workbook = read(data, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const jsonData = utils.sheet_to_json(worksheet);
-
-            console.log(jsonData);
-
-            for (const register of jsonData) {
-                try {
-                    await addDoc(collection(db, dbCollection), register);
-                } catch (e) {
-                    console.error("Error adding document from Excel: ", e);
+            try {
+                const data = new Uint8Array(event.target.result);
+                const workbook = read(data, { type: 'array' });
+                
+                if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+                    alert("El archivo no contiene hojas de cálculo válidas.");
+                    e.target.value = '';
+                    return;
                 }
-            }
 
-            await fetchFunction();
-            alert("Los datos han sido cargados exitosamente.");
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = utils.sheet_to_json(worksheet);
+
+                if (!jsonData || jsonData.length === 0) {
+                    alert("El archivo no contiene datos válidos.");
+                    e.target.value = '';
+                    return;
+                }
+
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const register of jsonData) {
+                    try {
+                        await addDoc(collection(db, dbCollection), register);
+                        successCount++;
+                    } catch (error) {
+                        console.error("Error adding document from Excel: ", error);
+                        errorCount++;
+                    }
+                }
+
+                await fetchFunction();
+                e.target.value = ''; // Reset file input
+                
+                if (errorCount > 0) {
+                    alert(`Datos cargados parcialmente. Exitosos: ${successCount}, Errores: ${errorCount}`);
+                } else {
+                    alert(`Los datos han sido cargados exitosamente. Total: ${successCount} registros.`);
+                }
+            } catch (error) {
+                console.error("Error processing file: ", error);
+                alert("Error al procesar el archivo. Por favor, verifique que el formato sea correcto.");
+                e.target.value = '';
+            }
         };
 
         reader.readAsArrayBuffer(file);

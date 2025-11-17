@@ -1,11 +1,15 @@
-import React, { useContext, useState, useEffect, createContext } from "react";
+import { useContext, useState, useEffect, createContext, useCallback } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 
 const AuthContext = createContext();
 
 export function useAuth() {
-    return useContext(AuthContext);
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 }
 
 export function AuthProvider({ children }) {
@@ -13,21 +17,25 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, user => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
+            setLoading(false);
+        }, (error) => {
+            console.error('Auth state change error:', error);
             setLoading(false);
         });
 
         return unsubscribe;
     }, []);
 
-    const updateCurrentUser = (user) => {
+    const updateCurrentUser = useCallback((user) => {
         setCurrentUser(user);
-    };
+    }, []);
 
     const value = {
         currentUser,
         updateCurrentUser,
+        loading,
     };
 
     return (

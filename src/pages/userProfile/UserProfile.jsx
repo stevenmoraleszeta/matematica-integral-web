@@ -1,6 +1,6 @@
-import '../../App.css'
+import '../../App.css';
 import './UserProfile.css';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/auth';
 import { getAuth, updateProfile, updateEmail, signOut } from "firebase/auth";
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -30,10 +30,14 @@ function UserProfile() {
     }, [currentUser]);
 
     const handleLogout = async () => {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            console.error('Failed to log out', error);
+        if (window.confirm("¿Está seguro de que desea cerrar sesión?")) {
+            try {
+                await signOut(auth);
+                navigate('/login');
+            } catch (error) {
+                console.error('Failed to log out:', error);
+                alert('Error al cerrar sesión. Por favor, intente de nuevo.');
+            }
         }
     };
 
@@ -61,16 +65,19 @@ function UserProfile() {
                 navigate('/platform');
             }
         } catch (error) {
-            console.error('Error updating profile', error);
+            console.error('Error updating profile:', error);
+            alert(error.code === 'auth/email-already-in-use' 
+                ? 'Este correo electrónico ya está en uso.' 
+                : 'Error al actualizar el perfil. Por favor, intente de nuevo.');
         }
     };
 
     if (!currentUser) {
-        return <Navigate to="/home" />;
+        return <Navigate to="/platform" replace />;
     }
 
     if (loading) {
-        return <div>Cargando</div>;
+        return <div>Cargando...</div>;
     }
 
     return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -21,7 +21,7 @@ function Teachers() {
     const [searchTerm, setSearchTerm] = useState('');
 
     // Fetch teachers
-    const fetchTeachers = async () => {
+    const fetchTeachers = useCallback(async () => {
         try {
             const teachersSnapshot = await getDocs(collection(db, "teachers"));
             const teachersData = teachersSnapshot.docs.map(doc => ({
@@ -30,44 +30,56 @@ function Teachers() {
             }));
             setAllTeachers(teachersData);
         } catch (error) {
-            console.error("Error fetching teachers: ", error);
+            console.error("Error fetching teachers:", error);
+            alert('Error al cargar los datos. Por favor, recargue la página.');
         }
-    };
-
-    useEffect(() => {
-        fetchTeachers();
     }, []);
 
     useEffect(() => {
-        // Apply filter based on searchTerm
+        fetchTeachers();
+    }, [fetchTeachers]);
+
+    useEffect(() => {
+        if (!searchTerm.trim()) {
+            setFilteredTeachers(allTeachers);
+            return;
+        }
+
+        const searchLower = searchTerm.toLowerCase();
         const filteredList = allTeachers.filter(teacher => {
             if (!teacher) return false;
-            return (
-                (teacher.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (teacher.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (teacher.phone || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (teacher.subject || '').toLowerCase().includes(searchTerm.toLowerCase())
+
+            const searchFields = [
+                teacher.name,
+                teacher.email,
+                teacher.phone,
+                teacher.subject
+            ];
+
+            return searchFields.some(field => 
+                String(field || '').toLowerCase().includes(searchLower)
             );
         });
         setFilteredTeachers(filteredList);
     }, [searchTerm, allTeachers]);
 
-    const validatePhoneNumber = (phoneNumber) => {
-        const phoneRegex = /^\+\d{10,}$/; // Regex for phone number with country code
+    const validatePhoneNumber = useCallback((phoneNumber) => {
+        if (!phoneNumber) return true;
+        const phoneRegex = /^\+\d{10,}$/;
         return phoneRegex.test(phoneNumber);
-    };
+    }, []);
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
-    };
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { phone } = formData;
 
         if (phone && !validatePhoneNumber(phone)) {
-            alert('Número de teléfono inválido. Asegúrate de incluir el código de país.');
+            alert('Número de teléfono inválido. Asegúrate de incluir el código de país (ej: +50612345678).');
             return;
         }
 
@@ -75,13 +87,11 @@ function Teachers() {
             if (editingTeacher) {
                 const teacherRef = doc(db, "teachers", editingTeacher.id);
                 await updateDoc(teacherRef, formData);
-                console.log("Document updated with ID: ", editingTeacher.id);
             } else {
-                const docRef = await addDoc(collection(db, "teachers"), formData);
-                console.log("Document written with ID: ", docRef.id);
+                await addDoc(collection(db, "teachers"), formData);
             }
 
-            await fetchTeachers(); // Refresh teacher data after submit
+            await fetchTeachers();
             setFormData({
                 identificator: '',
                 email: '',
@@ -91,8 +101,9 @@ function Teachers() {
             });
             setEditingTeacher(null);
             setShowModal(false);
-        } catch (e) {
-            console.error("Error adding/updating document: ", e);
+        } catch (error) {
+            console.error("Error adding/updating document:", error);
+            alert('Error al guardar el profesor. Por favor, intente de nuevo.');
         }
     };
 
@@ -125,19 +136,19 @@ function Teachers() {
         setShowModal(true);
     };
 
-    const deleteTeacher = async (teacherId) => {
+    const deleteTeacher = useCallback(async (teacherId) => {
         try {
             await deleteDoc(doc(db, "teachers", teacherId));
-            console.log("Document successfully deleted!");
-            await fetchTeachers(); // Refresh teacher data after delete
+            await fetchTeachers();
         } catch (error) {
-            console.error("Error deleting document: ", error);
+            console.error("Error deleting document:", error);
+            alert('Error al eliminar el profesor. Por favor, intente de nuevo.');
         }
-    };
+    }, [fetchTeachers]);
 
-    const handleSearch = (e) => {
+    const handleSearch = useCallback((e) => {
         setSearchTerm(e.target.value);
-    };
+    }, []);
 
     return (
         <RequireAuth>

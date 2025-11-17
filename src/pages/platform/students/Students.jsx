@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -27,16 +27,18 @@ function Students() {
     const [searchTerm, setSearchTerm] = useState('');
 
     // Fetch students with group names
-    const fetchStudentsWithGroupNames = async () => {
+    const fetchStudentsWithGroupNames = useCallback(async () => {
         try {
-            const groupsSnapshot = await getDocs(collection(db, "groups"));
+            const [groupsSnapshot, studentsSnapshot] = await Promise.all([
+                getDocs(collection(db, "groups")),
+                getDocs(collection(db, "students"))
+            ]);
+
             const groupsMap = {};
             groupsSnapshot.forEach(doc => {
-                const groupData = doc.data();
-                groupsMap[doc.id] = groupData.name;
+                groupsMap[doc.id] = doc.data().name;
             });
 
-            const studentsSnapshot = await getDocs(collection(db, "students"));
             const studentsWithGroupNames = studentsSnapshot.docs.map(doc => {
                 const studentData = doc.data();
                 return {
@@ -46,63 +48,66 @@ function Students() {
                 };
             });
 
-            setAllStudents(studentsWithGroupNames); // Guardar todos los estudiantes
+            setAllStudents(studentsWithGroupNames);
         } catch (error) {
-            console.error("Error fetching students or groups: ", error);
+            console.error("Error fetching students or groups:", error);
+            alert('Error al cargar los datos. Por favor, recargue la página.');
         }
-    };
-
-    useEffect(() => {
-        fetchStudentsWithGroupNames();
     }, []);
 
     useEffect(() => {
-        // Aplicar filtro basado en searchTerm
+        fetchStudentsWithGroupNames();
+    }, [fetchStudentsWithGroupNames]);
+
+    useEffect(() => {
+        if (!searchTerm.trim()) {
+            setFilteredStudents(allStudents);
+            return;
+        }
+
+        const searchLower = searchTerm.toLowerCase();
         const filteredList = allStudents.filter(student => {
             if (!student) return false;
 
-            const name = String(student.name || '').toLowerCase();
-            const email = String(student.email || '').toLowerCase();
-            const phone = String(student.phone || '').toLowerCase();
-            const parentName = String(student.parentName || '').toLowerCase();
-            const parentEmail = String(student.parentEmail || '').toLowerCase();
-            const parentPhone = String(student.parentPhone || '').toLowerCase();
-            const groupName = String(student.groupName || '').toLowerCase();
+            const searchFields = [
+                student.name,
+                student.email,
+                student.phone,
+                student.parentName,
+                student.parentEmail,
+                student.parentPhone,
+                student.groupName
+            ];
 
-            return (
-                name.includes(searchTerm.toLowerCase()) ||
-                email.includes(searchTerm.toLowerCase()) ||
-                phone.includes(searchTerm.toLowerCase()) ||
-                parentName.includes(searchTerm.toLowerCase()) ||
-                parentEmail.includes(searchTerm.toLowerCase()) ||
-                parentPhone.includes(searchTerm.toLowerCase()) ||
-                groupName.includes(searchTerm.toLowerCase())
+            return searchFields.some(field => 
+                String(field || '').toLowerCase().includes(searchLower)
             );
         });
         setFilteredStudents(filteredList);
     }, [searchTerm, allStudents]);
 
 
-    const validatePhoneNumber = (phoneNumber) => {
-        const phoneRegex = /^\+\d{10,}$/; // Regex para número de teléfono con código de país
+    const validatePhoneNumber = useCallback((phoneNumber) => {
+        if (!phoneNumber) return true; // Permitir vacío
+        const phoneRegex = /^\+\d{10,}$/;
         return phoneRegex.test(phoneNumber);
-    };
+    }, []);
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
-    };
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { phone, parentPhone } = formData;
 
         if (phone && !validatePhoneNumber(phone)) {
-            alert('Número de teléfono inválido. Asegúrate de incluir el código de país.');
+            alert('Número de teléfono inválido. Asegúrate de incluir el código de país (ej: +50612345678).');
             return;
         }
         if (parentPhone && !validatePhoneNumber(parentPhone)) {
-            alert('Número de teléfono del encargado inválido. Asegúrate de incluir el código de país.');
+            alert('Número de teléfono del encargado inválido. Asegúrate de incluir el código de país (ej: +50612345678).');
             return;
         }
 
@@ -110,13 +115,11 @@ function Students() {
             if (editingStudent) {
                 const studentRef = doc(db, "students", editingStudent.id);
                 await updateDoc(studentRef, formData);
-                console.log("Document updated with ID: ", editingStudent.id);
             } else {
-                const docRef = await addDoc(collection(db, "students"), formData);
-                console.log("Document written with ID: ", docRef.id);
+                await addDoc(collection(db, "students"), formData);
             }
 
-            await fetchStudentsWithGroupNames(); // Refresh student data after submit
+            await fetchStudentsWithGroupNames();
             setFormData({
                 identificator: '',
                 email: '',
@@ -129,8 +132,9 @@ function Students() {
             });
             setEditingStudent(null);
             setShowModal(false);
-        } catch (e) {
-            console.error("Error adding/updating document: ", e);
+        } catch (error) {
+            console.error("Error adding/updating document:", error);
+            alert('Error al guardar el estudiante. Por favor, intente de nuevo.');
         }
     };
 
@@ -169,19 +173,19 @@ function Students() {
         setShowModal(true);
     };
 
-    const deleteStudent = async (studentId) => {
+    const deleteStudent = useCallback(async (studentId) => {
         try {
             await deleteDoc(doc(db, "students", studentId));
-            console.log("Document successfully deleted!");
-            await fetchStudentsWithGroupNames(); // Refresh student data after delete
+            await fetchStudentsWithGroupNames();
         } catch (error) {
-            console.error("Error deleting document: ", error);
+            console.error("Error deleting document:", error);
+            alert('Error al eliminar el estudiante. Por favor, intente de nuevo.');
         }
-    };
+    }, [fetchStudentsWithGroupNames]);
 
-    const handleSearch = (e) => {
+    const handleSearch = useCallback((e) => {
         setSearchTerm(e.target.value);
-    };
+    }, []);
 
     return (
         <RequireAuth>
