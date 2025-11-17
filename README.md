@@ -231,3 +231,4 @@ For inquiries regarding this project, please contact the author directly.
 
 **Note**: This platform is designed for educational purposes and requires proper Firebase configuration to function correctly.
 
+

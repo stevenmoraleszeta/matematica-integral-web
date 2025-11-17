@@ -80,6 +80,7 @@ function Sessions() {
     useEffect(() => {
         fetchSessions();
         fetchGroups();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

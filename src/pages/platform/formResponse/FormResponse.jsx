@@ -199,7 +199,7 @@ function FormResponse() {
                 {(form.questions || []).map((question, index) => (
                     <div key={index} className={`question-item ${incorrectAnswers.includes(index) ? 'incorrect' : ''}`}>
                         {question.imageUrl && (
-                            <img src={question.imageUrl} alt="Question Image" className="question-image" />
+                            <img src={question.imageUrl} alt="Question" className="question-image" />
                         )}
                         <p>{question.questionText}</p>
                         {question.type === 'text' ? (
@@ -313,6 +313,9 @@ function FormResponse() {
                     <div className="modal-content">
                         <h2>Formulario Inactivo</h2>
                         <p>Este formulario está actualmente inactivo y no acepta respuestas. Contacte con el profesor.</p>
+                        <button onClick={closeInactiveModal} className="modal-button">
+                            Cerrar
+                        </button>
                     </div>
                 </div>
             )}
