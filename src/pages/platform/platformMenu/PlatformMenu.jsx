@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGraduate, faChalkboardTeacher, faUsers, faCalendarAlt, faClipboard, faFileAlt, faFileSignature, faTasks, faFileContract } from '@fortawesome/free-solid-svg-icons'; // Usa faFileContract
 import RequireAuth from "../../../components/RequireAuth";
+import ProjectStatusBanner from "../../../components/ProjectStatusBanner/ProjectStatusBanner.jsx";
 
 function PlatformMenu() {
     // Note: Authentication removed - project is publicly accessible
@@ -25,6 +26,7 @@ function PlatformMenu() {
 
     return (
         <RequireAuth>
+            <ProjectStatusBanner />
             <div className="platform-container">
                 {filteredItems.map((item) => (
                     <Link key={item.id} to={item.path} className="platform-item">
