@@ -8,7 +8,6 @@ import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
 
 function Students() {
-    const students = useFetchData("students");
     const groups = useFetchData("groups");
 
     const [allStudents, setAllStudents] = useState([]); // Estado para todos los estudiantes

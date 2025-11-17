@@ -80,6 +80,7 @@ function Homeworks() {
     useEffect(() => {
         fetchHomeworks();
         fetchGroups();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
