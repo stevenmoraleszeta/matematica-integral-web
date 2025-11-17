@@ -10,14 +10,48 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// All values must be provided via environment variables for security
+
+// Validate that all required environment variables are set
+const requiredEnvVars = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+};
+
+// Check for missing environment variables
+const envVarNames = {
+  apiKey: 'REACT_APP_FIREBASE_API_KEY',
+  authDomain: 'REACT_APP_FIREBASE_AUTH_DOMAIN',
+  projectId: 'REACT_APP_FIREBASE_PROJECT_ID',
+  storageBucket: 'REACT_APP_FIREBASE_STORAGE_BUCKET',
+  messagingSenderId: 'REACT_APP_FIREBASE_MESSAGING_SENDER_ID',
+  appId: 'REACT_APP_FIREBASE_APP_ID',
+};
+
+const missingVars = Object.entries(requiredEnvVars)
+  .filter(([key, value]) => !value)
+  .map(([key]) => envVarNames[key]);
+
+if (missingVars.length > 0) {
+  throw new Error(
+    `Missing required Firebase environment variables: ${missingVars.join(', ')}\n` +
+    `Please check your .env file or environment configuration.\n` +
+    `See .env.example for reference.`
+  );
+}
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCjRdfqECn2v2w1LMOiRqyuvuy82whYfEA",
-  authDomain: "miplatform-43425.firebaseapp.com",
-  projectId: "miplatform-43425",
-  storageBucket: "miplatform-43425.firebasestorage.app",
-  messagingSenderId: "451276673742",
-  appId: "1:451276673742:web:1b33a7813a05430574369f",
-  measurementId: "G-T9K5XXSYPK"
+  apiKey: requiredEnvVars.apiKey,
+  authDomain: requiredEnvVars.authDomain,
+  projectId: requiredEnvVars.projectId,
+  storageBucket: requiredEnvVars.storageBucket,
+  messagingSenderId: requiredEnvVars.messagingSenderId,
+  appId: requiredEnvVars.appId,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID // Optional
 };
 
 // Initialize Firebase
