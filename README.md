@@ -3,7 +3,7 @@
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-10.12.4-FFCA28?logo=firebase)](https://firebase.google.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red)](LICENSE)
-[![Node](https://img.shields.io/badge/Node-%3E%3D14.0.0-brightgreen?logo=node.js)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/Node-%3E%3D18.0.0-brightgreen?logo=node.js)](https://nodejs.org/)
 
 A comprehensive educational management platform built with React and Firebase for managing students, teachers, groups, sessions, assessments, and academic reporting.
 
@@ -28,6 +28,9 @@ MI Platform (Matemática Integral Platform) is a full-stack web application desi
 - 🗄️ **Data Management**: Advanced tools for data manipulation, bulk deletion, and test data generation
 - 🔐 **Secure Authentication**: Firebase Authentication with email/password
 - ☁️ **Cloud Storage**: Firebase Firestore for data storage
+- 🌐 **Internationalization**: Full i18n support (Spanish/English) with language switching
+- 🎨 **Theme Support**: Dark/Light theme with system preference detection
+- 🛡️ **Security Service**: Client-side rate limiting, input validation, and data sanitization
 
 ## 🚀 Technologies Used
 
@@ -40,6 +43,8 @@ MI Platform (Matemática Integral Platform) is a full-stack web application desi
 - **React Chart.js 2** (5.2.0) - Chart.js React wrapper
 - **React Modal** (3.16.1) - Modal components
 - **XLSX** (0.18.5) - Excel file processing
+- **i18next** (25.6.2) - Internationalization framework
+- **React i18next** (16.3.3) - React bindings for i18next
 
 ### Backend & Services
 - **Firebase Authentication** - User authentication
@@ -51,11 +56,16 @@ MI Platform (Matemática Integral Platform) is a full-stack web application desi
 - **Jest** - Testing framework
 - **React Testing Library** - Component testing
 
+### Additional Features
+- **Internationalization (i18n)**: Full support for Spanish and English with automatic language detection
+- **Theme System**: Dark/Light mode with system preference detection and persistent user preferences
+- **Security Service**: Client-side rate limiting, input validation, and data sanitization
+
 ## ⚙️ Installation
 
 ### Prerequisites
 
-- Node.js (>= 14.0.0)
+- Node.js (>= 18.0.0) - LTS version recommended
 - npm or yarn
 - Firebase project with Authentication, Firestore, and Storage enabled
 
@@ -63,9 +73,10 @@ MI Platform (Matemática Integral Platform) is a full-stack web application desi
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/matematica-integral-web.git
+   git clone <repository-url>
    cd matematica-integral-web
    ```
+   **Note:** Replace `<repository-url>` with the actual repository URL or remove this step if the repository is not public.
 
 2. **Install dependencies**
    ```bash
@@ -100,6 +111,20 @@ MI Platform (Matemática Integral Platform) is a full-stack web application desi
 
 ## 🧩 Project Structure
 
+### Performance Optimizations
+
+The application uses React lazy loading for all page components to improve initial load time and reduce bundle size. All routes are loaded on-demand using `React.lazy()` and `Suspense`, with a custom loading fallback component.
+
+### Key Components
+
+- **ProjectStatusBanner**: Displays important project status information to users (shown in platform menu)
+- **SecureDeleteConfirm**: Provides secure confirmation dialogs for destructive operations
+- **NavBar**: Main navigation component with language and theme switchers
+- **DataContainer**: Reusable component for displaying and managing data lists
+- **DataModal**: Modal component for creating/editing data entries
+
+### Directory Structure
+
 ```
 matematica-integral-web/
 ├── public/                 # Static assets
@@ -107,20 +132,30 @@ matematica-integral-web/
 │   ├── manifest.json      # PWA manifest
 │   └── robots.txt         # SEO configuration
 ├── src/
+│   ├── assets/            # Static assets
+│   │   └── img/            # Image assets
 │   ├── components/        # Reusable components
 │   │   ├── dataContainer/
 │   │   ├── dataModal/
 │   │   ├── deleteIcon/
 │   │   ├── fieldMapingModal/
 │   │   ├── navBar/
+│   │   ├── ProjectStatusBanner/
+│   │   ├── SecureDeleteConfirm/
 │   │   ├── studentsListModal/
 │   │   └── RequireAuth.js
 │   ├── contexts/          # React contexts
-│   │   └── auth.js        # Authentication context
+│   │   ├── auth.js        # Authentication context
+│   │   ├── language.js    # Language/i18n context
+│   │   └── theme.js       # Theme (dark/light) context
 │   ├── firebase/          # Firebase configuration
 │   │   └── firebase.js    # Firebase initialization
 │   ├── hooks/             # Custom React hooks
-│   │   └── useFetchData.js
+│   │   ├── useFetchData.js
+│   │   └── useSecurity.js # Security operations hook
+│   ├── locales/           # Translation files
+│   │   ├── en.json        # English translations
+│   │   └── es.json        # Spanish translations
 │   ├── pages/             # Page components
 │   │   ├── auth/          # Authentication pages
 │   │   │   └── Login.jsx
@@ -140,6 +175,9 @@ matematica-integral-web/
 │   │   │   ├── students/
 │   │   │   └── teachers/
 │   │   └── userProfile/   # User profile page
+│   ├── services/          # Service modules
+│   │   └── securityService.js  # Security and validation service
+│   ├── i18n.js            # i18next configuration
 │   ├── App.js             # Main application component
 │   ├── App.css            # Global styles
 │   └── index.js           # Application entry point
@@ -558,11 +596,27 @@ npm test
 - Environment variables used for sensitive configuration
 - Firestore security rules should be configured appropriately
 
+### Client-Side Security Features
+
+The platform includes a comprehensive security service (`src/services/securityService.js`) that provides:
+
+- **Rate Limiting**: Prevents abuse with configurable limits per operation type
+  - CREATE: 10 operations per minute
+  - UPDATE: 20 operations per minute
+  - DELETE: 5 operations per minute
+  - TOTAL: 30 operations per minute
+- **Input Validation**: Sanitizes and validates all user inputs
+- **Data Sanitization**: Removes potentially dangerous content (scripts, event handlers, etc.)
+- **Cooldown Periods**: Enforces delays between destructive operations
+- **Size Limits**: Prevents oversized data submissions
+
+The `useSecurity` hook (`src/hooks/useSecurity.js`) provides a convenient interface for secure CRUD operations throughout the application.
+
 ## 📜 License
 
 This project is proprietary software. All rights reserved.
 
-Copyright (c) 2024 Steven Morales Fallas
+Copyright (c) 2025 Steven Morales Fallas
 
 **All rights reserved.** Redistribution, modification, reproduction, sublicensing, or any form of transaction (including commercial, educational, or promotional use) involving this repository, its source code, or derived works is strictly prohibited without the explicit and personal written authorization of the Lead Developer, Steven Morales Fallas.
 
