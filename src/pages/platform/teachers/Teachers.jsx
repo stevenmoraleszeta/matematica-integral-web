@@ -58,11 +58,6 @@ function Teachers() {
         setFilteredTeachers(filteredList);
     }, [searchTerm, allTeachers]);
 
-    const validatePhoneNumber = (phoneNumber) => {
-        const phoneRegex = /^\+\d{10,}$/; // Regex for phone number with country code
-        return phoneRegex.test(phoneNumber);
-    };
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));

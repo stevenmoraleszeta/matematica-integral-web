@@ -13,6 +13,11 @@ export function useTheme() {
 export function ThemeProvider({ children }) {
     // Función para obtener el tema inicial
     const getInitialTheme = () => {
+        // Verificar si estamos en un entorno de navegador
+        if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+            return 'light'; // Valor por defecto para SSR/build
+        }
+        
         // Primero verificar si hay una preferencia guardada en localStorage
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {

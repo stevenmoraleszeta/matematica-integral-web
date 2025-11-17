@@ -55,7 +55,7 @@ function Students() {
         } catch (error) {
             console.error("Error fetching students or groups: ", error);
         }
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         fetchStudentsWithGroupNames();
@@ -79,12 +79,6 @@ function Students() {
             );
         });
     }, [searchTerm, allStudents]);
-
-
-    const validatePhoneNumber = useCallback((phoneNumber) => {
-        const phoneRegex = /^\+\d{10,}$/;
-        return phoneRegex.test(phoneNumber);
-    }, []);
 
     const handleChange = useCallback((e) => {
         const { name, value } = e.target;
@@ -233,7 +227,7 @@ function Students() {
         { label: t('formFields.parentEmail'), name: 'parentEmail', type: 'email' },
         { label: t('formFields.parentPhone'), name: 'parentPhone', type: 'text' },
         { label: t('formFields.group'), name: 'groupId', type: 'select', options: groups.map(group => ({ value: group.id, label: group.name })) }
-    ], [groups]);
+    ], [groups, t]);
 
     return (
         <RequireAuth>

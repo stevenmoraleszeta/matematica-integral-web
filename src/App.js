@@ -2,7 +2,7 @@ import './App.css';
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import NavBar from './components/navBar/NavBar.jsx';
+import NavBar from './components/navBar/NavBar';
 
 // Lazy load pages for better performance
 const Login = lazy(() => import('./pages/auth/Login.jsx'));

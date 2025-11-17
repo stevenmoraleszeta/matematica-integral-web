@@ -14,6 +14,11 @@ export function useLanguage() {
 export function LanguageProvider({ children }) {
     // Función para obtener el idioma inicial
     const getInitialLanguage = () => {
+        // Verificar si estamos en un entorno de navegador
+        if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+            return 'es'; // Valor por defecto para SSR/build
+        }
+        
         // Primero verificar si hay una preferencia guardada en localStorage
         const savedLanguage = localStorage.getItem('language');
         if (savedLanguage && (savedLanguage === 'es' || savedLanguage === 'en')) {
@@ -21,13 +26,15 @@ export function LanguageProvider({ children }) {
         }
         
         // Si no hay preferencia guardada, detectar el idioma del navegador
-        const browserLanguage = navigator.language || navigator.userLanguage;
-        
-        // Detectar si el navegador está en español o inglés
-        if (browserLanguage.startsWith('es')) {
-            return 'es';
-        } else if (browserLanguage.startsWith('en')) {
-            return 'en';
+        if (typeof navigator !== 'undefined') {
+            const browserLanguage = navigator.language || navigator.userLanguage;
+            
+            // Detectar si el navegador está en español o inglés
+            if (browserLanguage.startsWith('es')) {
+                return 'es';
+            } else if (browserLanguage.startsWith('en')) {
+                return 'en';
+            }
         }
         
         // Por defecto español si no se puede detectar
