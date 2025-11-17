@@ -1,4 +1,4 @@
-.project-status-banner {
+.status-banner {
     background: linear-gradient(135deg, var(--secundary-color) 0%, var(--secundary-color-hover) 100%);
     color: var(--background-color);
     padding: var(--spacing-md) var(--spacing-lg);
@@ -19,7 +19,7 @@
 }
 
 @media (max-width: 768px) {
-    .project-status-banner {
+    .status-banner {
         margin-top: 0;
         margin-left: calc(-1 * var(--spacing-md));
         margin-right: calc(-1 * var(--spacing-md));
@@ -31,7 +31,7 @@
 }
 
 @media (max-width: 480px) {
-    .project-status-banner {
+    .status-banner {
         margin-top: 0;
         margin-left: calc(-1 * var(--spacing-sm));
         margin-right: calc(-1 * var(--spacing-sm));
@@ -47,13 +47,5 @@
 .banner-content strong {
     font-weight: 700;
     letter-spacing: -0.3px;
-}
-
-@media (max-width: 768px) {
-    .project-status-banner {
-        padding: var(--spacing-sm) var(--spacing-md);
-        font-size: 14px;
-        border-radius: 0;
-    }
 }
 
