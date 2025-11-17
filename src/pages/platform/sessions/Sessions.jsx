@@ -9,9 +9,12 @@ import DataContainer from '../../../components/dataContainer/DataContainer';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
 import StudentsListModal from '../../../components/studentsListModal/StudentsListModal';
+import SecureDeleteConfirm from '../../../components/SecureDeleteConfirm/SecureDeleteConfirm';
+import useSecurity from '../../../hooks/useSecurity';
 
 function Sessions() {
     const { t } = useTranslation();
+    const { secureCreate, secureUpdate, secureDelete } = useSecurity();
     const { data: groups } = useFetchData("groups");
     const { data: teachers } = useFetchData("teachers");
     const [allSessions, setAllSessions] = useState([]);
@@ -30,6 +33,7 @@ function Sessions() {
     const [editingSession, setEditingSession] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [groupNames, setGroupNames] = useState({});
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
 
     const fetchSessions = async () => {
         try {
@@ -123,12 +127,25 @@ function Sessions() {
         e.preventDefault();
         try {
             if (editingSession) {
-                const sessionRef = doc(db, "sessions", editingSession.id);
-                await updateDoc(sessionRef, formData);
-                console.log("Document updated with ID: ", editingSession.id);
+                await secureUpdate(
+                    formData,
+                    'sessions',
+                    async (sanitizedData) => {
+                        const sessionRef = doc(db, "sessions", editingSession.id);
+                        await updateDoc(sessionRef, sanitizedData);
+                        console.log("Document updated with ID: ", editingSession.id);
+                    }
+                );
             } else {
-                const docRef = await addDoc(collection(db, "sessions"), formData);
-                console.log("Document written with ID: ", docRef.id);
+                await secureCreate(
+                    formData,
+                    'sessions',
+                    async (sanitizedData) => {
+                        const docRef = await addDoc(collection(db, "sessions"), sanitizedData);
+                        console.log("Document written with ID: ", docRef.id);
+                        return docRef;
+                    }
+                );
             }
             await fetchSessions();
             setFormData({
@@ -143,6 +160,7 @@ function Sessions() {
             setShowModal(false);
         } catch (e) {
             console.error("Error adding/updating document: ", e);
+            alert(`Error: ${e.message}`);
         }
     };
 
@@ -183,13 +201,28 @@ function Sessions() {
         setShowModal(true);
     };
 
-    const deleteSession = async (sessionId) => {
+    const deleteSession = (sessionId) => {
+        const session = allSessions.find(s => s.id === sessionId);
+        setDeleteConfirm({ id: sessionId, name: session?.name || 'esta sesión' });
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!deleteConfirm) return;
+        
         try {
-            await deleteDoc(doc(db, "sessions", sessionId));
-            console.log("Document successfully deleted!");
-            await fetchSessions();
+            await secureDelete(
+                deleteConfirm.name,
+                async () => {
+                    await deleteDoc(doc(db, "sessions", deleteConfirm.id));
+                    console.log("Document successfully deleted!");
+                    await fetchSessions();
+                }
+            );
+            setDeleteConfirm(null);
         } catch (error) {
             console.error("Error deleting document: ", error);
+            alert(`Error al eliminar: ${error.message}`);
+            setDeleteConfirm(null);
         }
     };
 
@@ -216,12 +249,19 @@ function Sessions() {
     const handleSaveAttendance = async () => {
         if (editingSession) {
             try {
-                const sessionRef = doc(db, "sessions", editingSession.id);
-                await updateDoc(sessionRef, { attendance: formData.attendance });
-                console.log("Asistencia actualizada en el documento con ID: ", editingSession.id);
-                await fetchSessions(); // Actualiza la lista de sesiones después de guardar
+                await secureUpdate(
+                    { attendance: formData.attendance },
+                    'sessions',
+                    async (sanitizedData) => {
+                        const sessionRef = doc(db, "sessions", editingSession.id);
+                        await updateDoc(sessionRef, sanitizedData);
+                        console.log("Asistencia actualizada en el documento con ID: ", editingSession.id);
+                        await fetchSessions(); // Actualiza la lista de sesiones después de guardar
+                    }
+                );
             } catch (e) {
                 console.error("Error al actualizar la asistencia: ", e);
+                alert(`Error: ${e.message}`);
             }
         }
         setShowAttendanceModal(false);
@@ -280,6 +320,15 @@ function Sessions() {
                 handleSave={handleSaveAttendance}
                 mode="attendance"
             />
+
+            {deleteConfirm && (
+                <SecureDeleteConfirm
+                    itemName={deleteConfirm.name}
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setDeleteConfirm(null)}
+                    message={t('sessions.deleteConfirm')}
+                />
+            )}
         </RequireAuth>
     );
 }

@@ -4,14 +4,18 @@ import RequireAuth from '../../../components/RequireAuth';
 import DataContainer from '../../../components/dataContainer/DataContainer';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
+import SecureDeleteConfirm from '../../../components/SecureDeleteConfirm/SecureDeleteConfirm';
+import useSecurity from '../../../hooks/useSecurity';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase'; // Asegúrate de que la ruta sea correcta
 
 function Groups() {
     const { t } = useTranslation();
+    const { secureCreate, secureUpdate, secureDelete } = useSecurity();
     const [groups, setGroups] = useState([]);
     const [teachers, setTeachers] = useState([]);
     const [teacherMap, setTeacherMap] = useState({});
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
 
     // Custom hook to fetch data
     const fetchData = useCallback(async () => {
@@ -85,12 +89,25 @@ function Groups() {
 
         try {
             if (editingGroup) {
-                const groupRef = doc(db, "groups", editingGroup.id);
-                await updateDoc(groupRef, formData);
-                console.log("Document updated with ID: ", editingGroup.id);
+                await secureUpdate(
+                    formData,
+                    'groups',
+                    async (sanitizedData) => {
+                        const groupRef = doc(db, "groups", editingGroup.id);
+                        await updateDoc(groupRef, sanitizedData);
+                        console.log("Document updated with ID: ", editingGroup.id);
+                    }
+                );
             } else {
-                const docRef = await addDoc(collection(db, "groups"), formData);
-                console.log("Document written with ID: ", docRef.id);
+                await secureCreate(
+                    formData,
+                    'groups',
+                    async (sanitizedData) => {
+                        const docRef = await addDoc(collection(db, "groups"), sanitizedData);
+                        console.log("Document written with ID: ", docRef.id);
+                        return docRef;
+                    }
+                );
             }
 
             // Refresh group data after submit
@@ -106,6 +123,7 @@ function Groups() {
             setShowModal(false);
         } catch (e) {
             console.error("Error adding/updating document: ", e);
+            alert(`Error: ${e.message}`);
         }
     };
 
@@ -138,14 +156,29 @@ function Groups() {
         setShowModal(true);
     };
 
-    const deleteGroup = async (groupId) => {
+    const deleteGroup = (groupId) => {
+        const group = groups.find(g => g.id === groupId);
+        setDeleteConfirm({ id: groupId, name: group?.name || 'este grupo' });
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!deleteConfirm) return;
+        
         try {
-            await deleteDoc(doc(db, "groups", groupId));
-            console.log("Document successfully deleted!");
-            // Refresh group data after delete
-            await fetchData(); // Fetch updated data
+            await secureDelete(
+                deleteConfirm.name,
+                async () => {
+                    await deleteDoc(doc(db, "groups", deleteConfirm.id));
+                    console.log("Document successfully deleted!");
+                    // Refresh group data after delete
+                    await fetchData(); // Fetch updated data
+                }
+            );
+            setDeleteConfirm(null);
         } catch (error) {
             console.error("Error deleting document: ", error);
+            alert(`Error al eliminar: ${error.message}`);
+            setDeleteConfirm(null);
         }
     };
 
@@ -192,6 +225,15 @@ function Groups() {
                 ]}
                 title={editingGroup ? t('groups.edit') : t('groups.add')}
             />
+
+            {deleteConfirm && (
+                <SecureDeleteConfirm
+                    itemName={deleteConfirm.name}
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setDeleteConfirm(null)}
+                    message={t('groups.deleteConfirm')}
+                />
+            )}
         </RequireAuth>
     );
 }

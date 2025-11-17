@@ -1,0 +1,165 @@
+.secure-delete-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--background-color-low-opacity);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn var(--transition-base);
+  transition: background-color var(--transition-theme);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.secure-delete-modal {
+  background: var(--component-elevated);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  max-width: 400px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp var(--transition-base) ease-out;
+  border: 0.5px solid var(--separator-color);
+  transition: background-color var(--transition-theme),
+              border-color var(--transition-theme),
+              box-shadow var(--transition-theme);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.secure-delete-modal h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--red-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+  transition: color var(--transition-theme);
+}
+
+.secure-delete-message {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--text-color);
+  line-height: 1.5;
+  transition: color var(--transition-theme);
+}
+
+.secure-delete-warning {
+  margin: var(--spacing-sm) 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--yellow-color-light);
+  border-left: 4px solid var(--yellow-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  transition: background-color var(--transition-theme),
+              border-color var(--transition-theme),
+              color var(--transition-theme);
+}
+
+[data-theme="light"] .secure-delete-warning {
+  background-color: rgba(255, 204, 0, 0.15);
+  color: #856404;
+}
+
+.secure-delete-input {
+  width: 100%;
+  padding: var(--spacing-sm);
+  margin: var(--spacing-md) 0;
+  border: 2px solid var(--separator-opaque);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  background-color: var(--background-secondary);
+  color: var(--text-color);
+  transition: border-color var(--transition-base),
+              background-color var(--transition-theme),
+              color var(--transition-theme);
+  box-sizing: border-box;
+}
+
+.secure-delete-input:focus {
+  outline: none;
+  border-color: var(--red-color);
+  background-color: var(--component-elevated);
+}
+
+.secure-delete-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.secure-delete-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+}
+
+.secure-delete-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-base),
+              color var(--transition-base),
+              transform var(--transition-fast);
+}
+
+.secure-delete-btn:active {
+  transform: scale(0.98);
+}
+
+.secure-delete-btn-cancel {
+  background-color: var(--component-dark);
+  color: var(--text-color);
+}
+
+.secure-delete-btn-cancel:hover {
+  background-color: var(--component-hover);
+}
+
+[data-theme="light"] .secure-delete-btn-cancel {
+  background-color: var(--background-tertiary);
+}
+
+[data-theme="light"] .secure-delete-btn-cancel:hover {
+  background-color: var(--component-hover);
+}
+
+.secure-delete-btn-confirm {
+  background-color: var(--red-color);
+  color: white;
+}
+
+.secure-delete-btn-confirm:hover:not(.secure-delete-btn-disabled) {
+  background-color: var(--red-color-darker);
+}
+
+.secure-delete-btn-disabled {
+  background-color: var(--background-tertiary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
