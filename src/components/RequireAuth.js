@@ -1,16 +1,10 @@
 import React from 'react';
-import { useAuth } from '../contexts/auth';
-import { Navigate } from 'react-router-dom';
+// Note: Authentication requirement removed - project is now publicly accessible
+// This project was paused over a year ago by the client academy due to resource issues
+// and we have full permission to show or distribute it.
 
 const RequireAuth = ({ children }) => {
-    const { currentUser } = useAuth();
-
-    if (!currentUser) {
-        // Si no está autenticado, redirige a la página de login
-        return <Navigate to="/login" />;
-    }
-
-    // Si está autenticado, renderiza el contenido del componente hijo
+    // Allow access without authentication - project is publicly accessible
     return children;
 };
 

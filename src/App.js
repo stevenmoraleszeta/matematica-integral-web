@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/auth/Login.jsx';
 import UserProfile from './pages/userProfile/UserProfile.jsx';
 import NavBar from './components/navBar/NavBar.jsx';
+import ProjectStatusBanner from './components/projectStatusBanner/ProjectStatusBanner.jsx';
 import PlatformMenu from './pages/platform/platformMenu/PlatformMenu.jsx';
 import Students from './pages/platform/students/Students.jsx';
 import Teachers from './pages/platform/teachers/Teachers.jsx';
@@ -20,6 +21,7 @@ import FormResponse from './pages/platform/formResponse/FormResponse.jsx';
 function App() {
     return (
         <Router>
+            <ProjectStatusBanner />
             <NavBar />
             <section className="app">
                 <Routes>
@@ -38,7 +40,7 @@ function App() {
                     <Route path="/forms/response/:formId" element={<FormResponse />} />
                     <Route path="/platform/forms/responses/:formId" element={<ResponsesViewer />} />
                     <Route path="/platform/reports" element={<Reports />} />
-                    <Route path="*" element={<Navigate to="/login" />} />
+                    <Route path="*" element={<Navigate to="/platform" />} />
                 </Routes>
             </section>
         </Router>

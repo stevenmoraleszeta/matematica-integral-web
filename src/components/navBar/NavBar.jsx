@@ -20,7 +20,7 @@ function NavBar() {
     return (
         <div className="topnav" id="myTopnav">
             <div className="left-section">
-                <Link className='navbar-link' to={currentUser ? "/platform" : "/login"}>
+                <Link className='navbar-link' to="/platform">
                     Plataforma
                 </Link>
             </div>

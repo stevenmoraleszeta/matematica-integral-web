@@ -11,6 +11,10 @@ A comprehensive educational management platform built with React and Firebase fo
 
 MI Platform (Matemática Integral Platform) is a full-stack web application designed to streamline educational administration and learning management. The platform provides tools for managing students, teachers, groups, class sessions, quizzes, mock exams, homework assignments, forms, and comprehensive reporting.
 
+### ⚠️ Project Status
+
+**Important Note:** This project was paused over a year ago by the client academy due to resource issues. The client has given full permission to show or distribute this project. The platform is now publicly accessible without requiring authentication for demonstration purposes.
+
 ### Key Features
 
 - 👥 **User Management**: Role-based access control for students and teachers
@@ -195,6 +199,8 @@ npm test
 - `npm run eject` - Eject from Create React App (irreversible)
 
 ## 🔒 Security
+
+**Note:** Authentication has been disabled for public demonstration purposes. In a production environment, the following security measures should be implemented:
 
 - Firebase Authentication handles user authentication
 - Role-based access control implemented

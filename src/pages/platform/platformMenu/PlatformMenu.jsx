@@ -5,10 +5,9 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGraduate, faChalkboardTeacher, faUsers, faCalendarAlt, faClipboard, faFileAlt, faFileSignature, faTasks, faFileContract } from '@fortawesome/free-solid-svg-icons'; // Usa faFileContract
 import RequireAuth from "../../../components/RequireAuth";
-import { useAuth } from '../../../contexts/auth';
 
 function PlatformMenu() {
-    const { currentUser } = useAuth();
+    // Note: Authentication removed - project is publicly accessible
 
     const items = [
         { id: 1, label: "Estudiantes", path: "/platform/students", icon: faUserGraduate, alwaysVisible: true },
@@ -22,7 +21,8 @@ function PlatformMenu() {
         { id: 9, label: "Reportar", path: "/platform/reports", icon: faFileAlt, emails: ["veronicagonzalez@matematicaintegralcr.com", "administracion@matematicaintegralcr.com"] },
     ];
 
-    const filteredItems = items.filter(item => item.alwaysVisible || (item.emails && item.emails.includes(currentUser?.email)));
+    // Show all items - authentication requirement removed for public access
+    const filteredItems = items;
 
     return (
         <RequireAuth>
