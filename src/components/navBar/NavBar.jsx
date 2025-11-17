@@ -3,6 +3,8 @@ import '../../App.css';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome } from '@fortawesome/free-solid-svg-icons';
 import defaultProfileImage from '../../assets/img/defaultProfileImage.jpg';
 
 function NavBar() {
@@ -15,8 +17,8 @@ function NavBar() {
     return (
         <div className="topnav" id="myTopnav">
             <div className="left-section">
-                <Link className='navbar-link' to="/platform">
-                    Plataforma
+                <Link className='navbar-link' to="/platform" title="Plataforma">
+                    <FontAwesomeIcon icon={faHome} className="navbar-icon" />
                 </Link>
             </div>
             <div className="right-section">

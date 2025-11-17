@@ -1,9 +1,24 @@
 .delete-icon {
     float: right;
-    color: var(--text-color);
+    color: var(--text-secondary);
     cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
 }
 
 .delete-icon:hover {
-    color: var(--secundary-color);
+    color: var(--red-color);
+    background-color: rgba(255, 59, 48, 0.1);
+    transform: scale(1.1);
+}
+
+.delete-icon:active {
+    transform: scale(0.95);
 }

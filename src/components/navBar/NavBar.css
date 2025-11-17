@@ -1,21 +1,33 @@
 .topnav {
-  background-color: var(--component-dark);
-  display: flex; 
-  align-items: center; 
+  background-color: rgba(28, 28, 30, 0.8);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   position: fixed;
-  top: 0; 
+  top: 0;
   left: 0;
   right: 0;
-  height: 7vh; 
-  z-index: 1000; 
-  padding: 0 10px; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+  height: 48px;
+  z-index: 1000;
+  padding: 0 var(--spacing-lg);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-base);
+}
+
+@media (max-width: 768px) {
+  .topnav {
+    padding: 0 var(--spacing-md);
+    height: 44px;
+  }
 }
 
 .left-section, .right-section {
   display: flex;
   align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .left-section {
@@ -32,26 +44,59 @@
   align-items: center;
   color: var(--text-color);
   text-decoration: none;
+  transition: all var(--transition-base);
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: -0.24px;
 }
 
 .profile-link {
-  padding: 0; 
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+}
+
+.profile-link:hover {
+  background-color: var(--component-hover);
+  transform: scale(1.05);
+}
+
+.navbar-icon {
+  font-size: 20px;
+  color: var(--text-color);
+  transition: all var(--transition-base);
+}
+
+.navbar-link:hover .navbar-icon {
+  color: var(--primary-color);
+  transform: scale(1.1);
 }
 
 .profile-image {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover; 
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-base);
+}
+
+.profile-link:hover .profile-image {
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .navbar-link {
-  padding: 10px 12px; 
-  border-radius: 5px; 
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
 }
 
 .navbar-link:hover {
-  background-color: var(--secundary-color); 
+  background-color: var(--component-hover);
   color: var(--text-color);
-  transition: background-color 0.3s; 
 }
