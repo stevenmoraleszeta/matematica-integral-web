@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGraduate, faChalkboardTeacher, faUsers, faCalendarAlt, faClipboard, faFileAlt, faFileSignature, faTasks, faFileContract } from '@fortawesome/free-solid-svg-icons'; // Usa faFileContract
 import RequireAuth from "../../../components/RequireAuth";
-import ProjectStatusBanner from "../../../components/ProjectStatusBanner/ProjectStatusBanner.jsx";
+import ProjectStatusBanner from "../../../components/ProjectStatusBanner/ProjectStatusBanner";
 
 function PlatformMenu() {
     const { t } = useTranslation();
