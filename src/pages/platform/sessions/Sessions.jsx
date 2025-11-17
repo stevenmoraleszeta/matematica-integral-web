@@ -227,6 +227,7 @@ function Sessions() {
 
     return (
         <RequireAuth>
+            <h1>Sesiones</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchSessions} dbCollection="sessions">
                 {filteredSessions.map(session => (
                     <div key={session.id} className="item-container">

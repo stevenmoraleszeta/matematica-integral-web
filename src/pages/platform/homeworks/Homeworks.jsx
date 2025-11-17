@@ -231,6 +231,7 @@ function Homeworks() {
 
     return (
         <RequireAuth>
+            <h1>Tareas</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchHomeworks} dbCollection="homeworks">
                 {filteredHomeworks.map(homework => (
                     <div key={homework.id} className="item-container">

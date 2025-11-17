@@ -148,6 +148,7 @@ function Forms() {
 
     return (
         <RequireAuth>
+            <h1>Formularios</h1>
             <DataContainer
                 searchTerm={searchTerm}
                 handleSearch={handleSearch}

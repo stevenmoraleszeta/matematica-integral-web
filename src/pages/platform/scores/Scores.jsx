@@ -218,6 +218,7 @@ function Scores() {
 
     return (
         <RequireAuth>
+            <h1>Quices</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchScores} dbCollection="scores">
                 {filteredScores.map(score => (
                     <div key={score.id} className="item-container">

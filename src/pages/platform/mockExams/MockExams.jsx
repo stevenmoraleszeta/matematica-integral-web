@@ -173,6 +173,7 @@ function MockExams() {
 
     return (
         <RequireAuth>
+            <h1>Simulacros</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchMockExams} dbCollection="mockExams">
                 {filteredMockExams.map(mockExam => (
                     <div key={mockExam.id} className="item-container">
