@@ -148,6 +148,236 @@ matematica-integral-web/
 └── README.md            # Project documentation
 ```
 
+## 🔥 Firebase Database Structure
+
+This section documents the complete Firestore database structure used in the application. All collections and their document schemas are detailed below.
+
+### Firestore Collections
+
+#### 1. **students**
+Stores student information and parent/guardian contact details.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  identificator: string,          // Student identifier
+  name: string,                   // Student full name
+  email: string,                 // Student email address
+  phone: string,                 // Student phone number (format: +countrycode...)
+  parentName: string,            // Parent/guardian name
+  parentEmail: string,           // Parent/guardian email
+  parentPhone: string,           // Parent/guardian phone (format: +countrycode...)
+  groupId: string                // Reference to groups collection document ID
+}
+```
+
+#### 2. **teachers**
+Stores teacher information and subject assignments.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  identificator: string,          // Teacher identifier
+  name: string,                   // Teacher full name
+  email: string,                 // Teacher email address
+  phone: string,                 // Teacher phone number (format: +countrycode...)
+  subject: string                // Subject taught by the teacher
+}
+```
+
+#### 3. **groups**
+Stores class group information and teacher assignments.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  identificator: string,          // Group identifier
+  name: string,                   // Group name
+  description: string,            // Group description
+  teacherMath: string,            // Reference to teachers collection (Math teacher ID)
+  teacherVerbal: string          // Reference to teachers collection (Verbal teacher ID)
+}
+```
+
+#### 4. **sessions**
+Stores class session information and attendance records.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  identificator: string,          // Session identifier
+  name: string,                   // Session name/title
+  date: string,                   // Session date (format: YYYY-MM-DD)
+  groupId: string,                // Reference to groups collection document ID
+  teacherId: string,              // Reference to teachers collection document ID
+  attendance: {                   // Object mapping student IDs to attendance status
+    [studentId]: string           // Values: "present", "absent", "excusedAbsence"
+  }
+}
+```
+
+#### 5. **scores**
+Stores quiz/exam scores for students.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  identificator: string,          // Score record identifier
+  name: string,                   // Quiz/exam name
+  date: string,                   // Date of the quiz/exam (format: YYYY-MM-DD)
+  groupId: string,                // Reference to groups collection document ID
+  scores: {                       // Object mapping student IDs to their scores
+    [studentId]: string           // Score value (can be numeric or text)
+  }
+}
+```
+
+#### 6. **homeworks**
+Stores homework assignments and submission status.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  identificator: string,          // Homework identifier
+  name: string,                   // Homework name/title
+  startDate: string,              // Assignment start date (format: YYYY-MM-DD)
+  submitDate: string,             // Submission deadline (format: YYYY-MM-DD)
+  groupId: string,                // Reference to groups collection document ID
+  teacherId: string,              // Reference to teachers collection document ID
+  scores: {                       // Object mapping student IDs to submission status
+    [studentId]: string           // Values: "notSubmited", "submited", or other status
+  }
+}
+```
+
+#### 7. **mockExams**
+Stores mock exam information and attendance.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  identificator: string,          // Mock exam identifier
+  name: string,                   // Mock exam name/title
+  startDate: string,              // Exam start date (format: YYYY-MM-DD)
+  endDate: string,                // Exam end date (format: YYYY-MM-DD)
+  attendance: {                   // Object mapping student IDs to attendance status
+    [studentId]: string           // Attendance status (e.g., "present", "absent")
+  }
+}
+```
+
+#### 8. **forms**
+Stores form templates with questions and configuration.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  identificator: string,          // Form identifier
+  name: string,                   // Form name/title
+  subject: string,                // Subject associated with the form
+  estado: string,                 // Form status: "Activo" or "Inactivo"
+  timeLimit: string,              // Time limit in minutes (as string, "0" = no limit)
+  questions: [                    // Array of question objects
+    {
+      type: string,                // Question type: "text", "multiple-choice", or "checkboxes"
+      questionText: string,       // The question text
+      options: [string],          // Array of answer options (for multiple-choice/checkboxes)
+      correctAnswers: [string],   // Array of correct answer options
+      imageUrl: string            // URL to question image (stored in Firebase Storage)
+    }
+  ]
+}
+```
+
+#### 9. **responses**
+Stores student responses to forms.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  formId: string,                // Reference to forms collection document ID
+  timestamp: string,              // ISO 8601 timestamp of submission
+  responses: [string],            // Array of student responses (formatted as strings)
+  grade: number                  // Calculated grade percentage (0-100) or null if not graded
+}
+```
+
+#### 10. **reports**
+Stores generated report records.
+
+```javascript
+{
+  id: string,                    // Document ID (auto-generated)
+  groupId: string,                // Reference to groups collection document ID
+  sessionId: string,              // Reference to sessions collection document ID
+  scoreId: string,                // Reference to scores collection document ID
+  mockExamId: string,             // Reference to mockExams collection document ID (optional)
+  date: string                    // Report generation date (format: YYYY-MM-DD)
+}
+```
+
+### Firebase Storage Structure
+
+#### **questions/**
+Stores images uploaded for form questions.
+
+```
+questions/
+  └── {formId}/
+      └── {filename}
+```
+
+- **Path pattern**: `questions/{formId}/{filename}`
+- **Usage**: Images are uploaded when editing forms and referenced via `imageUrl` in the question object
+- **Access**: Images are publicly accessible via download URLs stored in Firestore
+
+### Relationships Between Collections
+
+```
+groups
+  ├── teacherMath → teachers.id
+  └── teacherVerbal → teachers.id
+
+students
+  └── groupId → groups.id
+
+sessions
+  ├── groupId → groups.id
+  └── teacherId → teachers.id
+
+scores
+  └── groupId → groups.id
+
+homeworks
+  ├── groupId → groups.id
+  └── teacherId → teachers.id
+
+responses
+  └── formId → forms.id
+
+reports
+  ├── groupId → groups.id
+  ├── sessionId → sessions.id
+  ├── scoreId → scores.id
+  └── mockExamId → mockExams.id
+```
+
+### Data Validation Notes
+
+- **Phone numbers**: Must include country code (format: `+countrycode...`)
+- **Dates**: Stored as strings in `YYYY-MM-DD` format
+- **Attendance status**: Valid values are `"present"`, `"absent"`, or `"excusedAbsence"`
+- **Form status**: Valid values are `"Activo"` or `"Inactivo"`
+- **Time limits**: Stored as strings, `"0"` indicates no time limit
+- **Grades**: Stored as numbers (0-100) or `null` if not applicable
+
+### Firebase Services Used
+
+- **Firebase Authentication**: User authentication (currently disabled for public access)
+- **Cloud Firestore**: Primary database for all application data
+- **Firebase Storage**: File storage for question images
+- **Firebase Analytics**: Usage analytics (initialized but optional)
+
 ## 🚀 Deployment
 
 ### Recommended Deployment Platforms
