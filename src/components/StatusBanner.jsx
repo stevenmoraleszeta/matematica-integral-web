@@ -1,12 +1,12 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import './ProjectStatusBanner.css';
+import './StatusBanner.css';
 
-const ProjectStatusBanner = memo(() => {
+const StatusBanner = memo(() => {
     const { t } = useTranslation();
     
     return (
-        <div className="project-status-banner">
+        <div className="status-banner">
             <div className="banner-content">
                 <strong>{t('projectStatus.importantNote')}:</strong> {t('projectStatus.message')}
             </div>
@@ -14,7 +14,7 @@ const ProjectStatusBanner = memo(() => {
     );
 });
 
-ProjectStatusBanner.displayName = 'ProjectStatusBanner';
+StatusBanner.displayName = 'StatusBanner';
 
-export default ProjectStatusBanner;
+export default StatusBanner;
 

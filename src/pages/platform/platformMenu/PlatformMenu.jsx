@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGraduate, faChalkboardTeacher, faUsers, faCalendarAlt, faClipboard, faFileAlt, faFileSignature, faTasks, faFileContract } from '@fortawesome/free-solid-svg-icons'; // Usa faFileContract
 import RequireAuth from "../../../components/RequireAuth";
-import ProjectStatusBanner from "../../../components/ProjectStatusBanner/ProjectStatusBanner";
+import StatusBanner from "../../../components/StatusBanner";
 
 function PlatformMenu() {
     const { t } = useTranslation();
@@ -28,7 +28,7 @@ function PlatformMenu() {
 
     return (
         <RequireAuth>
-            <ProjectStatusBanner />
+            <StatusBanner />
             <div className="platform-container">
                 {filteredItems.map((item) => (
                     <Link key={item.id} to={item.path} className="platform-item">
