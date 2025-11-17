@@ -1,6 +1,6 @@
-import '../../App.css'
+import '../../App.css';
 import './UserProfile.css';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/auth';
 import { getAuth, updateProfile, updateEmail, signOut } from "firebase/auth";
 import { Navigate, useNavigate } from 'react-router-dom';

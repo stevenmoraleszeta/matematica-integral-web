@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -9,8 +9,8 @@ import DataModal from '../../../components/dataModal/DataModal';
 import StudentsListModal from '../../../components/studentsListModal/StudentsListModal';
 
 function Homeworks() {
-    const groups = useFetchData("groups");
-    const teachers = useFetchData("teachers");
+    const { data: groups } = useFetchData("groups");
+    const { data: teachers } = useFetchData("teachers");
     const [allHomeworks, setHomeworks] = useState([]);
     const [filteredHomeworks, setFilteredHomeworks] = useState([]);
     const [studentsInGroup, setStudentsInGroup] = useState([]);

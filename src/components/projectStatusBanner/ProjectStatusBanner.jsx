@@ -1,7 +1,7 @@
-import React from 'react';
+import { memo } from 'react';
 import './ProjectStatusBanner.css';
 
-const ProjectStatusBanner = () => {
+const ProjectStatusBanner = memo(() => {
     return (
         <div className="project-status-banner">
             <div className="banner-content">
@@ -10,7 +10,9 @@ const ProjectStatusBanner = () => {
             </div>
         </div>
     );
-};
+});
+
+ProjectStatusBanner.displayName = 'ProjectStatusBanner';
 
 export default ProjectStatusBanner;
 

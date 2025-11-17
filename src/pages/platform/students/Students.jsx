@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -8,10 +8,9 @@ import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
 
 function Students() {
-    const groups = useFetchData("groups");
+    const { data: groups } = useFetchData("groups");
 
-    const [allStudents, setAllStudents] = useState([]); // Estado para todos los estudiantes
-    const [filteredStudents, setFilteredStudents] = useState([]); // Estado para los estudiantes filtrados
+    const [allStudents, setAllStudents] = useState([]);
     const [formData, setFormData] = useState({
         identificator: '',
         email: '',
@@ -27,7 +26,7 @@ function Students() {
     const [searchTerm, setSearchTerm] = useState('');
 
     // Fetch students with group names
-    const fetchStudentsWithGroupNames = async () => {
+    const fetchStudentsWithGroupNames = useCallback(async () => {
         try {
             const groupsSnapshot = await getDocs(collection(db, "groups"));
             const groupsMap = {};
@@ -46,54 +45,47 @@ function Students() {
                 };
             });
 
-            setAllStudents(studentsWithGroupNames); // Guardar todos los estudiantes
+            setAllStudents(studentsWithGroupNames);
         } catch (error) {
             console.error("Error fetching students or groups: ", error);
         }
-    };
-
-    useEffect(() => {
-        fetchStudentsWithGroupNames();
     }, []);
 
     useEffect(() => {
-        // Aplicar filtro basado en searchTerm
-        const filteredList = allStudents.filter(student => {
+        fetchStudentsWithGroupNames();
+    }, [fetchStudentsWithGroupNames]);
+
+    const filteredStudents = useMemo(() => {
+        if (!searchTerm) return allStudents;
+        
+        const searchLower = searchTerm.toLowerCase();
+        return allStudents.filter(student => {
             if (!student) return false;
 
-            const name = String(student.name || '').toLowerCase();
-            const email = String(student.email || '').toLowerCase();
-            const phone = String(student.phone || '').toLowerCase();
-            const parentName = String(student.parentName || '').toLowerCase();
-            const parentEmail = String(student.parentEmail || '').toLowerCase();
-            const parentPhone = String(student.parentPhone || '').toLowerCase();
-            const groupName = String(student.groupName || '').toLowerCase();
-
             return (
-                name.includes(searchTerm.toLowerCase()) ||
-                email.includes(searchTerm.toLowerCase()) ||
-                phone.includes(searchTerm.toLowerCase()) ||
-                parentName.includes(searchTerm.toLowerCase()) ||
-                parentEmail.includes(searchTerm.toLowerCase()) ||
-                parentPhone.includes(searchTerm.toLowerCase()) ||
-                groupName.includes(searchTerm.toLowerCase())
+                String(student.name || '').toLowerCase().includes(searchLower) ||
+                String(student.email || '').toLowerCase().includes(searchLower) ||
+                String(student.phone || '').toLowerCase().includes(searchLower) ||
+                String(student.parentName || '').toLowerCase().includes(searchLower) ||
+                String(student.parentEmail || '').toLowerCase().includes(searchLower) ||
+                String(student.parentPhone || '').toLowerCase().includes(searchLower) ||
+                String(student.groupName || '').toLowerCase().includes(searchLower)
             );
         });
-        setFilteredStudents(filteredList);
     }, [searchTerm, allStudents]);
 
 
-    const validatePhoneNumber = (phoneNumber) => {
-        const phoneRegex = /^\+\d{10,}$/; // Regex para número de teléfono con código de país
+    const validatePhoneNumber = useCallback((phoneNumber) => {
+        const phoneRegex = /^\+\d{10,}$/;
         return phoneRegex.test(phoneNumber);
-    };
+    }, []);
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
-    };
+    }, []);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         const { phone, parentPhone } = formData;
 
@@ -132,9 +124,9 @@ function Students() {
         } catch (e) {
             console.error("Error adding/updating document: ", e);
         }
-    };
+    }, [editingStudent, formData, validatePhoneNumber, fetchStudentsWithGroupNames]);
 
-    const openModal = () => {
+    const openModal = useCallback(() => {
         setFormData({
             identificator: '',
             email: '',
@@ -147,14 +139,14 @@ function Students() {
         });
         setEditingStudent(null);
         setShowModal(true);
-    };
+    }, []);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setShowModal(false);
         setEditingStudent(null);
-    };
+    }, []);
 
-    const editStudent = (student) => {
+    const editStudent = useCallback((student) => {
         setFormData({
             identificator: student.id || '',
             email: student.email || '',
@@ -167,9 +159,9 @@ function Students() {
         });
         setEditingStudent(student);
         setShowModal(true);
-    };
+    }, []);
 
-    const deleteStudent = async (studentId) => {
+    const deleteStudent = useCallback(async (studentId) => {
         try {
             await deleteDoc(doc(db, "students", studentId));
             console.log("Document successfully deleted!");
@@ -177,11 +169,21 @@ function Students() {
         } catch (error) {
             console.error("Error deleting document: ", error);
         }
-    };
+    }, [fetchStudentsWithGroupNames]);
 
-    const handleSearch = (e) => {
+    const handleSearch = useCallback((e) => {
         setSearchTerm(e.target.value);
-    };
+    }, []);
+
+    const modalFields = useMemo(() => [
+        { label: 'Nombre', name: 'name', type: 'text' },
+        { label: 'Correo', name: 'email', type: 'email' },
+        { label: 'Teléfono', name: 'phone', type: 'text' },
+        { label: 'Nombre Encargado', name: 'parentName', type: 'text' },
+        { label: 'Correo Encargado', name: 'parentEmail', type: 'email' },
+        { label: 'Teléfono Encargado', name: 'parentPhone', type: 'text' },
+        { label: 'Grupo', name: 'groupId', type: 'select', options: groups.map(group => ({ value: group.id, label: group.name })) }
+    ], [groups]);
 
     return (
         <RequireAuth>
@@ -203,15 +205,7 @@ function Students() {
                 formData={formData}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
-                fields={[
-                    { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Correo', name: 'email', type: 'email' },
-                    { label: 'Teléfono', name: 'phone', type: 'text' },
-                    { label: 'Nombre Encargado', name: 'parentName', type: 'text' },
-                    { label: 'Correo Encargado', name: 'parentEmail', type: 'email' },
-                    { label: 'Teléfono Encargado', name: 'parentPhone', type: 'text' },
-                    { label: 'Grupo', name: 'groupId', type: 'select', options: groups.map(group => ({ value: group.id, label: group.name })) }
-                ]}
+                fields={modalFields}
                 title={editingStudent ? 'Editar Estudiante' : 'Agregar Estudiante'}
             />
         </RequireAuth>

@@ -1,21 +1,16 @@
-import './NavBar.css'
-import '../../App.css'
-import React, { useState, useEffect } from 'react';
+import './NavBar.css';
+import '../../App.css';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth';
 import defaultProfileImage from '../../assets/img/defaultProfileImage.jpg';
 
 function NavBar() {
     const { currentUser } = useAuth();
-    const [profileImage, setProfileImage] = useState(null); 
-
-    useEffect(() => {
-        if (currentUser) {
-            setProfileImage(currentUser.photoURL || defaultProfileImage); 
-        } else {
-            setProfileImage(null);
-        }
-    }, [currentUser]);
+    
+    const profileImage = useMemo(() => {
+        return currentUser?.photoURL || defaultProfileImage;
+    }, [currentUser?.photoURL]);
 
     return (
         <div className="topnav" id="myTopnav">
@@ -29,7 +24,7 @@ function NavBar() {
                     <Link className='profile-link' to="/user-profile">
                         <img
                             className='profile-image'
-                            src={profileImage || defaultProfileImage} // Mostrar la imagen de perfil o la por defecto
+                            src={profileImage}
                             alt='Profile'
                         />
                     </Link>

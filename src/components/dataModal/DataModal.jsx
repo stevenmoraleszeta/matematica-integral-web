@@ -1,16 +1,16 @@
 import './DataModal.css';
-import React from 'react';
+import { memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 
-const Modal = ({ showModal, closeModal, formData, handleChange, handleSubmit, fields, title }) => {
-    if (!showModal) return null;
-
+const Modal = memo(({ showModal, closeModal, formData, handleChange, handleSubmit, fields, title }) => {
     const openWhatsApp = (phoneNumber) => {
         if (phoneNumber) {
             window.open(`https://wa.me/${phoneNumber}`, '_blank');
         }
-    }
+    };
+
+    if (!showModal) return null;
 
     return (
         <div className="modal">
@@ -70,6 +70,8 @@ const Modal = ({ showModal, closeModal, formData, handleChange, handleSubmit, fi
             </div>
         </div>
     );
-};
+});
+
+Modal.displayName = 'Modal';
 
 export default Modal;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import RequireAuth from '../../../components/RequireAuth';
 import DataContainer from '../../../components/dataContainer/DataContainer';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';

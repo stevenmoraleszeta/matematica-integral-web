@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -9,7 +9,7 @@ import DataModal from '../../../components/dataModal/DataModal';
 import StudentsListModal from '../../../components/studentsListModal/StudentsListModal';
 
 function MockExams() {
-    const students = useFetchData("students");
+    const { data: students } = useFetchData("students");
     const [allMockExams, setAllMockExams] = useState([]);
     const [filteredMockExams, setFilteredMockExams] = useState([]);
     const [formData, setFormData] = useState({
