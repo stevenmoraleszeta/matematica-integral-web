@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, deleteDoc, getDocs, doc, updateDoc } from 'firebase/firestore';
@@ -10,6 +11,7 @@ import { faLink, faPen, faTrash, faEye } from '@fortawesome/free-solid-svg-icons
 import './Forms.css';
 
 function Forms() {
+    const { t } = useTranslation();
     const [forms, setForms] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -148,7 +150,7 @@ function Forms() {
 
     return (
         <RequireAuth>
-            <h1>Formularios</h1>
+            <h1>{t('forms.title')}</h1>
             <DataContainer
                 searchTerm={searchTerm}
                 handleSearch={handleSearch}
@@ -171,7 +173,7 @@ function Forms() {
                                         navigate(`/platform/forms/responses/${form.id}`);
                                     }}
                                     className="form-action-icon"
-                                    title="Ver respuestas"
+                                    title={t('forms.viewResponses')}
                                 />
                             </div>
                             <div className="icon-wrapper">
@@ -179,7 +181,7 @@ function Forms() {
                                     icon={faPen}
                                     onClick={(e) => { e.stopPropagation(); navigate(`/platform/forms/edit/${form.id}`); }}
                                     className="form-action-icon"
-                                    title="Modificar formulario"
+                                    title={t('forms.edit')}
                                 />
                             </div>
                             <div className="icon-wrapper">
@@ -187,7 +189,7 @@ function Forms() {
                                     icon={faLink}
                                     onClick={(e) => { e.stopPropagation(); copyToClipboard(form.id); }}
                                     className="form-action-icon"
-                                    title="Copiar enlace de respuestas"
+                                    title={t('forms.copyLink')}
                                 />
                             </div>
                             <div className="icon-wrapper">
@@ -198,7 +200,7 @@ function Forms() {
                                         deleteForm(form.id);
                                     }}
                                     className="form-action-icon"
-                                    title="Eliminar formulario"
+                                    title={t('forms.delete')}
                                 />
                             </div>
                         </div>
@@ -213,21 +215,21 @@ function Forms() {
                     formData={formData}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
-                    title={formData.identificator ? "Editar Formulario" : "Crear Nuevo Formulario"}
+                    title={formData.identificator ? t('forms.edit') : t('forms.add')}
                     fields={[
-                        { label: 'Nombre', name: 'name', type: 'text', placeholder: 'Nombre del formulario' },
-                        { label: 'Asignatura', name: 'subject', type: 'text', placeholder: 'Asignatura' },
+                        { label: t('formFields.name'), name: 'name', type: 'text', placeholder: t('formFields.formNamePlaceholder') },
+                        { label: t('formFields.subject'), name: 'subject', type: 'text', placeholder: t('formFields.subject') },
                         {
-                            label: 'Estado', name: 'estado', type: 'select', options: [
-                                { value: 'Activo', label: 'Activo' },
-                                { value: 'Inactivo', label: 'Inactivo' },
+                            label: t('formFields.status'), name: 'estado', type: 'select', options: [
+                                { value: 'Activo', label: t('formFields.active') },
+                                { value: 'Inactivo', label: t('formFields.inactive') },
                             ]
                         },
                         {
-                            label: 'Tiempo Límite',
+                            label: t('formFields.timeLimit'),
                             name: 'timeLimit',
                             type: 'text',
-                            placeholder: 'Escribe la cantidad de minutos o "0"',
+                            placeholder: t('formFields.timeLimitPlaceholder'),
                         },
                     ]}
                 />

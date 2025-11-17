@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import RequireAuth from '../../../components/RequireAuth';
 import DataContainer from '../../../components/dataContainer/DataContainer';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
@@ -7,6 +8,7 @@ import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase
 import { db } from '../../../firebase/firebase'; // Asegúrate de que la ruta sea correcta
 
 function Groups() {
+    const { t } = useTranslation();
     const [groups, setGroups] = useState([]);
     const [teachers, setTeachers] = useState([]);
     const [teacherMap, setTeacherMap] = useState({});
@@ -153,7 +155,7 @@ function Groups() {
 
     return (
         <RequireAuth>
-            <h1>Grupos</h1>
+            <h1>{t('groups.title')}</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchData} dbCollection="groups">
                 {filteredGroups.map(group => (
                     <div key={group.id} onClick={() => editGroup(group)} className="item-container">
@@ -173,22 +175,22 @@ function Groups() {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 fields={[
-                    { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Descripción', name: 'description', type: 'text' },
+                    { label: t('formFields.name'), name: 'name', type: 'text' },
+                    { label: t('formFields.description'), name: 'description', type: 'text' },
                     {
-                        label: 'Profesor de Matemáticas',
+                        label: t('formFields.mathTeacher'),
                         name: 'teacherMath',
                         type: 'select',
                         options: teachers.map(teacher => ({ value: teacher.id, label: teacher.name }))
                     },
                     {
-                        label: 'Profesor de Verbal',
+                        label: t('formFields.verbalTeacher'),
                         name: 'teacherVerbal',
                         type: 'select',
                         options: teachers.map(teacher => ({ value: teacher.id, label: teacher.name }))
                     }
                 ]}
-                title={editingGroup ? 'Editar Grupo' : 'Agregar Grupo'}
+                title={editingGroup ? t('groups.edit') : t('groups.add')}
             />
         </RequireAuth>
     );

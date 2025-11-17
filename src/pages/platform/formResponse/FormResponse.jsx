@@ -1,12 +1,14 @@
 // FormResponse.js
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { db } from '../../../firebase/firebase';
 import { doc, getDoc, addDoc, collection } from 'firebase/firestore';
 import "../../../App.css";
 import "./FormResponse.css";
 
 function FormResponse() {
+    const { t } = useTranslation();
     const { formId } = useParams();
     const [form, setForm] = useState({ name: '', questions: [], timeLimit: 0, isActive: true });
     const [responses, setResponses] = useState([]);
@@ -238,7 +240,7 @@ function FormResponse() {
             <div className="fixed-bottom-bar">
                 {timeRemaining !== null && (
                     <div className="time-remaining">
-                        Tiempo restante: {formatTime(timeRemaining)}
+                        {t('formResponse.timeRemaining')}: {formatTime(timeRemaining)}
                     </div>
                 )}
                 {!formSubmitted && !isTimeUp && (
@@ -247,7 +249,7 @@ function FormResponse() {
                         className="submit-button"
                         onClick={handleSubmit}
                     >
-                        Enviar Respuestas
+                        {t('formResponse.submitAnswers')}
                     </button>
                 )}
             </div>
@@ -256,17 +258,17 @@ function FormResponse() {
             {showStartModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Iniciar Respuesta</h2>
+                        <h2>{t('formResponse.startResponse')}</h2>
                         {form.timeLimit > 0 ? (
                             <>
-                                <p>Minutos disponibles: {form.timeLimit}</p>
-                                <p>El tiempo comenzará una vez que inicies la respuesta.</p>
+                                <p>{t('formResponse.availableMinutes')}: {form.timeLimit}</p>
+                                <p>{t('formResponse.timeWillStart')}</p>
                             </>
                         ) : (
-                            <p>No hay límite de tiempo para completar este formulario. Puedes tomar el tiempo que necesites.</p>
+                            <p>{t('formResponse.noTimeLimit')}</p>
                         )}
                         <button onClick={startResponse} className="modal-button">
-                            Iniciar Respuesta
+                            {t('formResponse.startResponse')}
                         </button>
                     </div>
                 </div>
@@ -276,13 +278,13 @@ function FormResponse() {
             {showSubmitModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Confirmar Envío</h2>
-                        <p>¿Estás seguro de que deseas enviar las respuestas?</p>
+                        <h2>{t('formResponse.confirmSubmit')}</h2>
+                        <p>{t('formResponse.confirmSubmitMessage')}</p>
                         <button onClick={confirmSubmit} className="modal-button">
-                            Confirmar Envío
+                            {t('formResponse.confirmSubmit')}
                         </button>
                         <button onClick={cancelSubmit} className="modal-button cancel">
-                            Cancelar
+                            {t('common.cancel')}
                         </button>
                     </div>
                 </div>
@@ -292,16 +294,16 @@ function FormResponse() {
             {showSuccessModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Respuesta Enviada</h2>
+                        <h2>{t('formResponse.responseSent')}</h2>
                         {grade !== null && (
                             <div>
-                                <h4>Tu respuesta ha sido enviada con éxito.</h4>
-                                <h4>Tu calificación es:</h4>
+                                <h4>{t('formResponse.successMessage')}</h4>
+                                <h4>{t('formResponse.yourGrade')}:</h4>
                                 <h1>{Math.round(grade)}%</h1>
                             </div>
                         )}
                         <button onClick={closeSuccessModal} className="modal-button">
-                            Cerrar
+                            {t('common.close')}
                         </button>
                     </div>
                 </div>
@@ -311,10 +313,10 @@ function FormResponse() {
             {showInactiveModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Formulario Inactivo</h2>
-                        <p>Este formulario está actualmente inactivo y no acepta respuestas. Contacte con el profesor.</p>
+                        <h2>{t('formResponse.inactiveForm')}</h2>
+                        <p>{t('formResponse.inactiveMessage')}</p>
                         <button onClick={closeInactiveModal} className="modal-button">
-                            Cerrar
+                            {t('common.close')}
                         </button>
                     </div>
                 </div>

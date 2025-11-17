@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -9,6 +10,7 @@ import DataModal from '../../../components/dataModal/DataModal';
 import StudentsListModal from '../../../components/studentsListModal/StudentsListModal';
 
 function MockExams() {
+    const { t } = useTranslation();
     const { data: students } = useFetchData("students");
     const [allMockExams, setAllMockExams] = useState([]);
     const [filteredMockExams, setFilteredMockExams] = useState([]);
@@ -173,7 +175,7 @@ function MockExams() {
 
     return (
         <RequireAuth>
-            <h1>Simulacros</h1>
+            <h1>{t('mockExams.title')}</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchMockExams} dbCollection="mockExams">
                 {filteredMockExams.map(mockExam => (
                     <div key={mockExam.id} className="item-container">
@@ -182,7 +184,7 @@ function MockExams() {
                             <p className="item-detail">{mockExam.startDate}/{mockExam.endDate}</p>
                         </div>
                         <div className="item-actions">
-                            <button className="item-action-button" onClick={() => handleAssignAttendance(mockExam)}>Modificar asistencia</button>
+                            <button className="item-action-button" onClick={() => handleAssignAttendance(mockExam)}>{t('buttons.modifyAttendance')}</button>
                             <DeleteIcon onClick={() => deleteMockExam(mockExam.id)} />
                         </div>
                     </div>
@@ -196,11 +198,11 @@ function MockExams() {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 fields={[
-                    { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Fecha Inicio', name: 'startDate', type: 'date' },
-                    { label: 'Fecha Final', name: 'endDate', type: 'date'}
+                    { label: t('formFields.name'), name: 'name', type: 'text' },
+                    { label: t('formFields.startDate'), name: 'startDate', type: 'date' },
+                    { label: t('formFields.endDate'), name: 'endDate', type: 'date'}
                 ]}
-                title={editingMockExam ? 'Editar Simulacro' : 'Agregar Simulacro'}
+                title={editingMockExam ? t('mockExams.edit') : t('mockExams.add')}
             />
             <StudentsListModal
                 showModal={showAttendanceModal}

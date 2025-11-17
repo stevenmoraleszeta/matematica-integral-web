@@ -1,4 +1,5 @@
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import './DataContainer.css';
 import { collection, addDoc } from 'firebase/firestore';
 import { read, utils } from 'xlsx';
@@ -6,11 +7,13 @@ import { db } from '../../firebase/firebase';
 import { MdUpload } from 'react-icons/md';
 
 const DataContainer = memo(({ searchTerm, handleSearch, openModal, fetchFunction, dbCollection, children }) => {
+    const { t } = useTranslation();
+    
     const handleFileUpload = useCallback(async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const confirmUpload = window.confirm("¿Está seguro de que desea cargar estos datos? Esta acción es irreversible.");
+        const confirmUpload = window.confirm(t('common.uploadConfirm'));
         if (!confirmUpload) return;
 
         const reader = new FileReader();
@@ -33,20 +36,20 @@ const DataContainer = memo(({ searchTerm, handleSearch, openModal, fetchFunction
                 if (fetchFunction) {
                     await fetchFunction();
                 }
-                alert("Los datos han sido cargados exitosamente.");
+                alert(t('common.uploadSuccess'));
             } catch (error) {
                 console.error("Error processing file: ", error);
-                alert("Error al procesar el archivo. Por favor, verifique que el formato sea correcto.");
+                alert(t('common.uploadError'));
             }
         };
 
         reader.readAsArrayBuffer(file);
-    }, [dbCollection, fetchFunction]);
+    }, [dbCollection, fetchFunction, t]);
 
     return (
         <div className="data-container">
             <div className="add-container">
-                <button className="add-button" onClick={openModal}>Agregar Registro</button>
+                <button className="add-button" onClick={openModal}>{t('common.addRecord')}</button>
                 {/*Implement file upload in all modules*/}
                 <input
                     type="file"
@@ -61,7 +64,7 @@ const DataContainer = memo(({ searchTerm, handleSearch, openModal, fetchFunction
             </div>
             <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder={t('common.searchPlaceholder')}
                 value={searchTerm}
                 onChange={handleSearch}
                 className="search-input"

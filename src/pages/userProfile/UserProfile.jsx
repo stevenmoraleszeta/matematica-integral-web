@@ -1,6 +1,7 @@
 import '../../App.css';
 import './UserProfile.css';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/auth';
 import { getAuth, updateProfile, updateEmail, signOut } from "firebase/auth";
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -8,6 +9,7 @@ import RequireAuth from '../../components/RequireAuth';
 
 
 function UserProfile() {
+    const { t } = useTranslation();
     const { currentUser, updateCurrentUser } = useAuth();
     const auth = getAuth();
     const navigate = useNavigate();
@@ -76,10 +78,10 @@ function UserProfile() {
     return (
         <RequireAuth>
             <div className='user-profile-container'>
-                <h1>Perfil de Usuario</h1>
+                <h1>{t('userProfile.title')}</h1>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Nombre:</label>
+                        <label>{t('userProfile.name')}:</label>
                         <input
                             type="text"
                             name="displayName"
@@ -89,7 +91,7 @@ function UserProfile() {
                         />
                     </div>
                     <div>
-                        <label>Email:</label>
+                        <label>{t('userProfile.email')}:</label>
                         <input
                             type="email"
                             name="email"
@@ -99,7 +101,7 @@ function UserProfile() {
                         />
                     </div>
                     <div>
-                        <label>URL Imagen Perfil:</label>
+                        <label>{t('userProfile.photoURL')}:</label>
                         <input
                             type="text"
                             name="photoURL"
@@ -107,8 +109,8 @@ function UserProfile() {
                             onChange={handleChange}
                         />
                     </div>
-                    <button type="submit">Guardar Cambios</button>
-                    <button onClick={handleLogout}>Cerrar Sesión</button>
+                    <button type="submit">{t('userProfile.saveChanges')}</button>
+                    <button onClick={handleLogout}>{t('userProfile.logout')}</button>
                 </form>
             </div>
         </RequireAuth>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import RequireAuth from '../../../components/RequireAuth';
 import { db } from '../../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -9,6 +10,7 @@ import DataModal from '../../../components/dataModal/DataModal';
 import StudentsListModal from '../../../components/studentsListModal/StudentsListModal';
 
 function Homeworks() {
+    const { t } = useTranslation();
     const { data: groups } = useFetchData("groups");
     const { data: teachers } = useFetchData("teachers");
     const [allHomeworks, setHomeworks] = useState([]);
@@ -37,7 +39,7 @@ function Homeworks() {
                 return {
                     id: doc.id,
                     ...homeworkData,
-                    groupName: groupNames[homeworkData.groupId] || 'Grupo no encontrado'
+                    groupName: groupNames[homeworkData.groupId] || t('groups.notFound')
                 };
             });
             setHomeworks(homeworksList);
@@ -231,17 +233,17 @@ function Homeworks() {
 
     return (
         <RequireAuth>
-            <h1>Tareas</h1>
+            <h1>{t('homeworks.title')}</h1>
             <DataContainer searchTerm={searchTerm} handleSearch={handleSearch} openModal={openModal} fetchFunction={fetchHomeworks} dbCollection="homeworks">
                 {filteredHomeworks.map(homework => (
                     <div key={homework.id} className="item-container">
                         <div className="item-data" onClick={() => editHomework(homework)}>
                             <p className="item-title">{homework.name}</p>
-                            <p className="item-detail">{groupNames[homework.groupId] || 'Grupo no encontrado'}</p>
+                            <p className="item-detail">{groupNames[homework.groupId] || t('groups.notFound')}</p>
                             <p className="item-detail">{homework.date}</p>
                         </div>
                         <div className="item-actions">
-                            <button className="item-action-button" onClick={() => handleAssignScores(homework)}>Modificar asistencia</button>
+                            <button className="item-action-button" onClick={() => handleAssignScores(homework)}>{t('buttons.modifyAttendance')}</button>
                             <DeleteIcon onClick={() => deleteHomework(homework.id)} />
                         </div>
                     </div>
@@ -255,24 +257,24 @@ function Homeworks() {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 fields={[
-                    { label: 'Nombre', name: 'name', type: 'text' },
-                    { label: 'Fecha Inicio', name: 'startDate', type: 'date' },
-                    { label: 'Fecha Entrega', name: 'submitDate', type: 'date' },
+                    { label: t('formFields.name'), name: 'name', type: 'text' },
+                    { label: t('formFields.startDate'), name: 'startDate', type: 'date' },
+                    { label: t('formFields.submitDate'), name: 'submitDate', type: 'date' },
                     {
-                        label: 'Grupo',
+                        label: t('formFields.group'),
                         name: 'groupId',
                         type: 'select',
                         options: groups.map(group => ({ value: group.id, label: group.name })),
                         onChange: handleGroupChange
                     },
                     {
-                        label: 'Profesor',
+                        label: t('formFields.teacher'),
                         name: 'teacherId',
                         type: 'select',
                         options: teachers.map(teacher => ({ value: teacher.id, label: teacher.name }))
                     }
                 ]}
-                title={editingHomework ? 'Editar Sesión' : 'Agregar Sesión'}
+                title={editingHomework ? t('homeworks.edit') : t('homeworks.add')}
             />
             <StudentsListModal
                 showModal={showScoresModal}

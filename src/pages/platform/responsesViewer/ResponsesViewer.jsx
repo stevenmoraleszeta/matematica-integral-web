@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { db } from '../../../firebase/firebase';
 import { collection, getDocs, query, where, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { Pie, Bar } from 'react-chartjs-2'; // Importamos también Bar para el gráfico de barras
@@ -11,6 +12,7 @@ import './ResponsesViewer.css';
 Chart.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 function ResponsesViewer() {
+    const { t } = useTranslation();
     const { formId } = useParams();
     const [responses, setResponses] = useState([]);
     const [filteredResponses, setFilteredResponses] = useState([]);
@@ -83,7 +85,7 @@ function ResponsesViewer() {
             labels: Object.keys(answerCounts),
             datasets: [
                 {
-                    label: questions[questionIndex]?.questionText || `Pregunta ${questionIndex + 1}`,
+                    label: questions[questionIndex]?.questionText || `${t('responsesViewer.question')} ${questionIndex + 1}`,
                     data: Object.values(answerCounts),
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.6)',
@@ -118,7 +120,7 @@ function ResponsesViewer() {
             labels: Object.keys(gradeCounts),
             datasets: [
                 {
-                    label: 'Distribución de Calificaciones',
+                    label: t('responsesViewer.gradeDistribution'),
                     data: Object.values(gradeCounts),
                     backgroundColor: 'rgba(54, 162, 235, 0.6)',
                     borderColor: 'rgba(54, 162, 235, 1)',
@@ -162,7 +164,7 @@ function ResponsesViewer() {
                 {responses[0].responses.map((_, questionIndex) => (
                     <div key={questionIndex} className="chart-item">
                         <center><h5 className="chart-title">
-                            {questions[questionIndex]?.questionText || `Pregunta ${questionIndex + 1}`}
+                            {questions[questionIndex]?.questionText || `${t('responsesViewer.question')} ${questionIndex + 1}`}
                         </h5></center>
                         <Pie
                             data={getQuestionResponses(questionIndex)}
@@ -189,7 +191,7 @@ function ResponsesViewer() {
                                 },
                                 title: {
                                     display: true,
-                                    text: 'Distribución de Calificaciones',
+                                    text: t('responsesViewer.gradeDistribution'),
                                 },
                             },
                         }}
@@ -197,12 +199,12 @@ function ResponsesViewer() {
                 </div>
             </div>
             <center>
-                <h1>Respuestas de {formName}</h1>
+                <h1>{t('forms.responses')} {formName}</h1>
             </center>
             <div className="search-bar">
                 <input
                     type="text"
-                    placeholder="Buscar respuestas..."
+                    placeholder={t('forms.searchResponses')}
                     value={searchTerm}
                     onChange={handleSearchChange}
                     className="search-input"
@@ -212,7 +214,7 @@ function ResponsesViewer() {
                 {filteredResponses.map((response, index) => (
                     <div key={response.id} className="response-item" onClick={() => handleResponseClick(response)}>
                         <h3>
-                            Respuesta #{filteredResponses.length - index} - {formatDate(response.timestamp)}
+                            {t('forms.responseNumber')}{filteredResponses.length - index} - {formatDate(response.timestamp)}
                         </h3>
                     </div>
                 ))}
@@ -222,21 +224,21 @@ function ResponsesViewer() {
             {selectedResponse && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Detalles de la Respuesta</h2>
+                        <h2>{t('responsesViewer.responseDetails')}</h2>
                         <div>
                             {selectedResponse.responses.map((answer, idx) => (
                                 <div key={idx}>
-                                    <strong>{questions[idx]?.questionText || `Pregunta ${idx + 1}`}:</strong>
+                                    <strong>{questions[idx]?.questionText || `${t('responsesViewer.question')} ${idx + 1}`}:</strong>
                                     <p>{answer}</p>
                                 </div>
                             ))}
                             {selectedResponse.grade !== null && (
-                                <p><strong>Calificación:</strong> {Math.round(selectedResponse.grade)}%</p>
+                                <p><strong>{t('responsesViewer.grade')}:</strong> {Math.round(selectedResponse.grade)}%</p>
                             )}
                         </div>
                         <div className="modal-buttons-container">
                             <button className="close-modal" onClick={closeModal}>
-                                Cerrar
+                                {t('common.close')}
                             </button>
                             <DeleteIcon className="delete-response-btn" onClick={handleDeleteResponse} />
                         </div>

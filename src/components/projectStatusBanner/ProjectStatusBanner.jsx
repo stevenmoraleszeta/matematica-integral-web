@@ -1,11 +1,14 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import './ProjectStatusBanner.css';
 
 const ProjectStatusBanner = memo(() => {
+    const { t } = useTranslation();
+    
     return (
         <div className="project-status-banner">
             <div className="banner-content">
-                <strong>Important Note:</strong> This project was paused over a year ago by the client academy due to resource issues. The client has given full permission to show or distribute this project. The platform is now publicly accessible without requiring authentication for demonstration purposes.
+                <strong>{t('projectStatus.importantNote')}:</strong> {t('projectStatus.message')}
             </div>
         </div>
     );

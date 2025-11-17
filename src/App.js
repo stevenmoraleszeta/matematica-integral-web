@@ -1,6 +1,7 @@
 import './App.css';
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import NavBar from './components/navBar/NavBar.jsx';
 
 // Lazy load pages for better performance
@@ -21,17 +22,20 @@ const ResponsesViewer = lazy(() => import('./pages/platform/responsesViewer/Resp
 const FormResponse = lazy(() => import('./pages/platform/formResponse/FormResponse.jsx'));
 const DataManagement = lazy(() => import('./pages/platform/dataManagement/DataManagement.jsx'));
 
-const LoadingFallback = () => (
-    <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        fontSize: '18px' 
-    }}>
-        Cargando...
-    </div>
-);
+const LoadingFallback = () => {
+    const { t } = useTranslation();
+    return (
+        <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh',
+            fontSize: '18px' 
+        }}>
+            {t('common.loading')}
+        </div>
+    );
+};
 
 function App() {
     return (
