@@ -20,6 +20,7 @@ const Forms = lazy(() => import('./pages/platform/forms/Forms.jsx'));
 const EditForm = lazy(() => import('./pages/platform/editForm/EditForm.jsx'));
 const ResponsesViewer = lazy(() => import('./pages/platform/responsesViewer/ResponsesViewer.jsx'));
 const FormResponse = lazy(() => import('./pages/platform/formResponse/FormResponse.jsx'));
+const DataManagement = lazy(() => import('./pages/platform/dataManagement/DataManagement.jsx'));
 
 const LoadingFallback = () => (
     <div style={{ 
@@ -56,6 +57,7 @@ function App() {
                         <Route path="/forms/response/:formId" element={<FormResponse />} />
                         <Route path="/platform/forms/responses/:formId" element={<ResponsesViewer />} />
                         <Route path="/platform/reports" element={<Reports />} />
+                        <Route path="/platform/data-management" element={<DataManagement />} />
                         <Route path="*" element={<Navigate to="/platform" replace />} />
                     </Routes>
                 </Suspense>
