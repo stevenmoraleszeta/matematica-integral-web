@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { db } from '../../../firebase/firebase';
-import { collection, addDoc, deleteDoc, doc, getDocs, writeBatch } from 'firebase/firestore';
+import { collection, addDoc, getDocs, writeBatch } from 'firebase/firestore';
 import './DataManagement.css';
 
 function DataManagement() {
