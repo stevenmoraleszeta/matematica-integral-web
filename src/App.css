@@ -1,41 +1,49 @@
 :root {
-  /* Apple-inspired Color System */
+  /* Apple Human Interface Guidelines - Dark Mode Colors */
   --background-color: #000000;
   --background-secondary: #1c1c1e;
   --background-tertiary: #2c2c2e;
   --background-elevated: #1c1c1e;
-  --background-color-low-opacity: rgba(0, 0, 0, 0.8);
-  --background-shadow: rgba(0, 0, 0, 0.3);
+  --background-color-low-opacity: rgba(0, 0, 0, 0.75);
+  --background-shadow: rgba(0, 0, 0, 0.4);
   
-  /* Component Colors */
+  /* Component Colors - Dark Mode */
   --component-dark: #1c1c1e;
   --component-elevated: #2c2c2e;
   --component-hover: #3a3a3c;
+  --component-pressed: #48484a;
+  --separator-color: rgba(255, 255, 255, 0.1);
+  --separator-opaque: rgba(255, 255, 255, 0.2);
   
-  /* Text Colors */
+  /* Text Colors - Dark Mode */
   --text-color: #ffffff;
   --text-secondary: #98989d;
   --text-tertiary: #636366;
+  --text-quaternary: #48484a;
   --light-gray: #98989d;
   
-  /* Primary Colors - Apple Blue */
+  /* Primary Colors - Apple System Blue */
   --primary-color: #007aff;
   --primary-color-hover: #0051d5;
-  --primary-color-darker: #0040a8;
-  --primary-color-light: rgba(0, 122, 255, 0.1);
+  --primary-color-pressed: #0040a8;
+  --primary-color-light: rgba(0, 122, 255, 0.12);
+  --primary-color-lighter: rgba(0, 122, 255, 0.08);
   
   /* Secondary Colors - Apple Orange */
   --secundary-color: #ff9500;
   --secundary-color-hover: #ff8800;
   --secundary-color-darker: #e68500;
   
-  /* Status Colors */
+  /* Status Colors - Apple System Colors */
   --red-color: #ff3b30;
   --red-color-darker: #d70015;
+  --red-color-light: rgba(255, 59, 48, 0.1);
   --green-color: #34c759;
+  --green-color-light: rgba(52, 199, 89, 0.1);
   --yellow-color: #ffcc00;
+  --yellow-color-light: rgba(255, 204, 0, 0.1);
   
-  /* Spacing System (Apple-inspired) */
+  /* Spacing System (Apple HIG) */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
@@ -43,23 +51,77 @@
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
   
-  /* Border Radius */
+  /* Border Radius (Apple HIG) */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
   --radius-full: 9999px;
   
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  /* Shadows - Dark Mode (subtle, Apple-style) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.3), 0 16px 32px rgba(0, 0, 0, 0.2);
   
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Transitions (Apple-style easing) */
+  --transition-fast: 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-base: 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-theme: 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Light Theme - Apple Human Interface Guidelines */
+[data-theme="light"] {
+  /* Apple HIG - Light Mode Colors */
+  --background-color: #ffffff;
+  --background-secondary: #f2f2f7;
+  --background-tertiary: #e5e5ea;
+  --background-elevated: #ffffff;
+  --background-color-low-opacity: rgba(255, 255, 255, 0.85);
+  --background-shadow: rgba(0, 0, 0, 0.08);
+  
+  /* Component Colors - Light Mode */
+  --component-dark: #f2f2f7;
+  --component-elevated: #ffffff;
+  --component-hover: #e5e5ea;
+  --component-pressed: #d1d1d6;
+  --separator-color: rgba(60, 60, 67, 0.12);
+  --separator-opaque: rgba(60, 60, 67, 0.29);
+  
+  /* Text Colors - Light Mode */
+  --text-color: #000000;
+  --text-secondary: #3a3a3c;
+  --text-tertiary: #8e8e93;
+  --text-quaternary: #c7c7cc;
+  --light-gray: #8e8e93;
+  
+  /* Primary Colors - Apple System Blue (same across themes) */
+  --primary-color: #007aff;
+  --primary-color-hover: #0051d5;
+  --primary-color-pressed: #0040a8;
+  --primary-color-light: rgba(0, 122, 255, 0.1);
+  --primary-color-lighter: rgba(0, 122, 255, 0.06);
+  
+  /* Secondary Colors - Apple Orange (same) */
+  --secundary-color: #ff9500;
+  --secundary-color-hover: #ff8800;
+  --secundary-color-darker: #e68500;
+  
+  /* Status Colors - Apple System Colors (same) */
+  --red-color: #ff3b30;
+  --red-color-darker: #d70015;
+  --red-color-light: rgba(255, 59, 48, 0.1);
+  --green-color: #34c759;
+  --green-color-light: rgba(52, 199, 89, 0.1);
+  --yellow-color: #ffcc00;
+  --yellow-color-light: rgba(255, 204, 0, 0.1);
+  
+  /* Shadows - Light Mode (more pronounced, Apple-style) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.05);
 }
 
 body, html {
@@ -73,6 +135,7 @@ body, html {
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "kern" 1;
   text-rendering: optimizeLegibility;
+  transition: background-color var(--transition-theme), color var(--transition-theme);
 }
 
 label {
@@ -117,7 +180,7 @@ h3 {
 input, select, textarea {
   background-color: var(--component-dark);
   color: var(--text-color);
-  border: 1px solid transparent;
+  border: 1px solid var(--separator-color);
   border-radius: var(--radius-md);
   padding: 12px 16px;
   box-sizing: border-box;
@@ -140,6 +203,7 @@ input:focus, select:focus, textarea:focus {
   background-color: var(--component-elevated);
   border-color: var(--primary-color);
   box-shadow: 0 0 0 4px var(--primary-color-light);
+  transform: translateY(-1px);
 }
 
 input:hover:not(:focus), select:hover:not(:focus), textarea:hover:not(:focus) {
@@ -152,6 +216,10 @@ select {
   background-repeat: no-repeat;
   background-position: right 16px center;
   padding-right: 40px;
+}
+
+[data-theme="light"] select {
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 select option {
@@ -192,9 +260,14 @@ button::before {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+[data-theme="light"] button::before {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 button:hover::before {
@@ -206,6 +279,7 @@ button:hover {
   background-color: var(--primary-color-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+  border-color: var(--primary-color-hover);
 }
 
 button:active {
@@ -238,15 +312,17 @@ table {
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--separator-color);
+  transition: all var(--transition-base);
 }
 
 th, td {
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--separator-color);
   padding: var(--spacing-md);
   text-align: left;
   font-size: 15px;
   letter-spacing: -0.2px;
+  transition: background-color var(--transition-fast);
 }
 
 th {
@@ -283,6 +359,7 @@ tr {
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  transition: background-color var(--transition-theme), color var(--transition-theme);
 }
 
 @media (max-width: 768px) {
