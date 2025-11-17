@@ -7,9 +7,12 @@ import useFetchData from '../../../hooks/useFetchData';
 import DataContainer from '../../../components/dataContainer/DataContainer';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
+import SecureDeleteConfirm from '../../../components/SecureDeleteConfirm/SecureDeleteConfirm';
+import useSecurity from '../../../hooks/useSecurity';
 
 function Students() {
     const { t } = useTranslation();
+    const { secureCreate, secureUpdate, secureDelete, validateEmailWithMessage, validatePhoneWithMessage } = useSecurity();
     const { data: groups } = useFetchData("groups");
 
     const [allStudents, setAllStudents] = useState([]);
@@ -26,6 +29,7 @@ function Students() {
     const [showModal, setShowModal] = useState(false);
     const [editingStudent, setEditingStudent] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
 
     // Fetch students with group names
     const fetchStudentsWithGroupNames = useCallback(async () => {
@@ -89,25 +93,53 @@ function Students() {
 
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
-        const { phone, parentPhone } = formData;
+        const { phone, parentPhone, email, parentEmail } = formData;
 
-        if (phone && !validatePhoneNumber(phone)) {
-            alert('Número de teléfono inválido. Asegúrate de incluir el código de país.');
+        // Validar emails
+        const emailError = validateEmailWithMessage(email, 'Email del estudiante');
+        if (emailError) {
+            alert(emailError);
             return;
         }
-        if (parentPhone && !validatePhoneNumber(parentPhone)) {
-            alert('Número de teléfono del encargado inválido. Asegúrate de incluir el código de país.');
+        const parentEmailError = validateEmailWithMessage(parentEmail, 'Email del encargado');
+        if (parentEmailError) {
+            alert(parentEmailError);
+            return;
+        }
+
+        // Validar teléfonos
+        const phoneError = validatePhoneWithMessage(phone, 'Teléfono del estudiante');
+        if (phoneError) {
+            alert(phoneError);
+            return;
+        }
+        const parentPhoneError = validatePhoneWithMessage(parentPhone, 'Teléfono del encargado');
+        if (parentPhoneError) {
+            alert(parentPhoneError);
             return;
         }
 
         try {
             if (editingStudent) {
-                const studentRef = doc(db, "students", editingStudent.id);
-                await updateDoc(studentRef, formData);
-                console.log("Document updated with ID: ", editingStudent.id);
+                await secureUpdate(
+                    formData,
+                    'students',
+                    async (sanitizedData) => {
+                        const studentRef = doc(db, "students", editingStudent.id);
+                        await updateDoc(studentRef, sanitizedData);
+                        console.log("Document updated with ID: ", editingStudent.id);
+                    }
+                );
             } else {
-                const docRef = await addDoc(collection(db, "students"), formData);
-                console.log("Document written with ID: ", docRef.id);
+                await secureCreate(
+                    formData,
+                    'students',
+                    async (sanitizedData) => {
+                        const docRef = await addDoc(collection(db, "students"), sanitizedData);
+                        console.log("Document written with ID: ", docRef.id);
+                        return docRef;
+                    }
+                );
             }
 
             await fetchStudentsWithGroupNames(); // Refresh student data after submit
@@ -125,8 +157,9 @@ function Students() {
             setShowModal(false);
         } catch (e) {
             console.error("Error adding/updating document: ", e);
+            alert(`Error: ${e.message}`);
         }
-    }, [editingStudent, formData, validatePhoneNumber, fetchStudentsWithGroupNames]);
+    }, [editingStudent, formData, secureCreate, secureUpdate, validateEmailWithMessage, validatePhoneWithMessage, fetchStudentsWithGroupNames]);
 
     const openModal = useCallback(() => {
         setFormData({
@@ -163,15 +196,30 @@ function Students() {
         setShowModal(true);
     }, []);
 
-    const deleteStudent = useCallback(async (studentId) => {
+    const deleteStudent = useCallback((studentId) => {
+        const student = allStudents.find(s => s.id === studentId);
+        setDeleteConfirm({ id: studentId, name: student?.name || 'este estudiante' });
+    }, [allStudents]);
+
+    const handleDeleteConfirm = useCallback(async () => {
+        if (!deleteConfirm) return;
+        
         try {
-            await deleteDoc(doc(db, "students", studentId));
-            console.log("Document successfully deleted!");
-            await fetchStudentsWithGroupNames(); // Refresh student data after delete
+            await secureDelete(
+                deleteConfirm.name,
+                async () => {
+                    await deleteDoc(doc(db, "students", deleteConfirm.id));
+                    console.log("Document successfully deleted!");
+                    await fetchStudentsWithGroupNames(); // Refresh student data after delete
+                }
+            );
+            setDeleteConfirm(null);
         } catch (error) {
             console.error("Error deleting document: ", error);
+            alert(`Error al eliminar: ${error.message}`);
+            setDeleteConfirm(null);
         }
-    }, [fetchStudentsWithGroupNames]);
+    }, [deleteConfirm, secureDelete, fetchStudentsWithGroupNames]);
 
     const handleSearch = useCallback((e) => {
         setSearchTerm(e.target.value);
@@ -211,6 +259,15 @@ function Students() {
                 fields={modalFields}
                 title={editingStudent ? t('students.edit') : t('students.add')}
             />
+
+            {deleteConfirm && (
+                <SecureDeleteConfirm
+                    itemName={deleteConfirm.name}
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setDeleteConfirm(null)}
+                    message={t('students.deleteConfirm')}
+                />
+            )}
         </RequireAuth>
     );
 }

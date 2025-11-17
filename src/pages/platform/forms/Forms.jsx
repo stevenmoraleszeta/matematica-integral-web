@@ -6,12 +6,15 @@ import { db } from '../../../firebase/firebase';
 import { collection, addDoc, deleteDoc, getDocs, doc, updateDoc } from 'firebase/firestore';
 import DataContainer from '../../../components/dataContainer/DataContainer';
 import DataModal from '../../../components/dataModal/DataModal';
+import SecureDeleteConfirm from '../../../components/SecureDeleteConfirm/SecureDeleteConfirm';
+import useSecurity from '../../../hooks/useSecurity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink, faPen, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 import './Forms.css';
 
 function Forms() {
     const { t } = useTranslation();
+    const { secureCreate, secureUpdate, secureDelete } = useSecurity();
     const [forms, setForms] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -22,6 +25,7 @@ function Forms() {
         estado: 'Activo',
         timeLimit: '0',
     });
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
 
     const navigate = useNavigate();
 
@@ -111,13 +115,28 @@ function Forms() {
                 timeLimit: isNaN(timeLimit) ? 0 : timeLimit,
             };
 
-            if (formData.identificator) { // Cambié de formData.id a formData.identificator
-                const formRef = doc(db, "forms", formData.identificator);
-                await updateDoc(formRef, dataToSave);
-                console.log("Formulario actualizado correctamente:", dataToSave);
+            if (formData.identificator) {
+                // Actualizar con seguridad
+                await secureUpdate(
+                    dataToSave,
+                    'forms',
+                    async (sanitizedData) => {
+                        const formRef = doc(db, "forms", formData.identificator);
+                        await updateDoc(formRef, sanitizedData);
+                        console.log("Formulario actualizado correctamente:", sanitizedData);
+                    }
+                );
             } else {
-                const docRef = await addDoc(collection(db, "forms"), dataToSave);
-                console.log("Formulario creado con ID:", docRef.id);
+                // Crear con seguridad
+                await secureCreate(
+                    dataToSave,
+                    'forms',
+                    async (sanitizedData) => {
+                        const docRef = await addDoc(collection(db, "forms"), sanitizedData);
+                        console.log("Formulario creado con ID:", docRef.id);
+                        return docRef;
+                    }
+                );
             }
 
             fetchForms();
@@ -138,13 +157,26 @@ function Forms() {
     };
 
     const deleteForm = async (formId) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este formulario? Esta acción no se puede deshacer.')) {
-            try {
-                await deleteDoc(doc(db, "forms", formId));
-                fetchForms();
-            } catch (error) {
-                console.error("Error deleting form: ", error);
-            }
+        const form = forms.find(f => f.id === formId);
+        setDeleteConfirm({ id: formId, name: form?.name || 'este formulario' });
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!deleteConfirm) return;
+        
+        try {
+            await secureDelete(
+                deleteConfirm.name,
+                async () => {
+                    await deleteDoc(doc(db, "forms", deleteConfirm.id));
+                    fetchForms();
+                }
+            );
+            setDeleteConfirm(null);
+        } catch (error) {
+            console.error("Error deleting form: ", error);
+            alert(`Error al eliminar: ${error.message}`);
+            setDeleteConfirm(null);
         }
     };
 
@@ -232,6 +264,15 @@ function Forms() {
                             placeholder: t('formFields.timeLimitPlaceholder'),
                         },
                     ]}
+                />
+            )}
+
+            {deleteConfirm && (
+                <SecureDeleteConfirm
+                    itemName={deleteConfirm.name}
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setDeleteConfirm(null)}
+                    message={t('forms.deleteConfirm')}
                 />
             )}
         </RequireAuth>

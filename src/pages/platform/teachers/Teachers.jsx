@@ -6,9 +6,12 @@ import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase
 import DataContainer from '../../../components/dataContainer/DataContainer';
 import DeleteIcon from '../../../components/deleteIcon/DeleteIcon';
 import DataModal from '../../../components/dataModal/DataModal';
+import SecureDeleteConfirm from '../../../components/SecureDeleteConfirm/SecureDeleteConfirm';
+import useSecurity from '../../../hooks/useSecurity';
 
 function Teachers() {
     const { t } = useTranslation();
+    const { secureCreate, secureUpdate, secureDelete, validateEmailWithMessage, validatePhoneWithMessage } = useSecurity();
     const [allTeachers, setAllTeachers] = useState([]);
     const [filteredTeachers, setFilteredTeachers] = useState([]);
     const [formData, setFormData] = useState({
@@ -21,6 +24,7 @@ function Teachers() {
     const [showModal, setShowModal] = useState(false);
     const [editingTeacher, setEditingTeacher] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
 
     // Fetch teachers
     const fetchTeachers = async () => {
@@ -66,21 +70,43 @@ function Teachers() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { phone } = formData;
+        const { phone, email } = formData;
 
-        if (phone && !validatePhoneNumber(phone)) {
-            alert('Número de teléfono inválido. Asegúrate de incluir el código de país.');
+        // Validar email
+        const emailError = validateEmailWithMessage(email, 'Email');
+        if (emailError) {
+            alert(emailError);
+            return;
+        }
+
+        // Validar teléfono
+        const phoneError = validatePhoneWithMessage(phone, 'Teléfono');
+        if (phoneError) {
+            alert(phoneError);
             return;
         }
 
         try {
             if (editingTeacher) {
-                const teacherRef = doc(db, "teachers", editingTeacher.id);
-                await updateDoc(teacherRef, formData);
-                console.log("Document updated with ID: ", editingTeacher.id);
+                await secureUpdate(
+                    formData,
+                    'teachers',
+                    async (sanitizedData) => {
+                        const teacherRef = doc(db, "teachers", editingTeacher.id);
+                        await updateDoc(teacherRef, sanitizedData);
+                        console.log("Document updated with ID: ", editingTeacher.id);
+                    }
+                );
             } else {
-                const docRef = await addDoc(collection(db, "teachers"), formData);
-                console.log("Document written with ID: ", docRef.id);
+                await secureCreate(
+                    formData,
+                    'teachers',
+                    async (sanitizedData) => {
+                        const docRef = await addDoc(collection(db, "teachers"), sanitizedData);
+                        console.log("Document written with ID: ", docRef.id);
+                        return docRef;
+                    }
+                );
             }
 
             await fetchTeachers(); // Refresh teacher data after submit
@@ -95,6 +121,7 @@ function Teachers() {
             setShowModal(false);
         } catch (e) {
             console.error("Error adding/updating document: ", e);
+            alert(`Error: ${e.message}`);
         }
     };
 
@@ -127,13 +154,28 @@ function Teachers() {
         setShowModal(true);
     };
 
-    const deleteTeacher = async (teacherId) => {
+    const deleteTeacher = (teacherId) => {
+        const teacher = allTeachers.find(t => t.id === teacherId);
+        setDeleteConfirm({ id: teacherId, name: teacher?.name || 'este profesor' });
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!deleteConfirm) return;
+        
         try {
-            await deleteDoc(doc(db, "teachers", teacherId));
-            console.log("Document successfully deleted!");
-            await fetchTeachers(); // Refresh teacher data after delete
+            await secureDelete(
+                deleteConfirm.name,
+                async () => {
+                    await deleteDoc(doc(db, "teachers", deleteConfirm.id));
+                    console.log("Document successfully deleted!");
+                    await fetchTeachers(); // Refresh teacher data after delete
+                }
+            );
+            setDeleteConfirm(null);
         } catch (error) {
             console.error("Error deleting document: ", error);
+            alert(`Error al eliminar: ${error.message}`);
+            setDeleteConfirm(null);
         }
     };
 
@@ -170,6 +212,15 @@ function Teachers() {
                 ]}
                 title={editingTeacher ? t('teachers.edit') : t('teachers.add')}
             />
+
+            {deleteConfirm && (
+                <SecureDeleteConfirm
+                    itemName={deleteConfirm.name}
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setDeleteConfirm(null)}
+                    message={t('teachers.deleteConfirm')}
+                />
+            )}
         </RequireAuth>
     );
 }

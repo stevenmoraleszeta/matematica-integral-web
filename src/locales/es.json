@@ -245,5 +245,13 @@
   "buttons": {
     "modifyAttendance": "Modificar asistencia",
     "modifyScores": "Modificar calificaciones"
+  },
+  "secureDelete": {
+    "title": "Confirmar eliminación",
+    "defaultMessage": "¿Estás seguro de que deseas eliminar este elemento?",
+    "warning": "Esta acción no se puede deshacer",
+    "continue": "Continuar",
+    "confirmMessage": "Para confirmar, escribe",
+    "deletePermanently": "Eliminar permanentemente"
   }
 }
